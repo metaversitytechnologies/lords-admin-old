@@ -1,0 +1,148 @@
+
+body{
+    background-color: #333d79ff;
+}
+.btn-primary,.btn-primary:hover
+{
+    background-color: #333d79ff;
+    color: #FFFFFF;
+}
+.mx-current-year {
+    color: #fff !important;
+}
+.btn-secondary,.btn-secondary:hover
+{
+    background-color: #11374a;
+    color: #FFFFFF;
+    border-color: transparent;
+}
+.btn-update,.btn-update:hover
+{
+    background-color: #0f8422;
+    color: #FFFFFF;
+    border-bottom-color: #0a5616;
+    border-right-color: #0a5616;
+}
+.table.p-t-listing thead {
+    background-color: #333d79ff;
+}
+.table.p-t-listing tr td
+{
+    border-right: 1px solid #333d79ff;
+}
+body .body>.content>.mid-pane .header .search-wrap input:focus
+{
+    border: 2px solid #333d79ff;
+    background: #ffffff;
+    color: #444444;
+}
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active
+{
+    background-color: #333d79ff;
+    color: #fff;
+}
+.modal-header,
+.modal-header~.modal-body {
+    background: #333d79ff;
+}
+.modal-content .apl-section-inner
+{
+    background: #333d79ff;
+}
+.button-picker
+{
+    background: #333d79ff;
+}
+.filters-toggle
+{
+    background: #333d79ff;
+}
+.net-exposure .table tr.title td {
+    background: #0e577b;
+}
+.net-exposure .cell-market-title
+{
+    background: #333d79ff;
+}
+.net-exposure .cell-market-bets {
+    background: #333d79ff;
+}
+.cell-market-downline {
+    background: #333d79ff;
+}
+.casino-box .table {
+    background-color: #333d79ff;
+}
+.casino-box .player-name {
+    background-color: #333d79ff;
+}
+.last-result-title,
+.market-title
+{
+    background-color: #333d79ff;
+}
+.winner-label
+{
+    background-color: #333d79ff;
+}
+.hands-pattern-container td button
+{
+    color: #fff;
+    background-image: linear-gradient(rgba(0, 136, 204, 0.4), rgba(21, 75, 102, 0.8));
+}
+.main-market .table-header .country-name,
+.main-market .table-row .country-name {
+    width: 40%;
+    background-color: #333d79ff;
+}
+.loadind-icon
+{
+    border-color: #333d79ff #333d79ff #333d79ff transparent;
+}
+.error-page
+{
+    background-image: linear-gradient(#333d79ff, #fff);
+}
+.mx-calendar-header {
+    background: #333d79ff !important;
+}
+.mx-icon-last-month,
+.mx-icon-next-month
+{
+    border-bottom: 2px solid #333d79ff !important;
+    border-right: 2px solid #333d79ff !important;
+    background-color: #333d79ff !important;
+    color: #000 !important;
+}
+.prev-wrapper table tr th:first-child,
+.prev-wrapper table tr th:nth-child(2),
+.prev-wrapper table tr th:nth-child(3) {
+    background-color: #333d79ff;
+}
+
+.live-tv-icon {
+    background-color: #333d79ff;
+}
+.matched-data .table-control {
+    background-color: #333d79ff;
+    
+}
+.page-item.active .page-link {
+    background-color: #333d79ff;
+    border-color: #333d79ff;
+}
+
+.page-link {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-color: #333d79ff;
+    color: #fff;
+}
+.pair-block
+{
+    border-left: 5px  solid #333d79ff;
+}
+.flip-clock-wrapper ul li a div div.inn{
+    background-color : #333d79ff !important;
+    color: #fff !important;
+}
