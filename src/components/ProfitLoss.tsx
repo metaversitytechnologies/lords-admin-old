@@ -99,13 +99,13 @@ const ProfitLoss = () => {
           </thead>
           <tbody>
             <tr>
-              <td colspan="2" className="fw-bold bg-light">
+              <td colSpan={2} className="fw-bold bg-light">
                 02/11/2025
               </td>
             </tr>
 
             <tr>
-              <td colspan="2" className="fw-semibold text-primary">
+              <td colSpan={2} className="fw-semibold text-primary">
                 Australia v India
               </td>
             </tr>
@@ -121,7 +121,7 @@ const ProfitLoss = () => {
             </tr>
 
             <tr>
-              <td colspan="2" className="fw-semibold text-primary">
+              <td colSpan={2} className="fw-semibold text-primary">
                 btable
               </td>
             </tr>

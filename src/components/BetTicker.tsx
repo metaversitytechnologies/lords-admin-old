@@ -1,5 +1,3 @@
-import React from "react";
-
 const BetTicker = () => {
   // Event options
   const events = [
@@ -164,7 +162,7 @@ const BetTicker = () => {
             </thead>
             <tbody>
               <tr>
-                <td colSpan="11" className="text-center">
+                <td colSpan={11} className="text-center">
                   no records found
                 </td>
               </tr>

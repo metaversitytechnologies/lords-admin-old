@@ -38,7 +38,7 @@ const TransferStatement = () => {
             <tbody key={index}>
               {/* Date Row */}
               <tr>
-                <td colSpan="3" className="transferDate">
+                <td colSpan={3} className="transferDate">
                   <span>{entry.date}</span>
                 </td>
               </tr>

@@ -189,7 +189,7 @@ const BetList = () => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td colSpan="9">
+                    <td colSpan={9}>
                       <p className="text-center m-0">
                         There are no records to show
                       </p>

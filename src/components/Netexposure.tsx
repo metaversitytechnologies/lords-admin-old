@@ -1,5 +1,3 @@
-import React from "react";
-
 const NetExposure = () => {
   return (
     <div id="net-exposure" className="tab-pane net-exposure">
