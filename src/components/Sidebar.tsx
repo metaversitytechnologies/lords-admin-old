@@ -26,8 +26,8 @@ const Sidebar = () => {
       title: "Reports",
       links: [
         { text: "My Bets Report", href: "/mybets" },
-        { text: "Prodit Loss Report", href: "/profitLoss" },
-        { text: "transfer Statement", href: "/transferstmt" },
+        { text: "Profit Loss Report", href: "/profitLoss" },
+        { text: "Transfer Statement", href: "/transferstmt" },
         { text: "Casino Result", href: "/casinoresult" },
         { text: "Game Report", href: "/gamereports" },
         { text: "Message Report", href: "/fraudreport" }

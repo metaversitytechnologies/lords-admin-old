@@ -7,6 +7,13 @@ import AccountSection from "./components/AccountSection";
 import AgentListing from "./components/AgentListing";
 import DashboardLayout from "./layouts/DashboardLayout";
 import BalanceInfo from "./components/BalanceInfo";
+import Transfer from "./components/Transfer";
+import Notification from "./components/Notification";
+import NetExposure from "./components/Netexposure";
+import BetTicker from "./components/BetTicker";
+import BetList from "./components/BestList";
+import TransferStatement from "./components/TransferStatement";
+import ProfitLoss from "./components/ProfitLoss";
 
 export const router = createBrowserRouter([
   {
@@ -31,13 +38,13 @@ export const router = createBrowserRouter([
           { path: "dashboardhome", element: <BalanceInfo /> },
           { path: "account-statement", element: <div /> },
           { path: "accountstmt", element: <div /> },
-          { path: "bank", element: <div /> },
-          { path: "notification", element: <div /> },
-          { path: "netexpouser", element: <div /> },
-          { path: "bettiker", element: <div /> },
-          { path: "mybets", element: <div /> },
-          { path: "profitLoss", element: <div /> },
-          { path: "transferstmt", element: <div /> },
+          { path: "bank", element: <Transfer /> },
+          { path: "notification", element: <Notification /> },
+          { path: "netexpouser", element: <NetExposure /> },
+          { path: "bettiker", element: <BetTicker /> },
+          { path: "mybets", element: <BetList /> },
+          { path: "profitLoss", element: <ProfitLoss /> },
+          { path: "transferstmt", element: <TransferStatement /> },
           { path: "casinoresult", element: <div /> },
           { path: "gamereports", element: <div /> },
           { path: "fraudreport", element: <div /> }

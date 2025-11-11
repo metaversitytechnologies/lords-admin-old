@@ -9,8 +9,10 @@ const DashboardLayout: React.FC = () => {
       <Sidebar />
       <div className="mid-pane">
         <Balance />
-        <div className="outlet-container">
-          <Outlet />
+        <div className="outlet-container apl-section">
+          <div className="apl-section">
+            <Outlet />
+          </div>
         </div>
       </div>
     </div>
