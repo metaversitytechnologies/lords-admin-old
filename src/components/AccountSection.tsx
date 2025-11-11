@@ -1,5 +1,3 @@
-import React from "react";
-
 const AccountSection = () => {
   return (
     <section className="apl-section">
@@ -92,7 +90,7 @@ const AccountSection = () => {
                       "Credit Reference",
                       "Exposure Limit",
                       "User Create"
-                    ].map((label, index) => {
+                    ].map((label) => {
                       const id = label.toLowerCase().replace(/\s+/g, "");
                       return (
                         <div
@@ -152,8 +150,8 @@ const AccountSection = () => {
                     <div className="prev-scroller">
                       <table
                         role="table"
-                        aria-busy="false"
-                        aria-colcount="23"
+                        aria-busy={false}
+                        aria-colcount={23}
                         className="table b-table table chackbox-align b-table-stacked-md"
                       >
                         <thead>
