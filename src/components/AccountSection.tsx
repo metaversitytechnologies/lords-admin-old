@@ -193,7 +193,7 @@ const AccountSection = () => {
                         </thead>
                         <tbody>
                           <tr className="b-table-empty-row">
-                            <td colSpan="23">
+                            <td colSpan={23}>
                               <div className="text-center my-2">
                                 There are no records to show
                               </div>
