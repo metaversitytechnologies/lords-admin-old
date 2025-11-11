@@ -1,5 +1,3 @@
-import React from "react";
-
 const AgentListing = () => {
   return (
     <section className="apl-section">

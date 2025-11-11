@@ -1,5 +1,3 @@
-import React from "react";
-
 const BalanceInfo = () => {
   return (
     <section className="apl-section">
