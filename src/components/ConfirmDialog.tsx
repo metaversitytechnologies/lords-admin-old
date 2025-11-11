@@ -1,18 +1,49 @@
 import React from "react";
+import ReactDOM from "react-dom";
 
 interface ConfirmModalProps {
   show: boolean;
   onClose: () => void;
+  onConfirm?: () => void;
 }
 
-const ConfirmModal: React.FC<ConfirmModalProps> = ({ show, onClose }) => {
-  if (!show) return null; // hide modal if not active
+const ConfirmModal: React.FC<ConfirmModalProps> = ({
+  show,
+  onClose,
+  onConfirm
+}) => {
+  if (!show) return null;
 
-  return (
+  // The actual modal content
+  const modalContent = (
     <div
       id="__BVID__19___BV_modal_outer_"
-      style={{ position: "absolute", zIndex: 1040 }}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        zIndex: 9999
+      }}
     >
+      {/* Backdrop */}
+      <div
+        id="__BVID__19___BV_modal_backdrop_"
+        className="modal-backdrop"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "rgba(0, 0, 0, 0.87)",
+          zIndex: 9998
+        }}
+        onClick={onClose}
+      ></div>
+
+      {/* Modal dialog */}
       <div
         id="__BVID__19"
         role="dialog"
@@ -20,10 +51,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ show, onClose }) => {
         aria-describedby="__BVID__19___BV_modal_body_"
         className="modal fade show"
         aria-modal="true"
-        style={{ display: "block" }}
+        style={{
+          display: "block",
+          zIndex: 10000
+        }}
       >
         <div className="modal-dialog modal-sm">
-          <span tabIndex={0}></span>
           <div
             id="__BVID__19___BV_modal_content_"
             tabIndex={-1}
@@ -48,7 +81,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ show, onClose }) => {
                   </button>{" "}
                   <button
                     className="btn btn-success lgn-alrt btn-bs"
-                    onClick={onClose}
+                    onClick={() => {
+                      if (onConfirm) onConfirm();
+                      onClose();
+                    }}
                   >
                     Confirm
                   </button>
@@ -56,17 +92,13 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ show, onClose }) => {
               </div>
             </div>
           </div>
-          <span tabIndex={0}></span>
         </div>
       </div>
-
-      <div
-        id="__BVID__19___BV_modal_backdrop_"
-        className="modal-backdrop"
-        onClick={onClose}
-      ></div>
     </div>
   );
+
+  // ✅ Render modal outside the main app hierarchy
+  return ReactDOM.createPortal(modalContent, document.body);
 };
 
 export default ConfirmModal;
