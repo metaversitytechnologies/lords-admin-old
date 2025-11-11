@@ -40,6 +40,10 @@ const Sidebar = () => {
         {
           text: "Clients Account Statement",
           href: "/accountstmt"
+        },
+        {
+          text: "Balance",
+          href: "/dashboardhome"
         }
       ]
     },
