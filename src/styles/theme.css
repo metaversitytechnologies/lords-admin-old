@@ -1,6 +1,7 @@
 
 body{
     background-color: #333d79ff;
+    overflow-y: auto;
 }
 .btn-primary,.btn-primary:hover
 {
