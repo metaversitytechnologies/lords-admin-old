@@ -1155,7 +1155,7 @@ footer img {
 .login-footer {
   width: 100%;
   left: 0;
-  position: fixed;
+  position: relative;
   bottom: 0;
   z-index: 1030;
 }
