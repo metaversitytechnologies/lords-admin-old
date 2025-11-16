@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 const AgentListing = () => {
   return (
     <div className="apl-section">
@@ -20,9 +21,9 @@ const AgentListing = () => {
 
         {/* Action Buttons */}
         <div className="button-options">
-          <a href="/createagent" className="btn btn-primary m-l-5">
+          <Link to="/createagent" className="btn btn-primary m-l-5">
             New Agent
-          </a>
+          </Link>
         </div>
 
         <div className="button-options">

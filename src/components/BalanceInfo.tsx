@@ -1,6 +1,6 @@
 const BalanceInfo = () => {
   return (
-    <div className="apl-section">
+    <div className="balance">
       <div className="header">
         <h1>Balance Information</h1>
       </div>

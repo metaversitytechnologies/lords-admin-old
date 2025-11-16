@@ -20,6 +20,7 @@ import GameReports from "./components/GameReports";
 import MessageReport from "./components/MessageReport";
 import AccountStatement from "./components/AccountStatement";
 import ClientAccountStatement from "./components/ClientAccountStatement";
+import NewAgent from "./components/NewAgent";
 
 export const router = createBrowserRouter([
   {
@@ -58,7 +59,8 @@ export const router = createBrowserRouter([
           { path: "transferstmt", element: <TransferStatement /> },
           { path: "casinoresult", element: <CasinoReport /> },
           { path: "gamereports", element: <GameReports /> },
-          { path: "fraudreport", element: <MessageReport /> }
+          { path: "fraudreport", element: <MessageReport /> },
+          { path: "createagent", element: <NewAgent /> }
         ]
       }
     ]
