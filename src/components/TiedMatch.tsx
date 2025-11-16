@@ -1,11 +1,27 @@
 import React from "react";
 
-/**
- * TiedMatch Component
- * Displays the "TIED_MATCH" market section (with Back/Lay odds for Yes/No).
- */
-const TiedMatch = ({ market }) => {
-  const data = market || {
+type Box = {
+  className: string;
+  odds: string;
+  size: string;
+};
+
+type Row = {
+  name: string;
+  boxes: Box[];
+};
+
+type Market = {
+  title: string;
+  rows: Row[];
+};
+
+type TiedMatchProps = {
+  market?: Market;
+};
+
+const TiedMatch: React.FC<TiedMatchProps> = ({ market }) => {
+  const data: Market = market ?? {
     title: "TIED_MATCH",
     rows: [
       {
@@ -40,6 +56,7 @@ const TiedMatch = ({ market }) => {
         <div className="bet-table-header">
           <div className="nation-name d-flex align-items-center justify-content-between">
             <span>{data.title}</span>
+
             <div>
               <button
                 type="button"
@@ -47,6 +64,7 @@ const TiedMatch = ({ market }) => {
               >
                 Bet Lock
               </button>
+
               <button
                 type="button"
                 className="btn btn-secondary btn-sm bet-lock-btn"

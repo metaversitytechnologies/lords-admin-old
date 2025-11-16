@@ -212,8 +212,8 @@ const MessageReport: React.FC = () => {
                     type="button"
                     aria-label="Go to page 1"
                     aria-checked="true"
-                    aria-posinset="1"
-                    aria-setsize="1"
+                    aria-posinset={1}
+                    aria-setsize={1s}
                     tabIndex={0}
                     className="page-link"
                   >
