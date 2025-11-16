@@ -8,7 +8,11 @@ import MatchedUnmatched from "./MatchedUnmatched";
 import LiveTvDrag from "./LiveTvDrag";
 import TiedMatch from "./TiedMatch";
 
-const MarketLayout = ({ data }) => {
+type MarketLayoutProps = {
+  data?: any;
+};
+
+const MarketLayout = ({ data }: MarketLayoutProps) => {
   const sample = data || {
     matchOdds: {
       title: "MATCH_ODDS",

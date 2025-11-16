@@ -65,7 +65,7 @@ const MessageReport: React.FC = () => {
               <table
                 role="table"
                 aria-busy="false"
-                aria-colcount="6"
+                aria-colcount={6}
                 className="table b-table table table-striped b-table-stacked-md"
               >
                 <thead role="rowgroup">
@@ -74,7 +74,7 @@ const MessageReport: React.FC = () => {
                       role="columnheader"
                       scope="col"
                       tabIndex={0}
-                      aria-colindex="1"
+                      aria-colindex={1}
                       aria-sort="none"
                       className="position-relative text-left"
                     >
@@ -88,7 +88,7 @@ const MessageReport: React.FC = () => {
                       role="columnheader"
                       scope="col"
                       tabIndex={0}
-                      aria-colindex="2"
+                      aria-colindex={2}
                       aria-sort="none"
                       className="position-relative text-left"
                     >
@@ -102,7 +102,7 @@ const MessageReport: React.FC = () => {
                       role="columnheader"
                       scope="col"
                       tabIndex={0}
-                      aria-colindex="3"
+                      aria-colindex={3}
                       aria-sort="none"
                       className="position-relative text-left"
                     >
@@ -116,7 +116,7 @@ const MessageReport: React.FC = () => {
                       role="columnheader"
                       scope="col"
                       tabIndex={0}
-                      aria-colindex="4"
+                      aria-colindex={4}
                       aria-sort="none"
                       className="position-relative text-left"
                     >
@@ -130,7 +130,7 @@ const MessageReport: React.FC = () => {
                       role="columnheader"
                       scope="col"
                       tabIndex={0}
-                      aria-colindex="5"
+                      aria-colindex={5}
                       aria-sort="none"
                       className="position-relative text-left"
                     >
@@ -144,7 +144,7 @@ const MessageReport: React.FC = () => {
                       role="columnheader"
                       scope="col"
                       tabIndex={0}
-                      aria-colindex="6"
+                      aria-colindex={6}
                       aria-sort="none"
                       className="position-relative text-right"
                     >
