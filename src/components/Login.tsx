@@ -2,34 +2,43 @@ import React, { useState } from "react";
 import ConfirmModal from "./ConfirmDialog";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+
+type LoginFormInputs = {
+  loginid: string;
+  password: string;
+};
 
 const Login: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const auth = useAuth();
   const navigate = useNavigate();
 
+  // react-hook-form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues
+  } = useForm<LoginFormInputs>();
+
   const performLogin = async () => {
-    setError(null);
+    const { loginid, password } = getValues();
     setLoading(true);
+
     try {
       const res = await fetch("https://dummyjson.com/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username: loginid, password })
       });
 
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || "Login failed");
-      }
+      if (!res.ok) throw new Error("Login failed");
 
       const data = await res.json();
-      // dummyjson returns a token string in `token`
+
       if (data?.accessToken) {
         const user = {
           id: data.id,
@@ -43,16 +52,18 @@ const Login: React.FC = () => {
       } else {
         throw new Error("Invalid response from auth server");
       }
-    } catch (err: any) {
-      setError(err?.message || "Login failed");
+    } catch (error: any) {
+      alert(error?.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
 
-  // Handler when Confirm modal is accepted
-  const handleConfirm = () => {
-    performLogin();
+  // Show confirmation modal only if form is valid
+  const openConfirmModal = () => {
+    const { loginid, password } = getValues();
+    if (!loginid || !password) return; // HOOK-FORM already shows messages
+    setShowModal(true);
   };
 
   return (
@@ -65,12 +76,19 @@ const Login: React.FC = () => {
             alt="Logo"
           />
         </div>
-        <form data-vv-scope="loginForm">
+
+        {/* IMPORTANT: handleSubmit REQUIRED for RHF */}
+        <form
+          onSubmit={handleSubmit(openConfirmModal)}
+          data-vv-scope="loginForm"
+        >
           <div className="m-b-10">
             <div className="login-flash-message">
               <div className="flash__wrapper"></div>
             </div>
           </div>
+
+          {/* Username */}
           <div className="form-group m-b-20">
             <label className="m-b-0" htmlFor="loginid">
               Enter Username:
@@ -78,16 +96,18 @@ const Login: React.FC = () => {
             <input
               id="loginid"
               type="text"
-              name="loginid"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              {...register("loginid", {
+                required: "The loginid field is required"
+              })}
               placeholder="Enter Login Id"
               className="form-control"
-              aria-required="true"
-              aria-invalid={!!error}
             />
-            <span className="text-danger error-login">{error}</span>
+            <span className="text-danger error-login">
+              {errors.loginid?.message}
+            </span>
           </div>
+
+          {/* Password */}
           <div className="form-group m-b-20">
             <label className="m-b-0" htmlFor="password">
               Enter Password:
@@ -95,34 +115,35 @@ const Login: React.FC = () => {
             <input
               id="password"
               type="password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register("password", {
+                required: "Password field is required."
+              })}
               placeholder="Enter password"
               className="form-control"
-              aria-required="true"
-              aria-invalid={!!error}
             />
-            <span className="text-danger error-login"></span>
+            <span className="text-danger error-login">
+              {errors.password?.message}
+            </span>
           </div>
+
+          {/* Login button */}
           <div className="form-group m-b-25">
             <button
-              type="button"
+              type="submit"
               className="btn btn-primary btn-login btn-block"
-              onClick={(e) => {
-                e.preventDefault();
-                setShowModal(true);
-              }}
             >
               {loading ? "Logging in..." : "Login"}
             </button>
           </div>
+
+          {/* Footer Text */}
           <div className="recaptchaTerms m-b-20">
             This site is protected by reCAPTCHA and the Google{" "}
             <a href="https://policies.google.com/privacy">Privacy Policy</a> and{" "}
             <a href="https://policies.google.com/terms">Terms of Service</a>{" "}
             apply.
           </div>
+
           <div className="form-group text-center">
             <div className="best-viewed-label">Best Viewed In:</div>
             <img
@@ -141,10 +162,11 @@ const Login: React.FC = () => {
           </div>
         </form>
       </section>
+
       <ConfirmModal
         show={showModal}
         onClose={() => setShowModal(false)}
-        onConfirm={handleConfirm}
+        onConfirm={performLogin}
       />
     </div>
   );
