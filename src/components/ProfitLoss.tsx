@@ -1,6 +1,6 @@
 const ProfitLoss = () => {
   return (
-    <>
+    <div className="apl-section">
       <div className="header">
         <h1>P&amp;L Report by Market</h1>
       </div>
@@ -172,7 +172,7 @@ const ProfitLoss = () => {
           </tfoot>
         </table>
       </div>
-    </>
+    </div>
   );
 };
 

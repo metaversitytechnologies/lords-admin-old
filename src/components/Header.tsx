@@ -13,7 +13,24 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
 
   const [now, setNow] = useState<Date>(new Date());
+  const [timeZone, setTimeZone] = useState<string | undefined>(undefined);
 
+  // Dropdown states
+  const [tzOpen, setTzOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  // Auto-close dropdowns when clicking outside
+  useEffect(() => {
+    const closeAll = () => {
+      setTzOpen(false);
+      setSettingsOpen(false);
+    };
+
+    window.addEventListener("click", closeAll);
+    return () => window.removeEventListener("click", closeAll);
+  }, []);
+
+  // Update clock every second
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
@@ -30,12 +47,35 @@ const Header: React.FC = () => {
     user?.username ||
     `${user?.firstName || ""} ${user?.lastName || ""}`.trim() ||
     "User";
+
+  const getTimezoneOffset = (tz: string | undefined) => {
+    if (tz === "UTC") return "GMT +00:00";
+    if (tz === "Asia/Kolkata") return "GMT +05:30";
+
+    if (tz === undefined) {
+      const offset = -new Date().getTimezoneOffset();
+      const hours = Math.floor(offset / 60);
+      const minutes = offset % 60;
+      return `GMT ${offset >= 0 ? "+" : "-"}${String(Math.abs(hours)).padStart(
+        2,
+        "0"
+      )}:${String(Math.abs(minutes)).padStart(2, "0")}`;
+    }
+    return "";
+  };
+
   const formattedNow = now.toLocaleString(undefined, {
     month: "short",
     day: "2-digit",
-    year: "numeric"
+    year: "numeric",
+    timeZone: timeZone
   });
-  const formattedTime = now.toLocaleTimeString([], { hour12: false });
+
+  const formattedTime = now.toLocaleTimeString([], {
+    hour12: false,
+    timeZone: timeZone
+  });
+
   const formattedLastLogin = lastLogin
     ? (() => {
         const date = new Date(
@@ -54,7 +94,6 @@ const Header: React.FC = () => {
           .replace(",", "");
 
         formatted = formatted.replace(/\s?[APMapm]{2}$/, "").trim();
-
         return formatted;
       })()
     : "-";
@@ -76,34 +115,72 @@ const Header: React.FC = () => {
         </div>
       </div>
 
+      {/* Clock + Timezone Dropdown */}
       <div className="clock float-left">
         <span>{formattedNow}</span>
         <span className="time">{formattedTime}</span>
-        <span className="clock-timezone-settings dropdown">
+
+        <div
+          className="clock-timezone-settings dropdown"
+          onClick={(e) => e.stopPropagation()}
+        >
           <a
             href="#"
-            data-toggle="dropdown"
             className="dropdown-toggle"
             role="button"
+            onClick={(e) => {
+              e.preventDefault();
+              setTzOpen(!tzOpen);
+              setSettingsOpen(false);
+            }}
           >
-            (+05:30
+            ({getTimezoneOffset(timeZone)}
             <FontAwesomeIcon icon={faAngleDown} className="m-l-5" />)
           </a>
 
-          <div className="dropdown-menu">
-            <a href="javascript:void(0)" className="dropdown-item">
-              System time - (GMT +00:00)
-            </a>
-            <a href="javascript:void(0)" className="dropdown-item">
-              Your computer time - (GMT +05:30)
-            </a>
-            <a href="javascript:void(0)" className="dropdown-item">
-              India Standard time - (GMT +05:30)
-            </a>
-          </div>
-        </span>
+          {tzOpen && (
+            <div className="dropdown-menu show">
+              <a
+                href="#"
+                className="dropdown-item"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTimeZone("UTC");
+                  setTzOpen(false);
+                }}
+              >
+                System time - (GMT +00:00)
+              </a>
+
+              <a
+                href="#"
+                className="dropdown-item"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTimeZone(undefined);
+                  setTzOpen(false);
+                }}
+              >
+                Your computer time - ({getTimezoneOffset(undefined)})
+              </a>
+
+              <a
+                href="#"
+                className="dropdown-item"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTimeZone("Asia/Kolkata");
+                  setTzOpen(false);
+                }}
+              >
+                India Standard time - (GMT +05:30)
+              </a>
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* Right side info bar */}
       <div className="infobar float-right">
         <ul className="linkbar">
           <li>
@@ -113,26 +190,35 @@ const Header: React.FC = () => {
             </p>
           </li>
 
-          <li className="dropdown">
+          {/* ⚙️ Settings Dropdown */}
+          <li className="dropdown" onClick={(e) => e.stopPropagation()}>
             <a
               href="#"
-              data-toggle="dropdown"
               className="dropdown-toggle"
               role="button"
+              onClick={(e) => {
+                e.preventDefault();
+                setSettingsOpen(!settingsOpen);
+                setTzOpen(false);
+              }}
             >
               <FontAwesomeIcon icon={faCog} className="m-r-5" />{" "}
               <span>Settings</span>
             </a>
-            <div className="dropdown-menu">
-              <a href="javascript:void(0)" className="dropdown-item">
-                Change Password
-              </a>
-              <a href="/secureauth" className="dropdown-item">
-                Secure Auth
-              </a>
-            </div>
+
+            {settingsOpen && (
+              <div className="dropdown-menu show">
+                <a href="#" className="dropdown-item">
+                  Change Password
+                </a>
+                <a href="/secureauth" className="dropdown-item">
+                  Secure Auth
+                </a>
+              </div>
+            )}
           </li>
 
+          {/* Logout */}
           <li>
             <button
               type="button"

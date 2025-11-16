@@ -476,7 +476,7 @@ body {
 .search-t-b {
   min-width: 200px;
 }
-.popover {
+/* .popover {
   position: absolute;
   top: 0;
   left: 0;
@@ -532,7 +532,7 @@ body {
   right: 10px;
   opacity: 1;
   color: #fff;
-}
+} */
 .mkt-tbody-tr {
   background-color: #aaa;
   color: #000;

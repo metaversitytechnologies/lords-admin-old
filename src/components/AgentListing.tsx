@@ -1,6 +1,6 @@
 const AgentListing = () => {
   return (
-    <section>
+    <div className="apl-section">
       <div className="header">
         <h1>Agent Listing</h1>
 
@@ -138,7 +138,7 @@ const AgentListing = () => {
           </tbody>
         </table>
       </div>
-    </section>
+    </div>
   );
 };
 

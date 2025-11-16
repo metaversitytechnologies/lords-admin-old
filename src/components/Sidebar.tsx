@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
@@ -37,14 +36,8 @@ const Sidebar = () => {
       title: "Account Management",
       links: [
         { text: "Account Statement", href: "/account-statement" },
-        {
-          text: "Clients Account Statement",
-          href: "/accountstmt"
-        },
-        {
-          text: "Balance",
-          href: "/dashboardhome"
-        }
+        { text: "Clients Account Statement", href: "/accountstmt" },
+        { text: "Balance", href: "/dashboardhome" }
       ]
     },
     {
@@ -65,55 +58,54 @@ const Sidebar = () => {
   return (
     <div className="left-pane-wrapper">
       <div className={`left-pane ${isCollapsed ? "collapsed" : ""}`}>
-        <nav className="menu">
-          <ul className="list-unstyled m-0">
-            {menus.map((menu) => {
-              const isActive = activeMenu === menu.title;
-              const rootClass = `rootMenu ${isActive ? "active" : "deactive"}`;
+        {/* ------------------ MENU (HIDDEN WHEN COLLAPSED) ------------------ */}
+        {!isCollapsed && (
+          <nav className="menu">
+            <ul className="list-unstyled m-0">
+              {menus.map((menu) => {
+                const isActive = activeMenu === menu.title;
+                const rootClass = `rootMenu ${
+                  isActive ? "active" : "deactive"
+                }`;
 
-              return (
-                <li
-                  key={menu.title}
-                  className={menu.title === "Admin Users" ? "" : rootClass}
-                >
-                  {/* Top-level menu title is a Link to the first child if available.
-                      If no child exists, the Link stays on the current path (no navigation).
-                      We still toggle the submenu on click. */}
-                  <Link
-                    to="#"
-                    className={menu.extraClass || "menu-title"}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      toggleMenu(menu.title, menu.links.length > 0);
-                    }}
-                    aria-expanded={activeMenu === menu.title}
-                    aria-controls={`submenu-${menu.title}`}
+                return (
+                  <li
+                    key={menu.title}
+                    className={menu.title === "Admin Users" ? "" : rootClass}
                   >
-                    {menu.title}
-                  </Link>
-
-                  {menu.links.length > 0 && isActive && (
-                    <ul
-                      className="list-unstyled ms-3"
-                      id={`submenu-${menu.title}`}
+                    <Link
+                      to="#"
+                      className={menu.extraClass || "menu-title"}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleMenu(menu.title, menu.links.length > 0);
+                      }}
+                      aria-expanded={activeMenu === menu.title}
                     >
-                      {menu.links.map((link) => (
-                        <li key={link.href} className="nav-item">
-                          <Link to={link.href} className="nav-link">
-                            {link.text}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
+                      {menu.title}
+                    </Link>
 
-        <button
+                    {menu.links.length > 0 && isActive && (
+                      <ul className="list-unstyled ms-3">
+                        {menu.links.map((link) => (
+                          <li key={link.href} className="nav-item">
+                            <Link to={link.href} className="nav-link">
+                              {link.text}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        )}
+
+        {/* ------------------ TOGGLE BUTTON (ALWAYS VISIBLE) ------------------ */}
+        <div
           className="collapsible-panel"
           onClick={toggleCollapse}
           aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -121,7 +113,7 @@ const Sidebar = () => {
           <div className="collapsible-panel-arrow">
             {isCollapsed ? "»" : "«"}
           </div>
-        </button>
+        </div>
       </div>
     </div>
   );

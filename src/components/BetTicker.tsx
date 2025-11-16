@@ -53,7 +53,7 @@ const BetTicker = () => {
   ];
 
   return (
-    <div className="tabs">
+    <div className="apl-section">
       <div className="header">
         <form className="m-b-10">
           <div className="header">

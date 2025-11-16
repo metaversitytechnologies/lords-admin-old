@@ -4,7 +4,7 @@ const BetList = () => {
   const radioOptions = ["Matched", "Unmatched", "Deleted"];
 
   return (
-    <div className="tabs">
+    <div className="apl-section">
       <div className="bet-list">
         {/* Header */}
         <div className="header">

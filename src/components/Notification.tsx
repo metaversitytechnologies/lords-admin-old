@@ -1,6 +1,6 @@
 const Notification = () => {
   return (
-    <>
+    <div className="apl-section">
       <div className="header">
         <h1>Notifications</h1>
       </div>
@@ -20,7 +20,7 @@ const Notification = () => {
           </button>
         </form>
       </section>
-    </>
+    </div>
   );
 };
 

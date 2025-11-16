@@ -1,6 +1,6 @@
 const BalanceInfo = () => {
   return (
-    <>
+    <div className="apl-section">
       <div className="header">
         <h1>Balance Information</h1>
       </div>
@@ -35,7 +35,7 @@ const BalanceInfo = () => {
           </tbody>
         </table>
       </section>
-    </>
+    </div>
   );
 };
 
