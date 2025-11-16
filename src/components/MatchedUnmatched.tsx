@@ -1,9 +1,28 @@
-/**
- * Matched / Unmatched tab area with coupon table.
- * Keeps the original tab markup and two tables.
- */
-const MatchedUnmatched = ({ matched = [], unmatched = [] }) => (
+interface MatchedBet {
+  username: string;
+  mname: string;
+  nation: string;
+  type: string;
+  userrate: number | string;
+  amount: number | string;
+}
+
+interface UnmatchedBet extends MatchedBet {
+  currency: string;
+  placeDate: string;
+}
+
+interface MatchedUnmatchedProps {
+  matched?: MatchedBet[];
+  unmatched?: UnmatchedBet[];
+}
+
+const MatchedUnmatched: React.FC<MatchedUnmatchedProps> = ({
+  matched = [],
+  unmatched = []
+}) => (
   <div className="matched-data mt-2 p-l-5 m-b-10">
+    {/* ----- Tabs ----- */}
     <div className="nav-title p-0">
       <ul role="tablist" className="nav nav-tabs">
         <li className="nav-item d-inline-block">
@@ -19,6 +38,7 @@ const MatchedUnmatched = ({ matched = [], unmatched = [] }) => (
       </ul>
     </div>
 
+    {/* Action Buttons */}
     <ul className="d-inline-block float-right">
       <li className="d-inline-block v-t">
         <div className="form-group d-inline-block m-l-20 m-r-30">
@@ -36,28 +56,19 @@ const MatchedUnmatched = ({ matched = [], unmatched = [] }) => (
       </li>
     </ul>
 
+    {/* ----- Tab Content ----- */}
     <div className="tab-content account-modal">
+      {/* ---- Matched Table ---- */}
       <div id="matched-bet" className="tab-pane active">
         <div className="select-sauda">
           <div
             id="dropdown-left"
             className="dropdown b-dropdown m-t-15 m-b-10 btn-group"
           >
-            <button
-              id="dropdown-left__BV_toggle_"
-              aria-haspopup="menu"
-              aria-expanded="false"
-              type="button"
-              className="btn dropdown-toggle btn-primary"
-            >
+            <button type="button" className="btn dropdown-toggle btn-primary">
               All
             </button>
-            <ul
-              role="menu"
-              tabIndex="-1"
-              aria-labelledby="dropdown-left__BV_toggle_"
-              className="dropdown-menu"
-            ></ul>
+            <ul className="dropdown-menu"></ul>
           </div>
         </div>
 
@@ -74,10 +85,11 @@ const MatchedUnmatched = ({ matched = [], unmatched = [] }) => (
                   <th style={{ minWidth: "80px" }}>Amount</th>
                 </tr>
               </thead>
+
               <tbody>
                 {matched.length === 0 ? (
                   <tr className="back">
-                    <td colSpan="6" className="text-center">
+                    <td colSpan={6} className="text-center">
                       no records found
                     </td>
                   </tr>
@@ -86,12 +98,7 @@ const MatchedUnmatched = ({ matched = [], unmatched = [] }) => (
                     <tr className="back" key={i}>
                       <td>
                         {m.username}
-                        <a
-                          title="User Detail"
-                          href="#"
-                          target="_self"
-                          className=""
-                        >
+                        <a title="User Detail" href="#" className="">
                           <i className="fa fa-eye m-l-5 curser-point float-right"></i>
                         </a>
                       </td>
@@ -113,6 +120,7 @@ const MatchedUnmatched = ({ matched = [], unmatched = [] }) => (
         </div>
       </div>
 
+      {/* ---- Unmatched Table ---- */}
       <div id="unmatched-bet" className="tab-pane">
         <div className="table-responsive">
           <table className="table coupon-table m-b-0">
@@ -128,10 +136,11 @@ const MatchedUnmatched = ({ matched = [], unmatched = [] }) => (
                 <th style={{ minWidth: "150px" }}>PlaceDate</th>
               </tr>
             </thead>
+
             <tbody>
               {unmatched.length === 0 ? (
                 <tr>
-                  <td colSpan="10" className="text-center">
+                  <td colSpan={10} className="text-center">
                     There are no records to show
                   </td>
                 </tr>
