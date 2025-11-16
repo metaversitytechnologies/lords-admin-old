@@ -1131,7 +1131,7 @@ td.suspendedtd:after {
   display: -webkit-flex;
   justify-content: center;
 }
-.login-footer {
+.footer {
   width: 100%;
   left: 0;
 }
@@ -1152,10 +1152,17 @@ footer img {
   width: 70px;
 }
 
-.login-footer {
+.footer {
   width: 100%;
   left: 0;
   position: relative;
+  bottom: 0;
+  z-index: 1030;
+}
+.login-footer {
+  width: 100%;
+  left: 0;
+  position: fixed;
   bottom: 0;
   z-index: 1030;
 }

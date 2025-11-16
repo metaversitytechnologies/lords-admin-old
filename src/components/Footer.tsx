@@ -1,8 +1,15 @@
 import React from "react";
+import { useAuth } from "../context/AuthContext";
 
 const Footer: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
-    <footer className="login-footer footer-color customfooter">
+    <footer
+      className={`${
+        isAuthenticated ? "footer" : "login-footer"
+      } footer-color customfooter`}
+    >
       <p className="m-b-0 upper-footer">
         <a href="/responsiblegambling" className="theme1font">
           Responsible Gambling
