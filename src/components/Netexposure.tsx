@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const NetExposure = () => {
   const data = [
     {
@@ -125,8 +127,8 @@ const NetExposure = () => {
                       <td className="icon-group-cell">
                         <ul className="icon-group">
                           <li className="cell-market-workstation">
-                            <a
-                              href="/gamedetailnew/4/466820683"
+                            <Link
+                              to="/gamedetailnew/4/466820683"
                               className="game-status"
                             >
                               <img
@@ -134,7 +136,7 @@ const NetExposure = () => {
                                 className="icon"
                                 alt="exposure icon"
                               />
-                            </a>
+                            </Link>
                           </li>
                         </ul>
                       </td>
@@ -190,8 +192,8 @@ const NetExposure = () => {
                         <td className="icon-group-cell">
                           <ul className="icon-group">
                             <li className="cell-market-workstation">
-                              <a
-                                href="/gamedetailnew/4/633628822"
+                              <Link
+                                to="/gamedetailnew/4/466820683"
                                 className="game-status"
                               >
                                 <img
@@ -199,7 +201,7 @@ const NetExposure = () => {
                                   className="icon"
                                   alt="exposure icon"
                                 />
-                              </a>
+                              </Link>
                             </li>
                           </ul>
                         </td>
