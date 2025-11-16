@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "./App";
 import NotFound from "./pages/NotFound";
 import Login from "./components/Login";
@@ -39,6 +39,10 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
         children: [
+          {
+            index: true,
+            element: <Navigate to="/netexpouser" replace />
+          },
           { path: "agentlisting", element: <AgentListing /> },
           { path: "createaccount", element: <AccountSection /> },
           { path: "dashboardhome", element: <BalanceInfo /> },
