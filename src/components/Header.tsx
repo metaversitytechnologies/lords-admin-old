@@ -49,14 +49,14 @@ const Header: React.FC = () => {
     "User";
 
   const getTimezoneOffset = (tz: string | undefined) => {
-    if (tz === "UTC") return "GMT +00:00";
-    if (tz === "Asia/Kolkata") return "GMT +05:30";
+    if (tz === "UTC") return "+00:00";
+    if (tz === "Asia/Kolkata") return "+05:30";
 
     if (tz === undefined) {
       const offset = -new Date().getTimezoneOffset();
       const hours = Math.floor(offset / 60);
       const minutes = offset % 60;
-      return `GMT ${offset >= 0 ? "+" : "-"}${String(Math.abs(hours)).padStart(
+      return `${offset >= 0 ? "+" : "-"}${String(Math.abs(hours)).padStart(
         2,
         "0"
       )}:${String(Math.abs(minutes)).padStart(2, "0")}`;
@@ -117,7 +117,7 @@ const Header: React.FC = () => {
 
       {/* Clock + Timezone Dropdown */}
       <div className="clock float-left">
-        <span>{formattedNow}</span>
+        <span style={{ marginRight: "3px" }}>{formattedNow}</span>
         <span className="time">{formattedTime}</span>
 
         <div
@@ -161,7 +161,7 @@ const Header: React.FC = () => {
                   setTzOpen(false);
                 }}
               >
-                Your computer time - ({getTimezoneOffset(undefined)})
+                Your computer time - ({"GMT " + getTimezoneOffset(undefined)})
               </a>
 
               <a
