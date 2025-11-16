@@ -213,7 +213,7 @@ const MessageReport: React.FC = () => {
                     aria-label="Go to page 1"
                     aria-checked="true"
                     aria-posinset={1}
-                    aria-setsize={1s}
+                    aria-setsize={1}
                     tabIndex={0}
                     className="page-link"
                   >
