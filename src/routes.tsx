@@ -21,6 +21,7 @@ import MessageReport from "./components/MessageReport";
 import AccountStatement from "./components/AccountStatement";
 import ClientAccountStatement from "./components/ClientAccountStatement";
 import NewAgent from "./components/NewAgent";
+import DownlineReports from "./components/DownlineReports";
 
 export const router = createBrowserRouter([
   {
@@ -60,7 +61,8 @@ export const router = createBrowserRouter([
           { path: "casinoresult", element: <CasinoReport /> },
           { path: "gamereports", element: <GameReports /> },
           { path: "fraudreport", element: <MessageReport /> },
-          { path: "createagent", element: <NewAgent /> }
+          { path: "createagent", element: <NewAgent /> },
+          { path: "downlinereports/:id/:username", element: <DownlineReports /> }
         ]
       }
     ]
