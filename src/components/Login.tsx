@@ -3,6 +3,7 @@ import ConfirmModal from "./ConfirmDialog";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { loginApi } from "../api/auth";
 
 type LoginFormInputs = {
   loginid: string;
@@ -12,6 +13,7 @@ type LoginFormInputs = {
 const Login: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const auth = useAuth();
   const navigate = useNavigate();
@@ -29,31 +31,30 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("https://dummyjson.com/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: loginid, password })
-      });
+      const data = await loginApi(loginid, password);
 
-      if (!res.ok) throw new Error("Login failed");
+      if (data?.token) {
+        const tokenPayload = JSON.parse(atob(data.token.split(".")[1]));
 
-      const data = await res.json();
-
-      if (data?.accessToken) {
         const user = {
-          id: data.id,
-          username: data.username,
-          firstName: data.firstName,
-          lastName: data.lastName
+          // From JWT Token
+          userId: tokenPayload.sub,
+          username: tokenPayload.sub,
+          userType: tokenPayload.usertype,
+          exp: tokenPayload.exp,
+          // From API response body
+          passwordtype: data.passwordtype,
+          partnership: data.partnership,
+          userTypeInfo: data.userTypeInfo
         };
-        auth.login(data.accessToken, user);
+        auth.login(data.token, user);
         setShowModal(false);
         navigate("/dashboardhome");
       } else {
         throw new Error("Invalid response from auth server");
       }
     } catch (error: any) {
-      alert(error?.message || "Login failed");
+      setErrorMessage(error?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -61,6 +62,7 @@ const Login: React.FC = () => {
 
   // Show confirmation modal only if form is valid
   const openConfirmModal = () => {
+    setErrorMessage(null);
     const { loginid, password } = getValues();
     if (!loginid || !password) return; // HOOK-FORM already shows messages
     setShowModal(true);
@@ -84,7 +86,25 @@ const Login: React.FC = () => {
         >
           <div className="m-b-10">
             <div className="login-flash-message">
-              <div className="flash__wrapper"></div>
+              <div className="flash__wrapper">
+                {errorMessage && (
+                  <div
+                    role="alert"
+                    aria-live="polite"
+                    aria-atomic="true"
+                    className="error flash__message"
+                  >
+                    <div className="flash__message-content">{errorMessage}</div>
+                    <button
+                      type="button"
+                      className="flash__close-button"
+                      onClick={() => setErrorMessage(null)}
+                    >
+                      x
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

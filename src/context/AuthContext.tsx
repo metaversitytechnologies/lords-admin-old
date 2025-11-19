@@ -2,10 +2,12 @@ import React, { createContext, useContext, useMemo, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
 interface AuthUser {
-  id?: number;
-  username?: string;
-  firstName?: string;
-  lastName?: string;
+  userId: string;
+  userType: string;
+  username: string;
+  passwordtype: string;
+  partnership: string;
+  userTypeInfo: number;
   [k: string]: any;
 }
 
