@@ -58,3 +58,17 @@ export const getBalance = async () => {
 
   return response.json();
 };
+
+export const getNetExposureDetail = async () => {
+  const response = await fetch(`${API_BASE_URL}/user/netexposure-detail-lord`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch net exposure details');
+  }
+
+  return response.json();
+};
