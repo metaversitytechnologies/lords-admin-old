@@ -46,6 +46,7 @@ export const router = createBrowserRouter([
             element: <Navigate to="/netexpouser" replace />
           },
           { path: "agentlisting", element: <AgentListing /> },
+          { path: "agentlisting/:userid", element: <AgentListing /> },
           { path: "createaccount", element: <AccountSection /> },
           { path: "dashboardhome", element: <BalanceInfo /> },
           { path: "account-statement", element: <AccountStatement /> },
@@ -62,7 +63,10 @@ export const router = createBrowserRouter([
           { path: "gamereports", element: <GameReports /> },
           { path: "fraudreport", element: <MessageReport /> },
           { path: "createagent", element: <NewAgent /> },
-          { path: "downlinereports/:id/:username", element: <DownlineReports /> }
+          {
+            path: "downlinereports/:id/:username",
+            element: <DownlineReports />
+          }
         ]
       }
     ]

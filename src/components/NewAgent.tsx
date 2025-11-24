@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { createUser } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import FlashMessage from "./FlashMessage";
+
 type FormValues = {
   userId: string;
   password: string;
@@ -35,6 +36,15 @@ const NewAgent: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [userLevel, setUserLevel] = useState<string | null>(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const user = JSON.parse(userData);
+      setUserLevel(user.userType);
+    }
+  }, []);
 
   const password = watch("password");
 
@@ -62,6 +72,44 @@ const NewAgent: React.FC = () => {
       setError(err.message);
       setSuccess(null);
     }
+  };
+
+  const roleLevels: { [key: string]: number } = {
+    SUPERMASTER: 0,
+    MASTER: 1,
+    DEALER: 2,
+    USER: 3,
+    ADMIN: 4,
+    SUBADMIN: 5
+  };
+
+  const creatableRoles: { [key: string]: string[] } = {
+    ADMIN: ["SUBADMIN"],
+    SUBADMIN: ["SUPERMASTER", "MASTER", "DEALER", "USER"],
+    SUPERMASTER: ["MASTER", "DEALER", "USER"],
+    MASTER: ["DEALER", "USER"],
+    DEALER: ["USER"],
+    USER: []
+  };
+
+  const levelRoleMapping: { [key: number]: string } = {
+    0: "SUPERMASTER",
+    1: "MASTER",
+    2: "DEALER",
+    3: "USER",
+    4: "ADMIN",
+    5: "SUBADMIN"
+  };
+
+  const getAvailableRoles = () => {
+    if (!userLevel) return [];
+    const roleName = levelRoleMapping[parseInt(userLevel, 10)];
+    if (!roleName || !creatableRoles[roleName]) return [];
+
+    return creatableRoles[roleName].map((role) => ({
+      label: role.charAt(0) + role.slice(1).toLowerCase(),
+      value: role
+    }));
   };
 
   return (
@@ -271,7 +319,7 @@ const NewAgent: React.FC = () => {
         </section>
         <section className="d-inline-block v-t">
           <div className="apl-section-inner">
-            <legend className="p-b-10">Account Detais</legend>
+            <legend className="p-b-10">Account Details</legend>
             <div>
               <div className="apl-form-row">
                 <div className="d-inline-block">
@@ -289,9 +337,11 @@ const NewAgent: React.FC = () => {
                         <option value="" disabled selected hidden>
                           Select Level
                         </option>
-                        <option value="ADMIN"> Admin </option>
-                        <option value="SUBADMIN"> Sub Admin </option>
-                        <option value="USER"> User </option>
+                        {getAvailableRoles().map((role) => (
+                          <option key={role.value} value={role.value}>
+                            {role.label}
+                          </option>
+                        ))}
                       </select>
                     </span>
                     {errors.userLevel && (
@@ -303,18 +353,6 @@ const NewAgent: React.FC = () => {
                 </div>
               </div>
             </div>
-            {/* <div className="apl-form-row m-b-30">
-              <label>Expouser Limit</label>
-              <input
-                placeholder="Exposurer Limit"
-                type="text"
-                maxLength={21}
-                name="esposurLimit"
-                aria-required="true"
-                aria-invalid="false"
-              />
-              <span className="text-danger error-account"></span>
-            </div> */}
           </div>
         </section>
         <section className="d-inline-block v-t">

@@ -9,7 +9,7 @@ const getAuthHeaders = () => {
   };
 };
 
-export const loginApi = async (userId, password) => {
+export const loginApi = async (userId: string, password: string) => {
   const response = await fetch(`${API_BASE_URL}/login/auth`, {
     method: 'POST',
     headers: {
@@ -18,7 +18,7 @@ export const loginApi = async (userId, password) => {
     body: JSON.stringify({
       userId,
       password,
-      appUrl: globalThis.location.hostname,
+      appUrl: "admin." + globalThis.location.hostname,
     }),
   });
 
@@ -30,7 +30,7 @@ export const loginApi = async (userId, password) => {
   return response.json();
 };
 
-export const createUser = async (payload) => {
+export const createUser = async (payload: object) => {
   const response = await fetch(`${API_BASE_URL}/user/create-user-lord`, {
     method: 'POST',
     headers: getAuthHeaders(),
@@ -68,6 +68,50 @@ export const getNetExposureDetail = async () => {
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || 'Failed to fetch net exposure details');
+  }
+
+  return response.json();
+};
+    export const getChildListLord = async (payload: object) => {
+      const response = await fetch(`${API_BASE_URL}/user/child-list-lord`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+    
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch child list');
+      }
+    
+      return response.json();
+    };
+
+export const updateUserLord = async (payload: object) => {
+  const response = await fetch(`${API_BASE_URL}/user/update-user-lord`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to update user');
+  }
+
+  return response.json();
+};
+
+export const getDetailForUpdateLord = async (payload: { userId: string }) => {
+  const response = await fetch(`${API_BASE_URL}/user/get-detail-for-update-lord`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch user details for update');
   }
 
   return response.json();

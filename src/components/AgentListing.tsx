@@ -1,24 +1,58 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import UpdateUser from "./UpdateUser";
+import { getChildListLord } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
 
 const AgentListing: React.FC = () => {
+  const { userid } = useParams<{ userid: string }>();
   const [isExpanded, setIsExpanded] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState("");
+  const [selectedAgent, setSelectedAgent] = useState<any | null>(null);
+  const [agents, setAgents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const { user } = useAuth();
+
+  const fetchAgents = async () => {
+    if (!user) return;
+
+    setLoading(true);
+    setError(null);
+    try {
+      const payload = {
+        userId: userid || user.userId,
+        index: 0,
+        noOfRecords: 20,
+        username: searchTerm
+      };
+      const response = await getChildListLord(payload);
+      setAgents(response.data || []);
+    } catch (err: any) {
+      setError(err.message || "Failed to fetch agents");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAgents();
+  }, [user, searchTerm, userid]);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const openUpdateModal = (username: string) => {
-    setSelectedUser(username);
+  const openUpdateModal = (agent: any) => {
+    setSelectedAgent(agent);
     setShowUpdateModal(true);
   };
 
   const closeUpdateModal = () => {
     setShowUpdateModal(false);
-    setSelectedUser("");
+    setSelectedAgent(null);
   };
 
   return (
@@ -34,6 +68,8 @@ const AgentListing: React.FC = () => {
               placeholder="Enter Atleast 3 character"
               autoComplete="off"
               className="event-search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
@@ -97,431 +133,123 @@ const AgentListing: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="text-left">
-                <span>
-                  <a
-                    href="#"
-                    title="Create"
-                    data-placement="top"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      openUpdateModal("agtshak");
-                    }}
-                    style={{ pointerEvents: "visible", textDecoration: "none" }}
+            {loading ? (
+              <tr>
+                <td colSpan={12} className="text-center">
+                  Loading...
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td colSpan={12} className="text-center text-danger">
+                  {error}
+                </td>
+              </tr>
+            ) : (
+              agents.map((agent) => (
+                <tr key={agent.userId}>
+                  <td className="text-left">
+                    <span>
+                      <a
+                        href="#"
+                        title="Create"
+                        data-placement="top"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          openUpdateModal(agent);
+                        }}
+                        style={{
+                          pointerEvents: "visible",
+                          textDecoration: "none"
+                        }}
+                      >
+                        {agent.userId}
+                      </a>
+                    </span>
+                  </td>
+                  <td className="text-left">
+                    <span>{agent.accountType}</span>
+                  </td>
+                  <td className="text-center">
+                    <span>
+                      {agent.accountType?.toLowerCase() === "user" ? (
+                        <span
+                          className="text text-info"
+                          style={{ opacity: 0.5, cursor: "not-allowed" }}
+                        >
+                          <i className="fas fa-sitemap"></i>
+                        </span>
+                      ) : (
+                        <Link
+                          to={`/agentlisting/${agent.userId}`}
+                          className="text text-info"
+                          data-placement="top"
+                          style={{ pointerEvents: "visible" }}
+                        >
+                          <i className="fas fa-sitemap"></i>
+                        </Link>
+                      )}
+                    </span>
+                  </td>
+                  <td className="text-center">
+                    <span>
+                      <a
+                        href="javascript:void(0)"
+                        data-placement="top"
+                        onClick={() => false}
+                        data-original-title="Betting Unlocked"
+                        className="text text-dark username"
+                      >
+                        <i
+                          className={`fas ${
+                            agent.bettingStatus ? "fa-unlock" : "fa-lock"
+                          } positive unlock-icon`}
+                        ></i>
+                      </a>
+                    </span>
+                  </td>
+                  <td className="text-center">
+                    <span>{agent.userActive ? "ACTIVE" : "INACTIVE"}</span>
+                  </td>
+                  <td className="text-center">
+                    <Link
+                      to={`/downlinereports/${agent.userId}/${agent.username}`}
+                      className="text text-info"
+                      data-placement="top"
+                      style={{ pointerEvents: "visible" }}
+                    >
+                      <i className="fas fa-eye"></i>
+                    </Link>
+                  </td>
+                  <td className="text-right positive negative">
+                    <span>{agent.netExposure}</span>
+                  </td>
+                  <td className="text-right positive">
+                    <span className="positive">{agent.gt}</span>
+                  </td>
+                  <td className="text-right">
+                    <span>{agent.creditLimit}</span>
+                  </td>
+                  <td className="text-right">
+                    <span>{agent.availabeCredit}</span>
+                  </td>
+                  <td
+                    className={`text-right ${
+                      !isExpanded ? "hidden-field" : "field-show"
+                    }`}
                   >
-                    agtshak
-                  </a>
-                </span>
-              </td>
-              <td className="text-left">
-                <span>Agent</span>
-              </td>
-              <td className="text-center">
-                <span>
-                  <Link
-                    to="/agentlisting/MzM2OTE2MWEtNWI0OS00MTdiLWE5YWUtZTIyMDhhMzYzZjky/1763382225538"
-                    className="text text-info"
-                    data-placement="top"
-                    style={{ pointerEvents: "visible" }}
+                    {agent.created}
+                  </td>
+                  <td
+                    className={`text-right ${
+                      !isExpanded ? "hidden-field" : "field-show"
+                    }`}
                   >
-                    <i className="fas fa-sitemap"></i>
-                  </Link>
-                </span>
-              </td>
-              <td className="text-center">
-                <span>
-                  <a
-                    href="javascript:void(0)"
-                    data-placement="top"
-                    onClick={() => false}
-                    data-original-title="Betting Unlocked"
-                    className="text text-dark username"
-                  >
-                    <i className="fas fa-unlock positive unlock-icon"></i>
-                  </a>
-                </span>
-              </td>
-              <td className="text-center">
-                <span>ACTIVE</span>
-              </td>
-              <td className="text-center">
-                <Link
-                  to="/downlinereports/MzM2OTE2MWEtNWI0OS00MTdiLWE5YWUtZTIyMDhhMzYzZjky/agtshak"
-                  className="text text-info"
-                  data-placement="top"
-                  style={{ pointerEvents: "visible" }}
-                >
-                  <i className="fas fa-eye"></i>
-                </Link>
-              </td>
-              <td className="text-right positive negative">
-                <span>0.00</span>
-              </td>
-              <td className="text-right positive">
-                <span className="positive">-10.50</span>
-              </td>
-              <td className="text-right">
-                <span>2050.00 </span>
-              </td>
-              <td className="text-right">
-                <span>42.00</span>
-              </td>
-              <td
-                className={`text-right ${
-                  !isExpanded ? "hidden-field" : "field-show"
-                }`}
-              >
-                29/10/2025 07:19:54 PM
-              </td>
-              <td
-                className={`text-right ${
-                  !isExpanded ? "hidden-field" : "field-show"
-                }`}
-              >
-                17/11/2025 12:40:41 AM
-              </td>
-            </tr>
-            <tr>
-              <td className="text-left">
-                <span>
-                  <a
-                    href="#"
-                    title="f"
-                    data-placement="top"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      openUpdateModal("ggg121");
-                    }}
-                    style={{ pointerEvents: "visible", textDecoration: "none" }}
-                  >
-                    ggg121
-                  </a>
-                </span>
-              </td>
-              <td className="text-left">
-                <span>User</span>
-              </td>
-              <td className="text-center">
-                <span>
-                  <a
-                    href="javascript:void(0)"
-                    data-placement="top"
-                    onClick={() => false}
-                    className="text text-dark username"
-                  >
-                    <i className="fas fa-sitemap"></i>
-                  </a>
-                </span>
-              </td>
-              <td className="text-center">
-                <span>
-                  <a
-                    href="javascript:void(0)"
-                    data-placement="top"
-                    onClick={() => false}
-                    data-original-title="Betting Unlocked"
-                    className="text text-dark username"
-                  >
-                    <i className="fas fa-unlock positive unlock-icon"></i>
-                  </a>
-                </span>
-              </td>
-              <td className="text-center">
-                <span>ACTIVE</span>
-              </td>
-              <td className="text-center">
-                <Link
-                  to="/downlinereports/YzRiMDE5YjEtOWMzMC00OThhLWI2YmQtMDUwNGU5NTc1MDEw/ggg121"
-                  className="text text-info"
-                  data-placement="top"
-                  style={{ pointerEvents: "visible" }}
-                >
-                  <i className="fas fa-eye"></i>
-                </Link>
-              </td>
-              <td className="text-right positive negative">
-                <span>0.00</span>
-              </td>
-              <td className="text-right positive">
-                <span className="negative">132.00</span>
-              </td>
-              <td className="text-right">
-                <span>800.00 </span>
-              </td>
-              <td className="text-right">
-                <span> 932.00</span>
-              </td>
-              <td
-                className={`text-right ${
-                  !isExpanded ? "hidden-field" : "field-show"
-                }`}
-              >
-                02/11/2025 03:34:48 PM
-              </td>
-              <td
-                className={`text-right ${
-                  !isExpanded ? "hidden-field" : "field-show"
-                }`}
-              >
-                12/11/2025 07:42:55 PM
-              </td>
-            </tr>
-            <tr>
-              <td className="text-left">
-                <span>
-                  <a
-                    href="#"
-                    title="this is for me"
-                    data-placement="top"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      openUpdateModal("NewAgentXYZ");
-                    }}
-                    style={{ pointerEvents: "visible", textDecoration: "none" }}
-                  >
-                    NewAgentXYZ
-                  </a>
-                </span>
-              </td>
-              <td className="text-left">
-                <span>Agent</span>
-              </td>
-              <td className="text-center">
-                <span>
-                  <Link
-                    to="/agentlisting/MmIxZDgyZmEtYTIyNS00ZWUxLWJhMzgtYzkxMDgxM2I0MTEz/1763382225538"
-                    className="text text-info"
-                    data-placement="top"
-                    style={{ pointerEvents: "visible" }}
-                  >
-                    <i className="fas fa-sitemap"></i>
-                  </Link>
-                </span>
-              </td>
-              <td className="text-center">
-                <span>
-                  <a
-                    href="javascript:void(0)"
-                    data-placement="top"
-                    onClick={() => false}
-                    data-original-title="Betting Unlocked"
-                    className="text text-dark username"
-                  >
-                    <i className="fas fa-unlock positive unlock-icon"></i>
-                  </a>
-                </span>
-              </td>
-              <td className="text-center">
-                <span>ACTIVE</span>
-              </td>
-              <td className="text-center">
-                <Link
-                  to="/downlinereports/MmIxZDgyZmEtYTIyNS00ZWUxLWJhMzgtYzkxMDgxM2I0MTEz/NewAgentXYZ"
-                  className="text text-info"
-                  data-placement="top"
-                  style={{ pointerEvents: "visible" }}
-                >
-                  <i className="fas fa-eye"></i>
-                </Link>
-              </td>
-              <td className="text-right positive negative">
-                <span>0.00</span>
-              </td>
-              <td className="text-right positive">
-                <span className="positive">0.00</span>
-              </td>
-              <td className="text-right">
-                <span>300.00 </span>
-              </td>
-              <td className="text-right">
-                <span>300.00</span>
-              </td>
-              <td
-                className={`text-right ${
-                  !isExpanded ? "hidden-field" : "field-show"
-                }`}
-              >
-                08/11/2025 11:49:26 AM
-              </td>
-              <td
-                className={`text-right ${
-                  !isExpanded ? "hidden-field" : "field-show"
-                }`}
-              >
-                08/11/2025 11:49:26 AM
-              </td>
-            </tr>
-            <tr>
-              <td className="text-left">
-                <span>
-                  <a
-                    href="#"
-                    title="this is for me"
-                    data-placement="top"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      openUpdateModal("NewAgentXYZYX");
-                    }}
-                    style={{ pointerEvents: "visible", textDecoration: "none" }}
-                  >
-                    NewAgentXYZYX
-                  </a>
-                </span>
-              </td>
-              <td className="text-left">
-                <span>Agent</span>
-              </td>
-              <td className="text-center">
-                <span>
-                  <Link
-                    to="/agentlisting/OGVhNDIyMzgtMWZhZi00NzVkLWIwNTktNDhiZjQyOGU5MGI4/1763382225538"
-                    className="text text-info"
-                    data-placement="top"
-                    style={{ pointerEvents: "visible" }}
-                  >
-                    <i className="fas fa-sitemap"></i>
-                  </Link>
-                </span>
-              </td>
-              <td className="text-center">
-                <span>
-                  <a
-                    href="javascript:void(0)"
-                    data-placement="top"
-                    onClick={() => false}
-                    data-original-title="Betting Unlocked"
-                    className="text text-dark username"
-                  >
-                    <i className="fas fa-unlock positive unlock-icon"></i>
-                  </a>
-                </span>
-              </td>
-              <td className="text-center">
-                <span>ACTIVE</span>
-              </td>
-              <td className="text-center">
-                <Link
-                  to="/downlinereports/OGVhNDIyMzgtMWZhZi00NzVkLWIwNTktNDhiZjQyOGU5MGI4/NewAgentXYZYX"
-                  className="text text-info"
-                  data-placement="top"
-                  style={{ pointerEvents: "visible" }}
-                >
-                  <i className="fas fa-eye"></i>
-                </Link>
-              </td>
-              <td className="text-right positive negative">
-                <span>0.00</span>
-              </td>
-              <td className="text-right positive">
-                <span className="positive">-169.00</span>
-              </td>
-              <td className="text-right">
-                <span>300.00 </span>
-              </td>
-              <td className="text-right">
-                <span>30.00</span>
-              </td>
-              <td
-                className={`text-right ${
-                  !isExpanded ? "hidden-field" : "field-show"
-                }`}
-              >
-                08/11/2025 11:50:20 AM
-              </td>
-              <td
-                className={`text-right ${
-                  !isExpanded ? "hidden-field" : "field-show"
-                }`}
-              >
-                08/11/2025 11:55:03 AM
-              </td>
-            </tr>
-            <tr>
-              <td className="text-left">
-                <span>
-                  <a
-                    href="#"
-                    title="User CReated"
-                    data-placement="top"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      openUpdateModal("testAnkit");
-                    }}
-                    style={{ pointerEvents: "visible", textDecoration: "none" }}
-                  >
-                    testAnkit
-                  </a>
-                </span>
-              </td>
-              <td className="text-left">
-                <span>User</span>
-              </td>
-              <td className="text-center">
-                <span>
-                  <a
-                    href="javascript:void(0)"
-                    data-placement="top"
-                    onClick={() => false}
-                    className="text text-dark username"
-                  >
-                    <i className="fas fa-sitemap"></i>
-                  </a>
-                </span>
-              </td>
-              <td className="text-center">
-                <span>
-                  <a
-                    href="javascript:void(0)"
-                    data-placement="top"
-                    onClick={() => false}
-                    data-original-title="Betting Unlocked"
-                    className="text text-dark username"
-                  >
-                    <i className="fas fa-unlock positive unlock-icon"></i>
-                  </a>
-                </span>
-              </td>
-              <td className="text-center">
-                <span>ACTIVE</span>
-              </td>
-              <td className="text-center">
-                <Link
-                  to="/downlinereports/ODJkMmVjZTQtMzliYy00Yzg4LTk0Y2ItMGRkYzQ3MzZiOTVk/testAnkit"
-                  className="text text-info"
-                  data-placement="top"
-                  style={{ pointerEvents: "visible" }}
-                >
-                  <i className="fas fa-eye"></i>
-                </Link>
-              </td>
-              <td className="text-right positive negative">
-                <span>0.00</span>
-              </td>
-              <td className="text-right positive">
-                <span className="positive">-102.00</span>
-              </td>
-              <td className="text-right">
-                <span>500.00 </span>
-              </td>
-              <td className="text-right">
-                <span> 398.00</span>
-              </td>
-              <td
-                className={`text-right ${
-                  !isExpanded ? "hidden-field" : "field-show"
-                }`}
-              >
-                06/11/2025 01:56:27 PM
-              </td>
-              <td
-                className={`text-right ${
-                  !isExpanded ? "hidden-field" : "field-show"
-                }`}
-              >
-                06/11/2025 01:57:11 PM
-              </td>
-            </tr>
+                    {agent.lastLogin}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -529,7 +257,7 @@ const AgentListing: React.FC = () => {
       <UpdateUser
         isOpen={showUpdateModal}
         onClose={closeUpdateModal}
-        username={selectedUser}
+        agent={selectedAgent}
       />
     </section>
   );

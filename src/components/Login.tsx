@@ -51,7 +51,7 @@ const Login: React.FC = () => {
         setShowModal(false);
         navigate("/dashboardhome");
       } else {
-        throw new Error("Invalid response from auth server");
+        throw new Error(data.message || "Login failed");
       }
     } catch (error: any) {
       setErrorMessage(error?.message || "Login failed");
