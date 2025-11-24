@@ -1,9 +1,82 @@
-import React from "react";
+import React, { useState } from "react";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { createUser } from "../api/auth";
+import { useNavigate } from "react-router-dom";
+import FlashMessage from "./FlashMessage";
+type FormValues = {
+  userId: string;
+  password: string;
+  confirmPassword: string;
+  userStatus: string;
+  betStatus: string;
+  creditRef: string;
+  userRate: string;
+  userLevel: string;
+  lupassword: string;
+  notes: string;
+};
 
 const NewAgent: React.FC = () => {
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    reset
+  } = useForm<FormValues>({
+    defaultValues: {
+      userStatus: "1",
+      betStatus: "1",
+      userLevel: "",
+      userRate: "1",
+      creditRef: "0"
+    }
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  const password = watch("password");
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const payload = {
+      userId: data.userId,
+      password: data.password,
+      userStatus: data.userStatus === "1",
+      betStatus: data.betStatus === "1",
+      creditRef: parseFloat(data.creditRef) || 0,
+      userRate: parseFloat(data.userRate) || 0,
+      userLevel: data.userLevel,
+      lupassword: data.lupassword,
+      notes: data.notes
+    };
+
+    try {
+      const response = await createUser(payload);
+      if (response.status) {
+        setSuccess(response.message || "Agent created successfully");
+        setError(null);
+        reset();
+      }
+    } catch (err: any) {
+      setError(err.message);
+      setSuccess(null);
+    }
+  };
+
   return (
     <div className="apl-section">
-      <form>
+      {(error || success) && (
+        <FlashMessage
+          message={error || success}
+          type={error ? "error" : "success"}
+          onClose={() => {
+            setError(null);
+            setSuccess(null);
+          }}
+        />
+      )}
+      <form onSubmit={handleSubmit(onSubmit)}>
         <section className="d-inline-block v-t">
           <div className="apl-section-inner">
             <legend className="p-b-10">Information</legend>
@@ -15,11 +88,17 @@ const NewAgent: React.FC = () => {
                     placeholder="Login Id"
                     type="text"
                     maxLength={15}
-                    name="LoginId"
+                    {...register("userId", {
+                      required: "The LoginId field is required"
+                    })}
                     aria-required="true"
-                    aria-invalid="false"
+                    aria-invalid={!!errors.userId}
                   />
-                  <span className="text-danger error-account"></span>
+                  {errors.userId && (
+                    <span className="text-danger error-account">
+                      {errors.userId.message}
+                    </span>
+                  )}
                 </span>
               </div>
               <div className="apl-form-row m-b-40">
@@ -28,11 +107,30 @@ const NewAgent: React.FC = () => {
                   <input
                     placeholder="Password"
                     type="password"
-                    name="password"
+                    {...register("password", {
+                      required: "Password field is required.",
+                      minLength: {
+                        value: 8,
+                        message: "Password must be at least 8 characters long"
+                      },
+                      maxLength: {
+                        value: 15,
+                        message: "Password must be at most 15 characters long"
+                      },
+                      pattern: {
+                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
+                        message:
+                          "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+                      }
+                    })}
                     aria-required="true"
-                    aria-invalid="false"
+                    aria-invalid={!!errors.password}
                   />
-                  <span className="text-danger error-account"></span>
+                  {errors.password && (
+                    <span className="text-danger error-account">
+                      {errors.password.message}
+                    </span>
+                  )}
                 </span>
               </div>
               <div className="apl-form-row m-b-40">
@@ -41,11 +139,19 @@ const NewAgent: React.FC = () => {
                   <input
                     placeholder="Confirm Password"
                     type="password"
-                    name="confirmPassword"
+                    {...register("confirmPassword", {
+                      required: "The confirmPassword field is required",
+                      validate: (value) =>
+                        value === password || "The passwords do not match"
+                    })}
                     aria-required="true"
-                    aria-invalid="false"
+                    aria-invalid={!!errors.confirmPassword}
                   />
-                  <span className="text-danger error-account"></span>
+                  {errors.confirmPassword && (
+                    <span className="text-danger error-account">
+                      {errors.confirmPassword.message}
+                    </span>
+                  )}
                 </span>
               </div>
               <div className="apl-form-row m-b-30">
@@ -55,9 +161,9 @@ const NewAgent: React.FC = () => {
                     <input
                       id="userstatustrue"
                       type="radio"
-                      name="userstatus"
                       className="custom-control-input"
                       value="1"
+                      {...register("userStatus")}
                     />
                     <label
                       htmlFor="userstatustrue"
@@ -72,9 +178,9 @@ const NewAgent: React.FC = () => {
                     <input
                       id="userstatusfalse"
                       type="radio"
-                      name="userstatus"
                       className="custom-control-input"
                       value="0"
+                      {...register("userStatus")}
                     />
                     <label
                       htmlFor="userstatusfalse"
@@ -92,9 +198,9 @@ const NewAgent: React.FC = () => {
                     <input
                       id="betstatustrue"
                       type="radio"
-                      name="betstatus"
                       className="custom-control-input"
                       value="1"
+                      {...register("betStatus")}
                     />
                     <label
                       htmlFor="betstatustrue"
@@ -109,9 +215,9 @@ const NewAgent: React.FC = () => {
                     <input
                       id="betstatusfalse"
                       type="radio"
-                      name="betstatus"
                       className="custom-control-input"
                       value="0"
+                      {...register("betStatus")}
                     />
                     <label
                       htmlFor="betstatusfalse"
@@ -134,8 +240,8 @@ const NewAgent: React.FC = () => {
                 <input
                   placeholder="Credit Reference"
                   type="text"
-                  name="creditReference"
                   maxLength={21}
+                  {...register("creditRef")}
                   aria-required="true"
                   aria-invalid="false"
                 />
@@ -153,8 +259,8 @@ const NewAgent: React.FC = () => {
                 <input
                   placeholder="User Rate"
                   type="text"
-                  name="userRate"
                   maxLength={21}
+                  {...register("userRate")}
                   aria-required="true"
                   aria-invalid="false"
                 />
@@ -173,21 +279,31 @@ const NewAgent: React.FC = () => {
                     <label>Select Level</label>
                     <span>
                       <select
-                        name="level"
                         className="form-control"
+                        {...register("userLevel", {
+                          required: "The level field is required"
+                        })}
                         aria-required="true"
-                        aria-invalid="false"
+                        aria-invalid={!!errors.userLevel}
                       >
-                        <option value="">Select Level</option>
-                        <option value="7"> User </option>
+                        <option value="" disabled selected hidden>
+                          Select Level
+                        </option>
+                        <option value="ADMIN"> Admin </option>
+                        <option value="SUBADMIN"> Sub Admin </option>
+                        <option value="USER"> User </option>
                       </select>
                     </span>
-                    <span className="text-danger error-account"></span>
+                    {errors.userLevel && (
+                      <span className="text-danger error-account">
+                        {errors.userLevel.message}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
-            <div className="apl-form-row m-b-30">
+            {/* <div className="apl-form-row m-b-30">
               <label>Expouser Limit</label>
               <input
                 placeholder="Exposurer Limit"
@@ -198,14 +314,14 @@ const NewAgent: React.FC = () => {
                 aria-invalid="false"
               />
               <span className="text-danger error-account"></span>
-            </div>
+            </div> */}
           </div>
         </section>
         <section className="d-inline-block v-t">
           <div className="apl-section-inner">
             <legend className="p-b-10">Notes</legend>
             <textarea
-              name="Notes"
+              {...register("notes")}
               aria-required="false"
               aria-invalid="false"
             ></textarea>
@@ -218,14 +334,28 @@ const NewAgent: React.FC = () => {
             <input
               placeholder="Master Password"
               type="password"
-              name="MasterPassword"
+              {...register("lupassword", {
+                required: "The MasterPassword field is required"
+              })}
               aria-required="true"
-              aria-invalid="false"
+              aria-invalid={!!errors.lupassword}
             />
-            <p className="text-danger m-b-0 m-t-5 error-account"></p>
+            {errors.lupassword && (
+              <p className="text-danger m-b-0 m-t-5 error-account">
+                {errors.lupassword.message}
+              </p>
+            )}
           </div>
-          <button className="btn btn-link">Cancel</button>
-          <button className="btn btn-primary m-l-5">Create</button>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="btn btn-link"
+          >
+            Cancel
+          </button>
+          <button type="submit" className="btn btn-primary m-l-5">
+            Create
+          </button>
         </div>
       </form>
     </div>

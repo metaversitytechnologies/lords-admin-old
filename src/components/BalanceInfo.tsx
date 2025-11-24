@@ -1,9 +1,11 @@
-const BalanceInfo = () => {
+const BalanceInfo = ({ isTabView = false }) => {
   return (
-    <div className="balance">
-      <div className="header">
-        <h1>Balance Information</h1>
-      </div>
+    <div className={`${isTabView ? "" : "balance"}`}>
+      {!isTabView && (
+        <div className="header">
+          <h1>Balance Information</h1>
+        </div>
+      )}
 
       <section>
         <table className="w-auto table table-striped table-balance">

@@ -1,21 +1,64 @@
-const Balance = () => {
+import React, { useState, useEffect } from 'react';
+import { getBalance } from '../api/auth';
+
+interface BalanceData {
+  netExposure: number;
+  balanceDown: number;
+  balanceUp: number;
+  creditLimit: number;
+  availableCredit: number;
+}
+
+const Balance: React.FC = () => {
+  const [balance, setBalance] = useState<BalanceData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchBalance = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await getBalance();
+      if (response.status && response.data) {
+        setBalance(response.data);
+      } else {
+        setError(response.message || 'Failed to fetch balance');
+      }
+    } catch (err: any) {
+      setError(err.message || 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBalance();
+  }, []);
+
+  const handleRefresh = () => {
+    fetchBalance();
+  };
+
   return (
     <div className="balance">
       <div className="status">
         <dt className="status-list">
-          <dt>Balance Down:</dt> <dd className="positive negative"> -193.00</dd>
-          <dt>Balance Up:</dt> <dd className="positive positive">185.00</dd>
-          <dt>Net Exposure:</dt> <dd className="positive negative">0.00</dd>{" "}
-          <dt>Available Credit:</dt> <dd>42.00</dd>
+          <dt>Balance Down:</dt> <dd className={`positive ${balance && balance.balanceDown < 0 ? 'negative' : ''}`}> {balance ? balance.balanceDown.toFixed(2) : '...'}</dd>
+          <dt>Balance Up:</dt> <dd className={`positive ${balance && balance.balanceUp >= 0 ? 'positive' : ''}`}>{balance ? balance.balanceUp.toFixed(2) : '...'}</dd>
+          <dt>Net Exposure:</dt> <dd className={`positive ${balance && balance.netExposure < 0 ? 'negative' : ''}`}>{balance ? balance.netExposure.toFixed(2) : '...'}</dd>{" "}
+          <dt>Available Credit:</dt> <dd>{balance ? balance.availableCredit.toFixed(2) : '...'}</dd>
         </dt>
 
         <div
           className="d-inline-block float-right"
           style={{ marginTop: "-5px" }}
         >
-          <button className="btn btn-secondary d-inline-block">Refresh</button>
+          <button className="btn btn-secondary d-inline-block" onClick={handleRefresh} disabled={loading}>
+            {loading ? 'Refreshing...' : 'Refresh'}
+          </button>
         </div>
       </div>
+      {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
     </div>
   );
 };

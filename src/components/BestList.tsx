@@ -1,103 +1,242 @@
-const BetList = () => {
+const BetList = ({ isTabView = false }) => {
   const entriesOptions = [10, 20, 50, 100];
   const tabs = ["Current", "Past"];
   const radioOptions = ["Matched", "Unmatched", "Deleted"];
 
   return (
-    <div className="apl-section">
+    <div className={`${isTabView ? "" : "apl-section"}`}>
       <div className="bet-list">
-        {/* Header */}
-        <div className="header">
-          <h1>Bet List</h1>
-          <span className="button-options d-inline-block">
-            <div className="disabled">
-              <span className="btn btn-secondary m-l-5">Download CSV</span>
-            </div>
-          </span>
-        </div>
+        {!isTabView && (
+          <div className="header">
+            <h1>Bet List</h1>
+            <span className="button-options d-inline-block">
+              <div className="disabled">
+                <span className="btn btn-secondary m-l-5">Download CSV</span>
+              </div>
+            </span>
+          </div>
+        )}
 
         {/* Filter Form */}
         <form className="m-b-10">
-          <div className="additional-filters m-t-10">
-            <div className="row">
-              <div className="col-sm-12">
-                <div className="dropdown long-width d-inline-block v-t">
-                  <label className="p-l-5 d-block">Event</label>
-                  <select className="dropdown-toggle dropdown-button"></select>
-                </div>
-
-                <div className="dropdown long-width m-l-10 d-inline-block v-t">
-                  <label className="p-l-5 d-block">Market</label>
-                  <select
-                    className="dropdown-toggle dropdown-button title"
-                    defaultValue="all"
-                  >
-                    <option value="all">All</option>
-                  </select>
-                </div>
-
-                <div className="dropdown m-l-10 d-inline-block v-t">
-                  <label className="p-l-5 d-block">Rate</label>
-                  <button
-                    type="button"
-                    className="dropdown-toggle dropdown-button"
-                  >
-                    <span className="title">Odds: All</span>
-                    <i className="fas fa-caret-down"></i>
-                  </button>
-                  <div className="dropdown-menu dropdown-date">
-                    <span className="p-2">From</span>
-                    <input type="text" className="p-2" />
-                    <span className="p-2">To</span>
-                    <input type="text" className="p-2" />
-                  </div>
-                </div>
-
-                <div className="dropdown m-l-10 d-inline-block v-t">
-                  <label className="p-l-5 d-block">Amount</label>
-                  <button
-                    type="button"
-                    className="dropdown-toggle dropdown-button"
-                  >
-                    <span className="title">Stake: All</span>
-                    <i className="fas fa-caret-down"></i>
-                  </button>
-                  <div className="dropdown-menu dropdown-date">
-                    <span className="p-2">From</span>
-                    <input type="text" className="p-2" />
-                    <span className="p-2">To</span>
-                    <input type="text" className="p-2" />
-                  </div>
-                </div>
-
-                <div className="d-inline-block v-t m-l-10">
-                  <div className="search-box-container d-inline-block p-l-0 p-r-5">
-                    <label className="p-l-5 d-block">Search by user</label>
+          {isTabView ? (
+            <div className="additional-filters d-flex m-t-10">
+              <div className="datepicker-wrapper tab-datepicker d-inline-block v-t p-l-0 p-r-5 m-b-0 form-group">
+                <div
+                  className="mx-datepicker vuedatepicker"
+                  not-before="Wed Sep 17 2025 05:30:00 GMT+0530 (India Standard Time)"
+                  not-after="Mon Nov 17 2025 05:30:00 GMT+0530 (India Standard Time)"
+                  name="fromdate"
+                >
+                  <div className="mx-input-wrapper">
                     <input
-                      type="text"
-                      name="uname"
-                      placeholder="Enter Atleast 3 character"
+                      name="date"
+                      type="date"
                       autoComplete="off"
-                      className="event-search"
+                      placeholder="Select Date"
+                      className="mx-input"
                     />
+                    <span className="mx-input-append mx-clear-wrapper">
+                      <i className="mx-input-icon mx-clear-icon"></i>
+                    </span>
+                    <span className="mx-input-append">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        version="1.1"
+                        viewBox="0 0 200 200"
+                        className="mx-calendar-icon"
+                      >
+                        <rect
+                          x="13"
+                          y="29"
+                          rx="14"
+                          ry="14"
+                          width="174"
+                          height="158"
+                          fill="transparent"
+                        ></rect>
+                        <line x1="46" x2="46" y1="8" y2="50"></line>
+                        <line x1="154" x2="154" y1="8" y2="50"></line>
+                        <line x1="13" x2="187" y1="70" y2="70"></line>
+                        <text
+                          x="50%"
+                          y="135"
+                          fontSize="90"
+                          strokeWidth="1"
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                        ></text>
+                      </svg>
+                    </span>
+                  </div>
+
+                  <div
+                    className="mx-datepicker-popup"
+                    style={{ display: "none" }}
+                  >
+                    {/* popup content preserved */}
+                  </div>
+                </div>
+              </div>
+
+              <br />
+
+              <span className="text-danger error-report"></span>
+
+              {/* ------------------------------------------------------- */}
+              {/* SECOND DATEPICKER                                       */}
+              {/* ------------------------------------------------------- */}
+
+              <div className="datepicker-wrapper tab-datepicker form-group d-inline-block v-t p-l-0 p-r-5 m-b-0">
+                <div
+                  className="mx-datepicker vuedatepicker"
+                  not-before="Wed Sep 17 2025 05:30:00 GMT+0530 (India Standard Time)"
+                  not-after="Mon Nov 17 2025 05:30:00 GMT+0530 (India Standard Time)"
+                  name="todate"
+                >
+                  <div className="mx-input-wrapper">
+                    <input
+                      name="date"
+                      type="date"
+                      autoComplete="off"
+                      placeholder="Select Date"
+                      className="mx-input"
+                    />
+                    <span className="mx-input-append mx-clear-wrapper">
+                      <i className="mx-input-icon mx-clear-icon"></i>
+                    </span>
+
+                    <span className="mx-input-append">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        version="1.1"
+                        viewBox="0 0 200 200"
+                        className="mx-calendar-icon"
+                      >
+                        <rect
+                          x="13"
+                          y="29"
+                          rx="14"
+                          ry="14"
+                          width="174"
+                          height="158"
+                          fill="transparent"
+                        ></rect>
+                        <line x1="46" x2="46" y1="8" y2="50"></line>
+                        <line x1="154" x2="154" y1="8" y2="50"></line>
+                        <line x1="13" x2="187" y1="70" y2="70"></line>
+                        <text
+                          x="50%"
+                          y="135"
+                          fontSize="90"
+                          strokeWidth="1"
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                        ></text>
+                      </svg>
+                    </span>
+                  </div>
+
+                  <div
+                    className="mx-datepicker-popup"
+                    style={{ display: "none" }}
+                  >
+                    {/* popup content preserved */}
+                  </div>
+                </div>
+              </div>
+
+              <br />
+
+              <span className="text-danger error-report"></span>
+
+              <button type="submit" className="btn btn-secondary m-l-5">
+                Apply
+              </button>
+              <button className="btn btn-cancel m-l-5">Cancel</button>
+            </div>
+          ) : (
+            <div className="additional-filters m-t-10">
+              <div className="row">
+                <div className="col-sm-12">
+                  <div className="dropdown long-width d-inline-block v-t">
+                    <label className="p-l-5 d-block">Event</label>
+                    <select className="dropdown-toggle dropdown-button"></select>
+                  </div>
+
+                  <div className="dropdown long-width m-l-10 d-inline-block v-t">
+                    <label className="p-l-5 d-block">Market</label>
+                    <select
+                      className="dropdown-toggle dropdown-button title"
+                      defaultValue="all"
+                    >
+                      <option value="all">All</option>
+                    </select>
+                  </div>
+
+                  <div className="dropdown m-l-10 d-inline-block v-t">
+                    <label className="p-l-5 d-block">Rate</label>
+                    <button
+                      type="button"
+                      className="dropdown-toggle dropdown-button"
+                    >
+                      <span className="title">Odds: All</span>
+                      <i className="fas fa-caret-down"></i>
+                    </button>
+                    <div className="dropdown-menu dropdown-date">
+                      <span className="p-2">From</span>
+                      <input type="text" className="p-2" />
+                      <span className="p-2">To</span>
+                      <input type="text" className="p-2" />
+                    </div>
+                  </div>
+
+                  <div className="dropdown m-l-10 d-inline-block v-t">
+                    <label className="p-l-5 d-block">Amount</label>
+                    <button
+                      type="button"
+                      className="dropdown-toggle dropdown-button"
+                    >
+                      <span className="title">Stake: All</span>
+                      <i className="fas fa-caret-down"></i>
+                    </button>
+                    <div className="dropdown-menu dropdown-date">
+                      <span className="p-2">From</span>
+                      <input type="text" className="p-2" />
+                      <span className="p-2">To</span>
+                      <input type="text" className="p-2" />
+                    </div>
+                  </div>
+
+                  <div className="d-inline-block v-t m-l-10">
+                    <div className="search-box-container d-inline-block p-l-0 p-r-5">
+                      <label className="p-l-5 d-block">Search by user</label>
+                      <input
+                        type="text"
+                        name="uname"
+                        placeholder="Enter Atleast 3 character"
+                        autoComplete="off"
+                        className="event-search"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row m-t-10">
+                <div className="col-sm-12 text-right">
+                  <div className="form-group d-inline-block m-b-0">
+                    <button type="submit" className="btn btn-secondary m-l-5">
+                      Apply
+                    </button>
+                    <button type="button" className="btn btn-cancel m-l-5">
+                      Cancel
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div className="row m-t-10">
-              <div className="col-sm-12 text-right">
-                <div className="form-group d-inline-block m-b-0">
-                  <button type="submit" className="btn btn-secondary m-l-5">
-                    Apply
-                  </button>
-                  <button type="button" className="btn btn-cancel m-l-5">
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
         </form>
 
         {/* Tabs Section */}
