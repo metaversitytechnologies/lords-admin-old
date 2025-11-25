@@ -176,16 +176,149 @@ export const getBettingPnl = async (payload: { userId: string, fromDate: string,
 };
 
 export const getBettingPnlDetail = async (payload: { userId: string, fromDate: string, toDate: string, marketId: string }) => {
+
   const response = await fetch(`${API_BASE_URL}/lord/betting-pnl-detail`, {
+
     method: 'POST',
+
     headers: getAuthHeaders(),
+
     body: JSON.stringify(payload),
+
   });
 
+
+
   if (!response.ok) {
+
     const errorData = await response.json();
+
     throw new Error(errorData.message || 'Failed to fetch betting PNL detail');
+
   }
 
+
+
   return response.json();
+
 };
+
+
+
+export const getWinLossActivity = async (payload: { userId: string }) => {
+
+
+
+  const response = await fetch(`${API_BASE_URL}/lord/win-loss-activity`, {
+
+
+
+    method: 'POST',
+
+
+
+    headers: getAuthHeaders(),
+
+
+
+    body: JSON.stringify(payload),
+
+
+
+  });
+
+
+
+
+
+
+
+  if (!response.ok) {
+
+
+
+    const errorData = await response.json();
+
+
+
+    throw new Error(errorData.message || 'Failed to fetch win/loss activity');
+
+
+
+  }
+
+
+
+
+
+
+
+  return response.json();
+
+
+
+};
+
+
+
+
+
+
+
+export const getBalanceByUserId = async (payload: { userId: string }) => {
+
+
+
+  const response = await fetch(`${API_BASE_URL}/user/get-balance-useridwise-lord`, {
+
+
+
+    method: 'POST',
+
+
+
+    headers: getAuthHeaders(),
+
+
+
+    body: JSON.stringify(payload),
+
+
+
+  });
+
+
+
+
+
+
+
+  if (!response.ok) {
+
+
+
+    const errorData = await response.json();
+
+
+
+    throw new Error(errorData.message || 'Failed to fetch balance by user ID');
+
+
+
+  }
+
+
+
+
+
+
+
+  return response.json();
+
+
+
+};
+
+
+
+
