@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import BalanceInfo from "./BalanceInfo";
 import BetList from "./BestList";
@@ -7,11 +7,34 @@ import TransferStatement from "./TransferStatement";
 import NetExposure from "./Netexposure";
 import ClientAccountStatement from "./ClientAccountStatement";
 import BettingPnl from "./BettingPnl";
+import { getWinLossActivity } from "../api/auth";
 
 const DownlineReports = () => {
   const [activeTab, setActiveTab] = useState("activity");
   const { id } = useParams();
   const isTabView = true;
+
+  const [activityData, setActivityData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (activeTab === "activity") {
+      const fetchActivityData = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const response = await getWinLossActivity({ userId: id });
+          setActivityData(response.data);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchActivityData();
+    }
+  }, [activeTab, id]);
 
   const tabs = [
     { id: "activity", label: "Activity" },
@@ -47,6 +70,141 @@ const DownlineReports = () => {
       component: <ClientAccountStatement />
     }
   ];
+
+  const renderActivityTab = () => {
+    if (loading) return <p>Loading...</p>;
+    if (error) return <div className="alert alert-danger">{error}</div>;
+    if (!activityData) return <p>No data available.</p>;
+
+    const winData = activityData[0];
+    const pnlData = activityData[1];
+
+    return (
+      <div className="activity-report">
+        <div className="main-panel">
+          <div className="left-panel">
+            <table className="table m-t-30">
+              <tbody>
+                <tr>
+                  <td className="text-right">Win</td>
+                </tr>
+                <tr></tr>
+                <tr>
+                  <td className="text-right">P&L</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mid-panel">
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th className="text-center">Today</th>
+                  <th className="text-center">3 Days</th>
+                  <th className="text-center">7 Days</th>
+                  <th className="text-center">30 Days</th>
+                  <th className="text-center">Lifetime</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="text-center">
+                    <span
+                      className={winData.today >= 0 ? "positive" : "negative"}
+                    >
+                      {winData.today.toFixed(2)}
+                    </span>
+                  </td>
+                  <td className="text-center">
+                    <span
+                      className={
+                        winData.threeDay >= 0 ? "positive" : "negative"
+                      }
+                    >
+                      {winData.threeDay.toFixed(2)}
+                    </span>
+                  </td>
+                  <td className="text-center">
+                    <span
+                      className={
+                        winData.sevenDay >= 0 ? "positive" : "negative"
+                      }
+                    >
+                      {winData.sevenDay.toFixed(2)}
+                    </span>
+                  </td>
+                  <td className="text-center">
+                    <span
+                      className={
+                        winData.thirtyDay >= 0 ? "positive" : "negative"
+                      }
+                    >
+                      {winData.thirtyDay.toFixed(2)}
+                    </span>
+                  </td>
+                  <td className="text-center">
+                    <span
+                      className={
+                        winData.lifetime >= 0 ? "positive" : "negative"
+                      }
+                    >
+                      {winData.lifetime.toFixed(2)}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="text-center">
+                    <span
+                      className={pnlData.today >= 0 ? "positive" : "negative"}
+                    >
+                      {pnlData.today.toFixed(2)}
+                    </span>
+                  </td>
+                  <td className="text-center">
+                    <span
+                      className={
+                        pnlData.threeDay >= 0 ? "positive" : "negative"
+                      }
+                    >
+                      {pnlData.threeDay.toFixed(2)}
+                    </span>
+                  </td>
+                  <td className="text-center">
+                    <span
+                      className={
+                        pnlData.sevenDay >= 0 ? "positive" : "negative"
+                      }
+                    >
+                      {pnlData.sevenDay.toFixed(2)}
+                    </span>
+                  </td>
+                  <td className="text-center">
+                    <span
+                      className={
+                        pnlData.thirtyDay >= 0 ? "positive" : "negative"
+                      }
+                    >
+                      {pnlData.thirtyDay.toFixed(2)}
+                    </span>
+                  </td>
+                  <td className="text-center">
+                    <span
+                      className={
+                        pnlData.lifetime >= 0 ? "positive" : "negative"
+                      }
+                    >
+                      {pnlData.lifetime.toFixed(2)}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <section>
@@ -113,89 +271,7 @@ const DownlineReports = () => {
                       display: activeTab === "activity" ? "block" : "none"
                     }}
                   >
-                    <div className="activity-report">
-                      <div className="main-panel">
-                        <div className="left-panel">
-                          <table className="table m-t-30">
-                            <tbody>
-                              <tr>
-                                <td className="text-right">Win</td>
-                              </tr>
-                              <tr></tr>
-                              <tr>
-                                <td className="text-right">P&L</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-
-                        <div className="mid-panel">
-                          <table className="table table-striped">
-                            <thead>
-                              <tr>
-                                <th className="text-center">Today</th>
-                                <th className="text-center">3 Days</th>
-                                <th className="text-center">7 Days</th>
-                                <th className="text-center">30 Days</th>
-                                <th className="text-center">Lifetime</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td className="text-center">
-                                  <span className="positive">0.00</span>
-                                </td>
-                                <td className="text-center">
-                                  <span className="positive negative">
-                                    -145.50
-                                  </span>
-                                </td>
-                                <td className="text-center">
-                                  <span className="positive negative">
-                                    -195.50
-                                  </span>
-                                </td>
-                                <td className="text-center">
-                                  <span className="positive negative">
-                                    -102.50
-                                  </span>
-                                </td>
-                                <td className="text-center">
-                                  <span className="positive negative">
-                                    -102.50
-                                  </span>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td className="text-center">
-                                  <span className="positive">0.00</span>
-                                </td>
-                                <td className="text-center">
-                                  <span className="positive negative">
-                                    -145.50
-                                  </span>
-                                </td>
-                                <td className="text-center">
-                                  <span className="positive negative">
-                                    -195.50
-                                  </span>
-                                </td>
-                                <td className="text-center">
-                                  <span className="positive negative">
-                                    -102.50
-                                  </span>
-                                </td>
-                                <td className="text-center">
-                                  <span className="positive negative">
-                                    -102.50
-                                  </span>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
+                    {renderActivityTab()}
                   </div>
 
                   {/* Other Tabs */}
