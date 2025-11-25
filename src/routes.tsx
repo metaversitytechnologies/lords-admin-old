@@ -64,7 +64,7 @@ export const router = createBrowserRouter([
           { path: "fraudreport", element: <MessageReport /> },
           { path: "createagent", element: <NewAgent /> },
           {
-            path: "downlinereports/:id/:username",
+            path: "downlinereports/:id/",
             element: <DownlineReports />
           }
         ]

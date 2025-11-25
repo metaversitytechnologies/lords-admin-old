@@ -213,7 +213,7 @@ const AgentListing: React.FC = () => {
                   </td>
                   <td className="text-center">
                     <Link
-                      to={`/downlinereports/${agent.userId}/${agent.username}`}
+                      to={`/downlinereports/${agent.userId}`}
                       className="text text-info"
                       data-placement="top"
                       style={{ pointerEvents: "visible" }}

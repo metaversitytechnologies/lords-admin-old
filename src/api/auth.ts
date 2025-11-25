@@ -160,3 +160,32 @@ export const getUnsettledByMatchId = async (payload: object) => {
   return response.json();
 
 };
+export const getBettingPnl = async (payload: { userId: string, fromDate: string, toDate: string }) => {
+  const response = await fetch(`${API_BASE_URL}/lord/betting-pnl-uidswise-lord`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch betting PNL');
+  }
+
+  return response.json();
+};
+
+export const getBettingPnlDetail = async (payload: { userId: string, fromDate: string, toDate: string, marketId: string }) => {
+  const response = await fetch(`${API_BASE_URL}/lord/betting-pnl-detail`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch betting PNL detail');
+  }
+
+  return response.json();
+};

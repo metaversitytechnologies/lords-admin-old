@@ -17,38 +17,54 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({ matchId }) => {
   const [filterToAmt, setFilterToAmt] = useState("");
   const [filterBetType, setFilterBetType] = useState("");
 
-  useEffect(() => {
-    const fetchBets = async () => {
-      if (!matchId) return;
+  const fetchBets = async (filters?: any) => {
+    if (!matchId) return;
 
-      setLoading(true);
-      try {
-        const response = await getUnsettledByMatchId({
-          matchId: parseInt(matchId, 10),
-          matchedDeletedBet: activeTab.toUpperCase(),
-        });
-        setBets(response.data || []);
-      } catch (error) {
-        console.error(`Error fetching ${activeTab} bets:`, error);
-        setBets([]);
-      } finally {
-        setLoading(false);
-      }
+    setLoading(true);
+
+    const payload: any = {
+      matchId: parseInt(matchId, 10),
+      matchedDeletedBet: activeTab.toUpperCase(),
+      betType: filters?.betType || "ALL",
+      minAmount: filters?.minAmount || null,
+      maxAmount: filters?.maxAmount || null,
+      ipAddress: filters?.ipAddress || null,
+      userId: filters?.userId || null
     };
 
+    // As per request, send null for non-selected filters.
+    // An empty string for a filter is considered "not selected".
+    if (!payload.betType) payload.betType = "ALL";
+    if (!payload.minAmount) delete payload.minAmount;
+    if (!payload.maxAmount) delete payload.maxAmount;
+    if (!payload.ipAddress) delete payload.ipAddress;
+    if (!payload.userId) delete payload.userId;
+
+    try {
+      const response = await getUnsettledByMatchId(payload);
+      setBets(response.data || []);
+    } catch (error) {
+      console.error(`Error fetching ${activeTab} bets:`, error);
+      setBets([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchBets();
   }, [activeTab, matchId]);
 
   const handleFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement filter logic here, for now, we just log the filters
-    console.log({
-      uname: filterUname,
-      ip: filterIp,
-      fromAmt: filterFromAmt,
-      toAmt: filterToAmt,
+    const filters = {
       betType: filterBetType,
-    });
+      minAmount: filterFromAmt,
+      maxAmount: filterToAmt,
+      ipAddress: filterIp,
+      userId: filterUname
+    };
+    fetchBets(filters);
   };
 
   const handleReset = () => {
@@ -57,7 +73,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({ matchId }) => {
     setFilterFromAmt("");
     setFilterToAmt("");
     setFilterBetType("");
-    // TODO: refetch original data if filtering is applied
+    fetchBets(); // Refetch with no filters
   };
 
   const renderTableContent = (colSpan: number, content: React.ReactNode) => {
@@ -209,8 +225,8 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({ matchId }) => {
                     onChange={(e) => setFilterBetType(e.target.value)}
                   >
                     <option value="">All</option>
-                    <option value="back">Back</option>
-                    <option value="lay">Lay</option>
+                    <option value="BACK">Back</option>
+                    <option value="LAY">Lay</option>
                   </select>
                 </div>
                 <div className="col-md-2 m-t-5 text-right p-l-0 p-r-15">
@@ -305,9 +321,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({ matchId }) => {
           <div
             role="tabpanel"
             aria-hidden={activeTab !== "unmatched"}
-            className={`tab-pane ${
-              activeTab === "unmatched" ? "active" : ""
-            }`}
+            className={`tab-pane ${activeTab === "unmatched" ? "active" : ""}`}
           >
             <div className="table-responsive matched-data">
               <table className="table coupon-table m-b-0">

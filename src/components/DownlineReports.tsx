@@ -1,14 +1,16 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import BalanceInfo from "./BalanceInfo";
 import BetList from "./BestList";
-import ProfitLoss from "./ProfitLoss";
 import AccountStatement from "./AccountStatement";
 import TransferStatement from "./TransferStatement";
 import NetExposure from "./Netexposure";
 import ClientAccountStatement from "./ClientAccountStatement";
+import BettingPnl from "./BettingPnl";
 
 const DownlineReports = () => {
   const [activeTab, setActiveTab] = useState("activity");
+  const { id } = useParams();
   const isTabView = true;
 
   const tabs = [
@@ -26,7 +28,7 @@ const DownlineReports = () => {
     {
       id: "betting-pl",
       label: "Betting P&L",
-      component: <ProfitLoss isTabView={isTabView} />
+      component: <BettingPnl isTabView={isTabView} userId={id} />
     },
     {
       id: "statement",
