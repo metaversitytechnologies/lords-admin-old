@@ -18,7 +18,8 @@ export const loginApi = async (userId: string, password: string) => {
     body: JSON.stringify({
       userId,
       password,
-      appUrl: "admin." + globalThis.location.hostname,
+      // appUrl: "admin." + globalThis.location.hostname,
+      appUrl: "admin.localhost",
     }),
   });
 
