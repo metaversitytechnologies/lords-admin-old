@@ -103,16 +103,59 @@ export const updateUserLord = async (payload: object) => {
 };
 
 export const getDetailForUpdateLord = async (payload: { userId: string }) => {
+
   const response = await fetch(`${API_BASE_URL}/user/get-detail-for-update-lord`, {
+
     method: 'POST',
+
     headers: getAuthHeaders(),
+
     body: JSON.stringify(payload),
+
   });
 
+
+
   if (!response.ok) {
+
     const errorData = await response.json();
+
     throw new Error(errorData.message || 'Failed to fetch user details for update');
+
   }
 
+
+
   return response.json();
+
+};
+
+
+
+export const getUnsettledByMatchId = async (payload: object) => {
+
+  const response = await fetch(`${API_BASE_URL}/lord/unsettled-by-matchid`, {
+
+    method: 'POST',
+
+    headers: getAuthHeaders(),
+
+    body: JSON.stringify(payload),
+
+  });
+
+
+
+  if (!response.ok) {
+
+    const errorData = await response.json();
+
+    throw new Error(errorData.message || 'Failed to fetch unsettled bets by match ID');
+
+  }
+
+
+
+  return response.json();
+
 };

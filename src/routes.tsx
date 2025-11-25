@@ -54,7 +54,7 @@ export const router = createBrowserRouter([
           { path: "bank", element: <Transfer /> },
           { path: "notification", element: <Notification /> },
           { path: "netexpouser", element: <NetExposure /> },
-          { path: "gamedetailnew/:id/:subid", element: <MarketLayout /> },
+          { path: "gamedetailnew/:id", element: <MarketLayout /> },
           { path: "bettiker", element: <BetTicker /> },
           { path: "mybets", element: <BetList /> },
           { path: "profitLoss", element: <ProfitLoss /> },

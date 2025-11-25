@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import MatchOddsMarket from "./MatchOddsMarket";
 import TiedMatchMarket from "./TiedMatchMarket";
 import OverByOverMarket from "./OverByOverMarket";
@@ -13,6 +14,7 @@ type MarketLayoutProps = {
 };
 
 const MarketLayout = ({ data }: MarketLayoutProps) => {
+  const { id } = useParams();
   const sample = data || {
     matchOdds: {
       title: "MATCH_ODDS",
@@ -68,6 +70,7 @@ const MarketLayout = ({ data }: MarketLayoutProps) => {
             <div className="right-market">
               <Scorecard scoreboard={sample.scoreboard} />
               <MatchedUnmatched
+                matchId={id}
                 matched={sample.matched}
                 unmatched={sample.unmatched}
               />
