@@ -1,33 +1,16 @@
-const FancyMarket = ({
-  market = {
-    title: "Normal",
-    rows: [
-      {
-        label: "15 over runs LIM",
-        value: "0.00",
-        icon: "https://d3kb8xz339pq18.cloudfront.net/v12/static/images/icons/ladder.png",
-        min: 100,
-        max: "100K"
-      },
-      {
-        label: "15 over run bhav LIM",
-        value: "0.00",
-        icon: "https://d3kb8xz339pq18.cloudfront.net/v12/static/images/icons/ladder.png",
-        min: 100,
-        max: "50K"
-      }
-    ]
-  }
-}) => (
+interface FancyMarketProps {
+  fancyData: Fancy2[] | undefined;
+}
+
+const FancyMarket = ({ fancyData }: FancyMarketProps) => (
   <div className="market-6 mt-2">
     <div className="bet-table">
       <div className="bet-table-header">
         <div className="nation-name">
-          <span>{market.title}</span>
+          <span>Fancy</span>
           <button
             type="button"
-            className="btn btn btn-submit bet-lock-btn btn-secondary"
-          >
+            className="btn btn btn-submit bet-lock-btn btn-secondary">
             Fancy Lock
           </button>
         </div>
@@ -43,35 +26,34 @@ const FancyMarket = ({
           </div>
         </div>
 
-        {market.rows.map((r, i) => (
+        {fancyData?.map((r, i) => (
           <div className="fancy-tripple" key={i}>
             <div
-              className={`bet-table-row suspendedtext`}
-              data-title="SUSPENDED"
-            >
+              className={`bet-table-row ${r?.gstatus ? "suspendedtext" : ""}`}
+              data-title="SUSPENDED">
               <div className="nation-name">
                 <p>
-                  <span>{r.label}</span>
+                  <span>{r.nation}</span>
                 </p>
                 <p className="mb-0">
-                  <span style={{ color: "white" }}>{r.value}</span>
+                  <span style={{ color: "white" }}>{r.b1}</span>
                   <span className="float-right">
                     <img
-                      src={r.icon}
+                      src="https://d3kb8xz339pq18.cloudfront.net/v12/static/images/icons/ladder.png"
                       className="float-right ladder-icon mt-1"
                       alt="ladder"
                     />
                   </span>
                 </p>
               </div>
-              <div className="bl-box lay suspended">
-                <span className="d-block odds">{r.lay || "—"}</span>
+              <div className="bl-box lay ">
+                <span className="d-block odds">{r.l1 || "—"}</span>
               </div>
-              <div className="bl-box back suspended">
-                <span className="d-block odds">{r.back || "—"}</span>
+              <div className="bl-box back ">
+                <span className="d-block odds">{r.b1 || "—"}</span>
               </div>
               <div className="fancy-min-max">
-                Min:<span>{r.min}</span> Max:<span>{r.max}</span>
+                Min:<span>{r.minBet}</span> Max:<span>{r.maxBet}</span>
               </div>
             </div>
           </div>
