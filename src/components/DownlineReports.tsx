@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import BalanceInfo from "./BalanceInfo";
 import BetList from "./BestList";
 import AccountStatement from "./AccountStatement";
@@ -8,6 +8,7 @@ import NetExposure from "./Netexposure";
 import ClientAccountStatement from "./ClientAccountStatement";
 import BettingPnl from "./BettingPnl";
 import { getWinLossActivity } from "../api/auth";
+import DownlineBetList from "./DownlineBetList";
 
 const DownlineReports = () => {
   const [activeTab, setActiveTab] = useState("activity");
@@ -46,7 +47,7 @@ const DownlineReports = () => {
     {
       id: "betlist",
       label: "Betlist",
-      component: <BetList isTabView={isTabView} />
+      component: <DownlineBetList userId={id} />
     },
     {
       id: "betting-pl",
@@ -63,7 +64,11 @@ const DownlineReports = () => {
       label: "Transfer Statement",
       component: <TransferStatement />
     },
-    { id: "exposure", label: "Net Exposure", component: <NetExposure /> },
+    {
+      id: "exposure",
+      label: "Net Exposure",
+      component: <NetExposure userId={id} isActive={activeTab === 'exposure'} />
+    },
     {
       id: "clients",
       label: "Clients Account Statement",
@@ -215,10 +220,10 @@ const DownlineReports = () => {
               <ul>
                 <li>
                   <span className="text-white">
-                    <a href="/agentlisting/all/1763384734452" className="">
+                    <Link to="/agentlisting" className="">
                       <i className="text-info">Downline Listing </i>
-                    </a>{" "}
-                    &gt; agtshak
+                    </Link>{" "}
+                    &gt; {id}
                   </span>
                 </li>
               </ul>
