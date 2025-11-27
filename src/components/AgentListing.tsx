@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import UpdateUser from "./UpdateUser";
 import { getChildListLord } from "../api/auth";
+import SearchUser from "./SearchUser";
 import { useAuth } from "../context/AuthContext";
 
 const AgentListing: React.FC = () => {
@@ -62,14 +63,10 @@ const AgentListing: React.FC = () => {
         <div className="d-inline-block m-t-10">
           <label>Search By User Name</label>
           <div className="search-box-container d-inline-block p-l-0">
-            <input
-              type="text"
-              name="uname"
-              placeholder="Enter Atleast 3 character"
-              autoComplete="off"
-              className="event-search"
+            <SearchUser
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={setSearchTerm}
+              placeholder="Enter Atleast 3 character"
             />
           </div>
         </div>
@@ -141,7 +138,7 @@ const AgentListing: React.FC = () => {
               </tr>
             ) : error ? (
               <tr>
-                <td colSpan={12} className="text-center text-danger">
+                <td colSpan={12} className="text-center">
                   {error}
                 </td>
               </tr>
@@ -156,10 +153,11 @@ const AgentListing: React.FC = () => {
                         data-placement="top"
                         onClick={(e) => {
                           e.preventDefault();
+                          if (userid) return;
                           openUpdateModal(agent);
                         }}
                         style={{
-                          pointerEvents: "visible",
+                          cursor: userid ? "default" : "pointer",
                           textDecoration: "none"
                         }}
                       >
