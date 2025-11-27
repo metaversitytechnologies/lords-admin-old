@@ -1,7 +1,8 @@
 interface BookmakerMarketProps {
   bookmakerData: Bookmaker[] | undefined;
+  pnlData: any;
 }
-const BookmakerMarket = ({ bookmakerData }: BookmakerMarketProps) => {
+const BookmakerMarket = ({ bookmakerData, pnlData }: BookmakerMarketProps) => {
   const groupByProviderTypeNation = (data: Bookmaker[] | undefined) => {
     if (!Array.isArray(data)) return {};
 
@@ -21,6 +22,24 @@ const BookmakerMarket = ({ bookmakerData }: BookmakerMarketProps) => {
     <>
       {Object.entries(groupedData).map(
         ([providerType, nations]: [string, any]) => {
+          const myPnl = pnlData?.find(
+            (ele: any) => ele?.marketId == nations?.[0]?.mid
+          );
+          const pnlBookMaker = [
+            {
+              pnl: myPnl?.pnl1,
+              selectionId: myPnl?.selection1,
+            },
+            {
+              pnl: myPnl?.pnl2,
+              selectionId: myPnl?.selection2,
+            },
+            {
+              pnl: myPnl?.pnl3,
+              selectionId: myPnl?.selection3,
+            },
+          ];
+
           return (
             <div className="market-4 mt-2">
               <div className="bet-table">
@@ -56,45 +75,55 @@ const BookmakerMarket = ({ bookmakerData }: BookmakerMarketProps) => {
                     <div className="bl-title"></div>
                   </div>
 
-                  {nations?.map((r: any, idx: number) => (
-                    <div
-                      className={`bet-table-row ${
-                        r?.gstatus ? "suspendedtext" : ""
-                      }`}
-                      data-title={r?.gstatus}
-                      key={idx}>
-                      <div className="nation-name">
-                        <p>
-                          <span>{r.nation}</span>
-                        </p>
-                        <p className="mb-0">
-                          {r.positive && (
-                            <span className="positive">{r.positive}</span>
-                          )}
-                          <span className="float-right">{r.rightText}</span>
-                        </p>
-                      </div>
+                  {nations?.map((r: any, idx: number) => {
+                    const pnlValue =
+                      pnlBookMaker.find((ele) => ele?.selectionId == r?.sid)
+                        ?.pnl || 0;
+                    return (
+                      <div
+                        className={`bet-table-row ${
+                          r?.gstatus ? "suspendedtext" : ""
+                        }`}
+                        data-title={r?.gstatus}
+                        key={idx}>
+                        <div className="nation-name">
+                          <p>
+                            <span>{r.nation}</span>
+                          </p>
+                          <p className="mb-0">
+                            {pnlValue >= 0 ? (
+                              <p style={{ color: "green" }}>{pnlValue}</p>
+                            ) : (
+                              <p style={{ color: "red" }}>{pnlValue}</p>
+                            )}
+                            {/* {r.positive && (
+                              <span className="positive">{r.positive}</span>
+                            )} */}
+                            <span className="float-right">{r.rightText}</span>
+                          </p>
+                        </div>
 
-                      <div className="bl-box back2 suspended">
-                        <span className="d-block odds">{"—"}</span>
+                        <div className="bl-box back2 suspended">
+                          <span className="d-block odds">{"—"}</span>
+                        </div>
+                        <div className="bl-box back1 suspended">
+                          <span className="d-block odds">{"—"}</span>
+                        </div>
+                        <div className="bl-box back  changed">
+                          <span className="d-block odds">{r.b1 || "—"}</span>
+                        </div>
+                        <div className="bl-box lay  changed">
+                          <span className="d-block odds">{r.l1 || "—"}</span>
+                        </div>
+                        <div className="bl-box lay1 suspended">
+                          <span className="d-block odds">{"—"}</span>
+                        </div>
+                        <div className="bl-box lay2 suspended">
+                          <span className="d-block odds">{"—"}</span>
+                        </div>
                       </div>
-                      <div className="bl-box back1 suspended">
-                        <span className="d-block odds">{"—"}</span>
-                      </div>
-                      <div className="bl-box back  changed">
-                        <span className="d-block odds">{r.b1 || "—"}</span>
-                      </div>
-                      <div className="bl-box lay  changed">
-                        <span className="d-block odds">{r.l1 || "—"}</span>
-                      </div>
-                      <div className="bl-box lay1 suspended">
-                        <span className="d-block odds">{"—"}</span>
-                      </div>
-                      <div className="bl-box lay2 suspended">
-                        <span className="d-block odds">{"—"}</span>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>

@@ -7,6 +7,7 @@ import LiveTvDrag from "./LiveTvDrag";
 import { getOddsData } from "../api/oddsApi";
 import { useEffect, useState } from "react";
 import MatchedUnmatched from "./MatchedUnmatched";
+import { getBetList, getFancyPnl, getOddsPnl } from "../api/bet";
 
 type MarketLayoutProps = {
   data?: any;
@@ -15,7 +16,10 @@ type MarketLayoutProps = {
 const MarketLayout = () => {
   const { id } = useParams();
   const [oddsData, setOddsData] = useState<oddsResponse>();
-  const fetchBalance = async () => {
+  const [oddsPnl, setOdssPnl] = useState<any>();
+  const [fancyPnl, setFancyPnl] = useState<any>();
+  const [betListData, setBetListData] = useState<any>();
+  const fetchOdds = async () => {
     try {
       const response = await getOddsData(id ?? "");
       console.log("Odds Data Response:", response);
@@ -25,11 +29,44 @@ const MarketLayout = () => {
     }
   };
 
+  const fetchOddsPnl = async () => {
+    try {
+      const response = await getOddsPnl({ matchId: "34966369" ?? "" });
+      console.log("Odds Data Response:", response);
+      setOdssPnl(response?.data);
+    } catch (err: any) {
+      console.error("Error fetching odds data:", err);
+    }
+  };
+  const fetchFancyPnl = async () => {
+    try {
+      const response = await getFancyPnl({ matchId: "34966369" ?? "" });
+      console.log("Odds Data Response:", response);
+      setFancyPnl(response?.data);
+    } catch (err: any) {
+      console.error("Error fetching odds data:", err);
+    }
+  };
+  const fetchBetList = async () => {
+    try {
+      const response = await getBetList({ matchId: "34966369" ?? "" });
+      console.log("Odds Data Response:", response);
+      setBetListData(response?.data);
+    } catch (err: any) {
+      console.error("Error fetching odds data:", err);
+    }
+  };
+
+  console.log("Odds Data State:", oddsPnl);
+
   useEffect(() => {
-    fetchBalance();
+    fetchOdds();
+    fetchOddsPnl();
+    fetchFancyPnl();
+    fetchBetList();
 
     const interval = setInterval(() => {
-      fetchBalance();
+      fetchOdds();
     }, 1000); // 1 second
 
     return () => clearInterval(interval); // cleanup
@@ -41,17 +78,17 @@ const MarketLayout = () => {
         <div>
           <div className="market-container">
             <div className="left-market">
-              <MatchOddsMarket oddsData={oddsData?.Odds} />
+              <MatchOddsMarket oddsData={oddsData?.Odds} pnlData={oddsPnl}/>
               {/* <TiedMatchMarket market={sample.tiedMarket} /> */}
               {/* <OverByOverMarket market={sample.overMarket} /> */}
               {oddsData?.Fancy2?.length !== 0 && (
-                <FancyMarket fancyData={oddsData?.Fancy2} />
+                <FancyMarket fancyData={oddsData?.Fancy2}  fancyPnldata={fancyPnl}/>
               )}
             </div>
             <div className="right-market">
               <Scorecard />
               <MatchedUnmatched matchId={id ?? ""} />
-              <BookmakerMarket bookmakerData={oddsData?.Bookmaker} />
+              <BookmakerMarket  pnlData={oddsPnl} bookmakerData={oddsData?.Bookmaker} />
               <LiveTvDrag />
             </div>
           </div>
