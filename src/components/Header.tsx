@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCog,
@@ -102,8 +102,8 @@ const Header: React.FC = () => {
     <header className="header">
       <div className="logo-area float-left">
         <div className="logo">
-          <a
-            href="/dashboardhome"
+          <Link
+            to="/dashboardhome"
             aria-current="page"
             className="logo router-link-exact-active router-link-active"
           >
@@ -111,7 +111,7 @@ const Header: React.FC = () => {
               src="https://d3kb8xz339pq18.cloudfront.net/v12/static/themes/lordsexch.now/admin/logo.png"
               alt="Logo"
             />
-          </a>
+          </Link>
         </div>
       </div>
 
