@@ -26,10 +26,17 @@ const ReusableModal: React.FC<ReusableModalProps> = ({
     if (show) {
       // allow browser paint first
       setTimeout(() => setAnimate(true), 10);
+      document.body.style.overflow = "hidden";
     } else {
       setAnimate(false);
+      document.body.style.overflow = "auto";
+      return () => {
+        document.body.style.overflow = "auto";
+      };
     }
   }, [show]);
+
+
 
   const modalSizeClass = size ? `modal-${size}` : "";
   const modalPositionClass =

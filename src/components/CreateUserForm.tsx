@@ -1,13 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
+import ReusableModal from "./ReusableModal";
+import UpdatePwUserForm from "./UpdatePwUserForm";
 import FlashMessage from "./FlashMessage";
 import { useForm, type FieldValues } from "react-hook-form";
 import { createPwLord, listPwUserLord } from "../api/auth";
+import UserStatusModal from "./UserStatusModal";
+import ChangePasswordModal from "./ChangePasswordModal";
 
 interface MpwUser {
   userId: string;
   password?: string;
   permissionList: string[];
-  masterPassword?: string;
+  lupassword?: string;
   fullName?: string;
 }
 
@@ -30,6 +34,41 @@ const CreateUserForm: React.FC = () => {
     type: "success" | "error";
   } | null>(null);
   const [users, setUsers] = useState<User[]>([]);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isUserStatusModalOpen, setIsUserStatusModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
+    useState(false);
+
+  const handleOpenChangePasswordModal = (user: User) => {
+    setSelectedUser(user);
+    setIsChangePasswordModalOpen(true);
+  };
+
+  const handleCloseChangePasswordModal = () => {
+    setSelectedUser(null);
+    setIsChangePasswordModalOpen(false);
+  };
+
+  const handleOpenUpdateModal = (user: User) => {
+    setSelectedUser(user);
+    setIsUpdateModalOpen(true);
+  };
+
+  const handleCloseUpdateModal = () => {
+    setSelectedUser(null);
+    setIsUpdateModalOpen(false);
+  };
+
+  const handleOpenUserStatusModal = (user: User) => {
+    setSelectedUser(user);
+    setIsUserStatusModalOpen(true);
+  };
+
+  const handleCloseUserStatusModal = () => {
+    setSelectedUser(null);
+    setIsUserStatusModalOpen(false);
+  };
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -53,7 +92,7 @@ const CreateUserForm: React.FC = () => {
       userId: data.userId,
       password: data.password,
       permissionList,
-      masterPassword: data.masterPassword,
+      lupassword: data.masterPassword,
       fullName: data.fullName
     };
 
@@ -69,8 +108,7 @@ const CreateUserForm: React.FC = () => {
       // Handle success (e.g., show a success message, reset form)
     } catch (error) {
       setFlashMessage({
-        message:
-          error instanceof Error ? error.message : "An error occurred.",
+        message: error instanceof Error ? error.message : "An error occurred.",
         type: "error"
       });
       console.error("Error creating user:", error);
@@ -89,26 +127,25 @@ const CreateUserForm: React.FC = () => {
   };
 
   const privileges = [
-    { id: "marketana", label: "Market Analysis" },
-    { id: "clientlist", label: "Client List" },
-    { id: "withdraw", label: "Withdraw" },
-    { id: "diposite", label: "Deposit" },
-    { id: "userstatus", label: "User Status" },
-    { id: "userupdate", label: "User Update" },
-    { id: "changepass", label: "Change Password" },
-    { id: "banklist", label: "Bank List" },
-    { id: "accountstat", label: "Account Statement" },
-    { id: "mybets", label: "My Bets" },
-    { id: "casinorepo", label: "Casino Report" },
-    { id: "userlog", label: "User Logs" },
-    { id: "gamereport", label: "Game Report" },
-    { id: "fraudreport", label: "Fraud Report" },
-    { id: "casinolist", label: "Casino List" },
-    { id: "gamelist", label: "Game List" },
-    { id: "useractive", label: "User Active" },
-    { id: "creditreff", label: "Credit Reference" },
-    { id: "expolimit", label: "Exposure Limit" },
-    { id: "usercreate", label: "User Create" }
+    { id: "Market Analysis", label: "Market Analysis" },
+    { id: "Client List", label: "Client List" },
+    { id: "Withdraw", label: "Withdraw" },
+    { id: "Deposit", label: "Deposit" },
+    { id: "User Status", label: "User Status" },
+    { id: "User Update", label: "User Update" },
+    { id: "Change Password", label: "Change Password" },
+    { id: "Bank List", label: "Bank List" },
+    { id: "Account Statement", label: "Account Statement" },
+    { id: "My Bets", label: "My Bets" },
+    { id: "Casino Report", label: "Casino Report" },
+    { id: "User Logs", label: "User Logs" },
+    { id: "Game Report", label: "Game Report" },
+    { id: "Fraud Report", label: "Fraud Report" },
+    { id: "Casino List", label: "Casino List" },
+    { id: "Game List", label: "Game List" },
+    { id: "Credit Reference", label: "Credit Reference" },
+    { id: "Exposure Limit", label: "Exposure Limit" },
+    { id: "User Create", label: "Create User" }
   ];
 
   return (
@@ -315,7 +352,7 @@ const CreateUserForm: React.FC = () => {
                     <table
                       role="table"
                       aria-busy="false"
-                      aria-colcount="23"
+                      aria-colcount="22"
                       className="table table checkbox-align"
                       id="__BVID__61"
                     >
@@ -595,7 +632,7 @@ const CreateUserForm: React.FC = () => {
                             aria-sort="none"
                             className="position-relative text-center"
                           >
-                            <div>User Active</div>
+                            <div>Credit Reference</div>
                             <span className="sr-only">
                               {" "}
                               (Click to sort ascending)
@@ -609,20 +646,6 @@ const CreateUserForm: React.FC = () => {
                             aria-sort="none"
                             className="position-relative text-center"
                           >
-                            <div>Credit Reference</div>
-                            <span className="sr-only">
-                              {" "}
-                              (Click to sort ascending)
-                            </span>
-                          </th>
-                          <th
-                            role="columnheader"
-                            scope="col"
-                            tabIndex={0}
-                            aria-colindex="22"
-                            aria-sort="none"
-                            className="position-relative text-center"
-                          >
                             <div>Exposure Limit</div>
                             <span className="sr-only">
                               {" "}
@@ -633,7 +656,7 @@ const CreateUserForm: React.FC = () => {
                             role="columnheader"
                             scope="col"
                             tabIndex={0}
-                            aria-colindex="23"
+                            aria-colindex="22"
                             aria-sort="none"
                             className="position-relative text-center"
                           >
@@ -655,13 +678,26 @@ const CreateUserForm: React.FC = () => {
                               className="action-buttons text-center"
                             >
                               <div>
-                                <span className="text-white btn btn-info">
+                                <span
+                                  className="text-white btn btn-info"
+                                  onClick={() => handleOpenUpdateModal(user)}
+                                >
                                   U
                                 </span>{" "}
-                                <span className="text-white btn btn-warning">
+                                <span
+                                  className="text-white btn btn-warning"
+                                  onClick={() =>
+                                    handleOpenUserStatusModal(user)
+                                  }
+                                >
                                   S
                                 </span>{" "}
-                                <span className="text-white btn btn-dark">
+                                <span
+                                  className="text-white btn btn-dark"
+                                  onClick={() =>
+                                    handleOpenChangePasswordModal(user)
+                                  }
+                                >
                                   P
                                 </span>
                               </div>
@@ -741,6 +777,35 @@ const CreateUserForm: React.FC = () => {
           </div>
         </div>
       </div>
+      <ReusableModal
+        show={isUpdateModalOpen}
+        handleClose={handleCloseUpdateModal}
+        title="Update User Information"
+        size="xl"
+        position="top"
+      >
+        {selectedUser && (
+          <UpdatePwUserForm
+            user={selectedUser}
+            onClose={() => {
+              handleCloseUpdateModal();
+              fetchUsers();
+            }}
+          />
+        )}
+      </ReusableModal>
+      <UserStatusModal
+        show={isUserStatusModalOpen}
+        handleClose={handleCloseUserStatusModal}
+        user={selectedUser}
+      />
+      {selectedUser && (
+        <ChangePasswordModal
+          show={isChangePasswordModalOpen}
+          handleClose={handleCloseChangePasswordModal}
+          user={selectedUser}
+        />
+      )}
     </div>
   );
 };

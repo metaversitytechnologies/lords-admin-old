@@ -107,3 +107,16 @@ export const getDownlineUserlistLord = async (payload: object) => {
 export const listPwUserLord = async () => {
   return apiRequest('/pw-lord/list-pwuser-lord', 'POST');
 };
+
+export const updatePwLord = async (payload: object) => {
+  return apiRequest('/pw-lord/update-pwuser-pass', 'POST', payload);
+};
+
+export const updatePwStatus = async (payload: object) => {
+  return apiRequest('/pw-lord/update-pwstatus', 'POST', payload);
+};
+
+export const updatePwUserPermission = async (payload: object) => {
+  return apiRequest('/pw-lord/update-pwuser-permission', 'POST', payload);
+};
+

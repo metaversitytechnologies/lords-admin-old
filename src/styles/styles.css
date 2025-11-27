@@ -334,8 +334,8 @@ h1 {
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-.login-form>section .form-group {
-    margin-bottom: 10px;
+.form-group {
+    margin-bottom: 30px;
 }
 
 .login-form>section label {
@@ -2739,6 +2739,7 @@ span.order-time {
 }
 
 .prev-user-chk {
+    padding-top: 15px;
     background: rgba(0, 0, 0, 0.3) !important;
 }
 
@@ -5795,4 +5796,8 @@ img.lrotate {
     .new-casino .video-overlay {
         top: 80px;
     }
+
+    .game-title {
+        margin-bottom: 15px;
+    }    
 }
