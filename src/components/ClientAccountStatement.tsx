@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import SearchUser from "./SearchUser";
 
 const ClientAccountStatement: React.FC = () => {
+  const [userId, setUserId] = useState("");
   return (
     <div>
       <div className="column m-r-40">
@@ -25,12 +27,10 @@ const ClientAccountStatement: React.FC = () => {
           <div className="select-report d-inline-block col-md-2 form-group v-t report-search p-l-0 p-r-5">
             <label className="p-l-5">Search by user</label>
             <div className="search-box-container">
-              <input
-                type="text"
-                name="uname"
+              <SearchUser
+                value={userId}
+                onChange={setUserId}
                 placeholder="Enter Atleast 3 character"
-                autoComplete="off"
-                className="form-control d-inline-block"
               />
             </div>
           </div>

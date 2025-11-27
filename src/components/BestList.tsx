@@ -1,4 +1,8 @@
+import { useState } from "react";
+import SearchUser from "./SearchUser";
+
 const BetList = ({ isTabView = false }) => {
+  const [userId, setUserId] = useState("");
   const entriesOptions = [10, 20, 50, 100];
   const tabs = ["Current", "Past"];
   const radioOptions = ["Matched", "Unmatched", "Deleted"];
@@ -211,12 +215,10 @@ const BetList = ({ isTabView = false }) => {
                   <div className="d-inline-block v-t m-l-10">
                     <div className="search-box-container d-inline-block p-l-0 p-r-5">
                       <label className="p-l-5 d-block">Search by user</label>
-                      <input
-                        type="text"
-                        name="uname"
+                      <SearchUser
+                        value={userId}
+                        onChange={setUserId}
                         placeholder="Enter Atleast 3 character"
-                        autoComplete="off"
-                        className="event-search"
                       />
                     </div>
                   </div>

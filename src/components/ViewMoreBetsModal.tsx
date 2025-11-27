@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getUnsettledByMatchId } from "../api/auth";
+import SearchUser from "./SearchUser";
 
 interface ViewMoreBetsModalProps {
   matchId: string;
@@ -174,14 +175,10 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({ matchId }) => {
                 <div className="form-group m-t-5 m-b-5 col-md-2 p-r-5">
                   <label className="p-l-5">Search by user</label>
                   <div className="search-box-container">
-                    <input
-                      type="text"
-                      name="uname"
-                      placeholder="Enter Atleast 3 character"
-                      autoComplete="off"
-                      className="form-control d-inline-block"
+                    <SearchUser
                       value={filterUname}
-                      onChange={(e) => setFilterUname(e.target.value)}
+                      onChange={setFilterUname}
+                      placeholder="Enter Atleast 3 character"
                     />
                   </div>
                 </div>

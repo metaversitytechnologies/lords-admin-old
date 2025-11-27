@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
+import SearchUser from "./SearchUser";
 
 const AccountStatement: React.FC = () => {
+  const [userId, setUserId] = useState("");
   const [activeTab, setActiveTab] = useState("pnl");
   const [showModal, setShowModal] = useState(false);
   const [ipDetails, setIpDetails] = useState<IpDetails | null>(null);
@@ -49,12 +51,10 @@ const AccountStatement: React.FC = () => {
             <div className="select-report d-inline-block col-md-2 form-group v-t report-search p-l-0 p-r-5">
               <label className="p-l-5">Search by user</label>
               <div className="search-box-container">
-                <input
-                  type="text"
-                  name="uname"
+                <SearchUser
+                  value={userId}
+                  onChange={setUserId}
                   placeholder="Enter Atleast 3 character"
-                  autoComplete="off"
-                  className="form-control d-inline-block"
                 />
               </div>
             </div>

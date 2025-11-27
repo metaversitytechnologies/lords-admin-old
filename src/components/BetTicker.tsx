@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getBetTicker } from "../api/auth";
+import SearchUser from "./SearchUser";
 
 const events = [
   "All",
@@ -224,14 +225,10 @@ const BetTicker = () => {
                 </div>
                 <div className="d-inline-block v-t m-l-10">
                   <div className="search-box-container d-inline-block p-l-0 p-r-5">
-                    <input
-                      type="text"
-                      name="uname"
-                      placeholder="Enter Atleast 3 character"
-                      autoComplete="off"
-                      className="event-search"
+                    <SearchUser
                       value={userId}
-                      onChange={(e) => setUserId(e.target.value)}
+                      onChange={setUserId}
+                      placeholder="Enter Atleast 3 character"
                     />
                   </div>
                 </div>
@@ -282,7 +279,7 @@ const BetTicker = () => {
                     </tr>
                   ) : error ? (
                     <tr>
-                      <td colSpan="10" className="text-center text-danger">
+                      <td colSpan="10" className="text-center">
                         {error}
                       </td>
                     </tr>
