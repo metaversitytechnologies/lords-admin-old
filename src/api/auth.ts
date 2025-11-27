@@ -92,6 +92,18 @@ export const getBetTicker = async (payload: object) => {
   return apiRequest('/lord/bet-ticker', 'POST', payload);
 };
 
+export const logoutApi = async () => {
+  return apiRequest('/login/logout', 'POST');
+};
+
+export const createPwLord = async (payload: object) => {
+  return apiRequest('/pw-lord/crate-pw-lord', 'POST', payload);
+};
+
 export const getDownlineUserlistLord = async (payload: object) => {
   return apiRequest('/user/get-donwline-userlist-lord', 'POST', payload);
+};
+
+export const listPwUserLord = async () => {
+  return apiRequest('/pw-lord/list-pwuser-lord', 'POST');
 };

@@ -630,7 +630,7 @@ nav.menu>ul>li.rootMenu.active>a::after {
 }
 
 .content>.mid-pane {
-    width: 100%;
+    width: calc(100% - 180px);
     /* float: left; */
     padding: 0 0 0 20px;
 }

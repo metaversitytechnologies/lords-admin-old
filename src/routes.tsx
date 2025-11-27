@@ -3,7 +3,6 @@ import App from "./App";
 import NotFound from "./pages/NotFound";
 import Login from "./components/Login";
 import { ProtectedRoute } from "./context/AuthContext";
-import AccountSection from "./components/AccountSection";
 import AgentListing from "./components/AgentListing";
 import DashboardLayout from "./layouts/DashboardLayout";
 import BalanceInfo from "./components/BalanceInfo";
@@ -21,6 +20,7 @@ import MessageReport from "./components/MessageReport";
 import AccountStatement from "./components/AccountStatement";
 import ClientAccountStatement from "./components/ClientAccountStatement";
 import NewAgent from "./components/NewAgent";
+import CreateUserForm from "./components/CreateUserForm";
 import DownlineReports from "./components/DownlineReports";
 
 export const router = createBrowserRouter([
@@ -47,7 +47,7 @@ export const router = createBrowserRouter([
           },
           { path: "agentlisting", element: <AgentListing /> },
           { path: "agentlisting/:userid", element: <AgentListing /> },
-          { path: "createaccount", element: <AccountSection /> },
+          { path: "createaccount", element: <CreateUserForm /> },
           { path: "dashboardhome", element: <BalanceInfo /> },
           { path: "account-statement", element: <AccountStatement /> },
           { path: "accountstmt", element: <ClientAccountStatement /> },

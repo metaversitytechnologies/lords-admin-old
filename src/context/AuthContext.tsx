@@ -5,6 +5,7 @@ import React, {
   useState
 } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { logoutApi } from "../api/auth";
 import FlashMessage from "../components/FlashMessage";
 
 interface AuthUser {
@@ -65,15 +66,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setLastLogin(now);
   };
 
-  const logout = (message?: string) => {
-    globalThis.localStorage.removeItem("token");
-    globalThis.localStorage.removeItem("user");
-    globalThis.localStorage.removeItem("lastLogin");
-    setToken(null);
-    setUser(null);
-    setLastLogin(null);
-    if (message) {
-      setFlash({ message, type: "error" });
+  const logout = async (message?: string) => {
+    try {
+      await logoutApi();
+    } catch (error) {
+      console.error("Logout failed", error);
+    } finally {
+      globalThis.localStorage.removeItem("token");
+      globalThis.localStorage.removeItem("user");
+      globalThis.localStorage.removeItem("lastLogin");
+      setToken(null);
+      setUser(null);
+      setLastLogin(null);
+      if (message) {
+        setFlash({ message, type: "error" });
+      }
     }
   };
 
