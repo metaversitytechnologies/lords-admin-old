@@ -1,12 +1,7 @@
+import { apiRequest } from './api';
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-const getAuthHeaders = () => {
-  const token = localStorage.getItem("token");
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`
-  };
-};
 
 export const loginApi = async (userId: string, password: string) => {
   const response = await fetch(`${API_BASE_URL}/login/auth`, {
@@ -23,6 +18,10 @@ export const loginApi = async (userId: string, password: string) => {
   });
 
   if (!response.ok) {
+    if(response.status === 401){
+      window.dispatchEvent(new CustomEvent("logout", { detail: { message: "Your session has expired. Please log in again." } }));
+      throw new Error("Unauthorized");
+    }
     const errorData = await response.json();
     throw new Error(errorData.message || "Login failed");
   }
@@ -31,163 +30,41 @@ export const loginApi = async (userId: string, password: string) => {
 };
 
 export const createUser = async (payload: object) => {
-  const response = await fetch(`${API_BASE_URL}/user/create-user-lord`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Failed to create user");
-  }
-
-  return response.json();
+  return apiRequest('/user/create-user-lord', 'POST', payload);
 };
 
 export const getBalance = async () => {
-  const response = await fetch(`${API_BASE_URL}/user/get-balance-lord`, {
-    method: "POST",
-    headers: getAuthHeaders()
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Failed to fetch balance");
-  }
-
-  return response.json();
+  return apiRequest('/user/get-balance-lord', 'POST');
 };
 
 export const getNetExposureDetail = async () => {
-  const response = await fetch(`${API_BASE_URL}/user/netexposure-detail-lord`, {
-    method: "POST",
-    headers: getAuthHeaders()
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(
-      errorData.message || "Failed to fetch net exposure details"
-    );
-  }
-
-  return response.json();
+  return apiRequest('/user/netexposure-detail-lord', 'POST');
 };
 
-export const getNetExposureDetailByUserId = async (payload: {
-  userId: string;
-}) => {
-  const response = await fetch(
-    `${API_BASE_URL}/user/netexposure-detail-userid-lord`,
-    {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(payload)
-    }
-  );
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(
-      errorData.message || "Failed to fetch net exposure details by user ID"
-    );
-  }
-
-  return response.json();
+export const getNetExposureDetailByUserId = async (payload: { userId: string; }) => {
+  return apiRequest('/user/netexposure-detail-userid-lord', 'POST', payload);
 };
 export const getChildListLord = async (payload: object) => {
-  const response = await fetch(`${API_BASE_URL}/user/child-list-lord`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Failed to fetch child list");
-  }
-
-  return response.json();
+  return apiRequest('/user/child-list-lord', 'POST', payload);
 };
 
 export const updateUserLord = async (payload: object) => {
-  const response = await fetch(`${API_BASE_URL}/user/update-user-lord`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Failed to update user");
-  }
-
-  return response.json();
+  return apiRequest('/user/update-user-lord', 'POST', payload);
 };
 
 export const getDetailForUpdateLord = async (payload: { userId: string }) => {
-  const response = await fetch(
-    `${API_BASE_URL}/user/get-detail-for-update-lord`,
-    {
-      method: "POST",
-
-      headers: getAuthHeaders(),
-
-      body: JSON.stringify(payload)
-    }
-  );
-
-  if (!response.ok) {
-    const errorData = await response.json();
-
-    throw new Error(
-      errorData.message || "Failed to fetch user details for update"
-    );
-  }
-
-  return response.json();
+  return apiRequest('/user/get-detail-for-update-lord', 'POST', payload);
 };
 
 export const getUnsettledByMatchId = async (payload: object) => {
-  const response = await fetch(`${API_BASE_URL}/lord/unsettled-by-matchid`, {
-    method: "POST",
-
-    headers: getAuthHeaders(),
-
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-
-    throw new Error(
-      errorData.message || "Failed to fetch unsettled bets by match ID"
-    );
-  }
-
-  return response.json();
+  return apiRequest('/lord/unsettled-by-matchid', 'POST', payload);
 };
 export const getBettingPnl = async (payload: {
   userId: string;
   fromDate: string;
   toDate: string;
 }) => {
-  const response = await fetch(
-    `${API_BASE_URL}/lord/betting-pnl-uidswise-lord`,
-    {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(payload)
-    }
-  );
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Failed to fetch betting PNL");
-  }
-
-  return response.json();
+  return apiRequest('/lord/betting-pnl-uidswise-lord', 'POST', payload);
 };
 
 export const getBettingPnlDetail = async (payload: {
@@ -196,109 +73,25 @@ export const getBettingPnlDetail = async (payload: {
   toDate: string;
   marketId: string;
 }) => {
-  const response = await fetch(`${API_BASE_URL}/lord/betting-pnl-detail`, {
-    method: "POST",
-
-    headers: getAuthHeaders(),
-
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-
-    throw new Error(errorData.message || "Failed to fetch betting PNL detail");
-  }
-
-  return response.json();
+  return apiRequest('/lord/betting-pnl-detail', 'POST', payload);
 };
 
 export const getWinLossActivity = async (payload: { userId: string }) => {
-  const response = await fetch(`${API_BASE_URL}/lord/win-loss-activity`, {
-    method: "POST",
-
-    headers: getAuthHeaders(),
-
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-
-    throw new Error(errorData.message || "Failed to fetch win/loss activity");
-  }
-
-  return response.json();
+  return apiRequest('/lord/win-loss-activity', 'POST', payload);
 };
 
 export const getBalanceByUserId = async (payload: { userId: string }) => {
-  const response = await fetch(
-    `${API_BASE_URL}/user/get-balance-useridwise-lord`,
-    {
-      method: "POST",
-
-      headers: getAuthHeaders(),
-
-      body: JSON.stringify(payload)
-    }
-  );
-
-  if (!response.ok) {
-    const errorData = await response.json();
-
-    throw new Error(errorData.message || "Failed to fetch balance by user ID");
-  }
-
-  return response.json();
+  return apiRequest('/user/get-balance-useridwise-lord', 'POST', payload);
 };
 
 export const getBetDetailUseridwiseLord = async (payload: object) => {
-  const response = await fetch(
-    `${API_BASE_URL}/lord/bet-detail-useridwise-lord`,
-    {
-      method: "POST",
-
-      headers: getAuthHeaders(),
-
-      body: JSON.stringify(payload)
-    }
-  );
-
-  if (!response.ok) {
-    const errorData = await response.json();
-
-    throw new Error(errorData.message || "Failed to fetch bet details");
-  }
-
-  return response.json();
+  return apiRequest('/lord/bet-detail-useridwise-lord', 'POST', payload);
 };
 
 export const getBetTicker = async (payload: object) => {
-  const response = await fetch(`${API_BASE_URL}/lord/bet-ticker`, {
-    method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Failed to fetch bet ticker');
-  }
-
-  return response.json();
+  return apiRequest('/lord/bet-ticker', 'POST', payload);
 };
 
 export const getDownlineUserlistLord = async (payload: object) => {
-  const response = await fetch(`${API_BASE_URL}/user/get-donwline-userlist-lord`, {
-    method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Failed to fetch downline user list');
-  }
-
-  return response.json();
+  return apiRequest('/user/get-donwline-userlist-lord', 'POST', payload);
 };

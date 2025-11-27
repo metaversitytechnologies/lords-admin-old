@@ -1,5 +1,11 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useMemo,
+  useState
+} from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import FlashMessage from "../components/FlashMessage";
 
 interface AuthUser {
   userId: string;
@@ -11,13 +17,20 @@ interface AuthUser {
   [k: string]: any;
 }
 
+interface Flash {
+  message: string;
+  type: "success" | "error";
+}
+
 interface AuthContextType {
   token: string | null;
   user: AuthUser | null;
   lastLogin: string | null;
   isAuthenticated: boolean;
   login: (token: string, user?: AuthUser) => void;
-  logout: () => void;
+  logout: (message?: string) => void;
+  flash: Flash | null;
+  setFlash: React.Dispatch<React.SetStateAction<Flash | null>>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -38,6 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (globalThis.window === undefined) return null;
     return globalThis.localStorage.getItem("lastLogin");
   });
+  const [flash, setFlash] = useState<Flash | null>(null);
 
   const login = (newToken: string, newUser?: AuthUser) => {
     globalThis.localStorage.setItem("token", newToken);
@@ -51,21 +65,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setLastLogin(now);
   };
 
-  const logout = () => {
+  const logout = (message?: string) => {
     globalThis.localStorage.removeItem("token");
     globalThis.localStorage.removeItem("user");
     globalThis.localStorage.removeItem("lastLogin");
     setToken(null);
     setUser(null);
     setLastLogin(null);
+    if (message) {
+      setFlash({ message, type: "error" });
+    }
   };
 
   const value = useMemo(
-    () => ({ token, user, lastLogin, isAuthenticated: !!token, login, logout }),
-    [token, user, lastLogin]
+    () => ({
+      token,
+      user,
+      lastLogin,
+      isAuthenticated: !!token,
+      login,
+      logout,
+      flash,
+      setFlash
+    }),
+    [token, user, lastLogin, flash]
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {flash && (
+        <FlashMessage
+          message={flash.message}
+          type={flash.type}
+          onClose={() => setFlash(null)}
+        />
+      )}
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {
