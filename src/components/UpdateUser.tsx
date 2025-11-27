@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { updateUserLord, getDetailForUpdateLord } from "../api/auth";
 import FlashMessage from "./FlashMessage";
+
+type FormValues = {
+  password?: string;
+  confirmPassword?: string;
+  userStatus: string;
+  betStatus: string;
+  userRate: number;
+  notes: string;
+  lupassword: string;
+  newCreditRef: number | string;
+};
 
 interface UpdateUserProps {
   isOpen: boolean;
@@ -9,23 +21,24 @@ interface UpdateUserProps {
 }
 
 const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
-  const [formData, setFormData] = useState({
-    password: "",
-    userStatus: true,
-    betStatus: true,
-    creditRef: 0,
-    givenCreditLimit: 0,
-    minCreditLimit: 0,
-    maxCreditLimit: 0,
-    userRate: 0,
-    notes: "",
-    lupassword: ""
-  });
-  const [newCreditRef, setNewCreditRef] = useState<number | string>("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors }
+  } = useForm<FormValues>();
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [creditLimits, setCreditLimits] = useState({
+    given: 0,
+    min: 0,
+    max: 0
+  });
+
+  const password = watch("password");
 
   useEffect(() => {
     if (isOpen && agent) {
@@ -36,20 +49,22 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
             userId: agent.userId
           });
           const userDetails = response.data;
-          setFormData({
-            password: "",
-            userStatus: userDetails.userStatus,
-            betStatus: userDetails.betStatus,
-            creditRef: userDetails.givenCreditLimit,
+          // Use reset to populate the form with fetched data
+          reset({
+            userStatus: userDetails.userStatus.toString(),
+            betStatus: userDetails.betStatus.toString(),
             userRate: userDetails.userRate,
             notes: userDetails.notes,
-            lupassword: "",
-            givenCreditLimit: userDetails.givenCreditLimit,
-            minCreditLimit: userDetails.minCreditLimit,
-            maxCreditLimit: userDetails.maxCreditLimit
+            newCreditRef: userDetails.givenCreditLimit,
+            password: "",
+            confirmPassword: "",
+            lupassword: ""
           });
-          setNewCreditRef(userDetails.givenCreditLimit);
-          setConfirmPassword("");
+          setCreditLimits({
+            given: userDetails.givenCreditLimit,
+            min: userDetails.minCreditLimit,
+            max: userDetails.maxCreditLimit
+          });
         } catch (error) {
           console.error("Failed to fetch user details for update:", error);
           setError(
@@ -63,42 +78,26 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
       };
       fetchUserDetails();
     }
-  }, [isOpen, agent]);
+  }, [isOpen, agent, reset]);
 
   if (!isOpen || !agent) {
     return null;
   }
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value, type } = e.target;
-    if (type === "radio") {
-      setFormData((prev) => ({ ...prev, [name]: value === "true" }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (formData.password && formData.password !== confirmPassword) {
-      setError("Passwords do not match!");
-      return;
-    }
-
-    const payload = {
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const payload: any = {
       userId: agent.userId,
-      password: formData.password,
-      userStatus: formData.userStatus,
-      betStatus: formData.betStatus,
-      creditRef: Number(newCreditRef),
-      userRate: Number(formData.userRate),
+      userStatus: data.userStatus === "true",
+      betStatus: data.betStatus === "true",
+      creditRef: Number(data.newCreditRef),
+      userRate: Number(data.userRate),
       userLevel: agent.accountType.toUpperCase(),
-      lupassword: formData.lupassword,
-      notes: formData.notes
+      lupassword: data.lupassword,
+      notes: data.notes
     };
+    if (data.password) {
+      payload.password = data.password;
+    }
 
     try {
       await updateUserLord(payload);
@@ -106,6 +105,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
       setError(null);
       setTimeout(() => {
         onClose();
+        reset(); // Reset form after successful submission
       }, 1000);
     } catch (error: any) {
       setError(`Failed to update user: ${error.message}`);
@@ -178,7 +178,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
               <div id="HelpScreenModal" className="update-agent">
                 <div>
                   <div>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
                       <section>
                         <div className="apl-section-inner">
                           <legend>Information</legend>
@@ -192,18 +192,9 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
                               <input
                                 placeholder=" User Rate"
                                 type="text"
-                                name="userRate"
-                                value={formData.userRate}
-                                onChange={handleChange}
-                                onKeyPress={(e) => {
-                                  if (e.currentTarget.value.length === 10)
-                                    e.preventDefault();
-                                }}
+                                {...register("userRate")}
                                 className="form-control"
-                                aria-required="true"
-                                aria-invalid="false"
                               />
-                              <span className="text-danger error"></span>
                             </div>
                           </div>
                         </div>
@@ -217,32 +208,48 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
                               <input
                                 placeholder="New Password"
                                 type="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                maxLength={18}
+                                {...register("password", {
+                                  minLength: {
+                                    value: 8,
+                                    message:
+                                      "Password must be at least 8 characters long"
+                                  },
+                                  maxLength: {
+                                    value: 15,
+                                    message:
+                                      "Password must be at most 15 characters long"
+                                  },
+                                  pattern: {
+                                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
+                                    message:
+                                      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+                                  }
+                                })}
                                 className="w-100"
-                                aria-required="false"
-                                aria-invalid="false"
                               />
-                              <span className="text-danger error"></span>
+                              {errors.password && (
+                                <span className="text-danger error">
+                                  {errors.password.message}
+                                </span>
+                              )}
                             </div>
                             <div className="col-4">
                               <label>Repeat Password</label>
                               <input
                                 placeholder="Re Type Password"
-                                name="confirmpassword"
-                                value={confirmPassword}
-                                onChange={(e) =>
-                                  setConfirmPassword(e.target.value)
-                                }
                                 type="password"
-                                maxLength={18}
+                                {...register("confirmPassword", {
+                                  validate: (value) =>
+                                    value === password ||
+                                    "The passwords do not match"
+                                })}
                                 className="w-100"
-                                aria-required="false"
-                                aria-invalid="false"
                               />
-                              <span className="text-danger error"></span>
+                              {errors.confirmPassword && (
+                                <span className="text-danger error">
+                                  {errors.confirmPassword.message}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -253,83 +260,67 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
                           <div className="apl-form-row m-t-25">
                             <label>User Status</label>
                             <div className="custom-control custom-radio d-inline-block">
-                              <div className="custom-control custom-radio">
-                                <input
-                                  id="userstatustrue"
-                                  type="radio"
-                                  name="userStatus"
-                                  className="custom-control-input"
-                                  value="true"
-                                  checked={formData.userStatus === true}
-                                  onChange={handleChange}
-                                />
-                                <label
-                                  htmlFor="userstatustrue"
-                                  className="custom-control-label"
-                                >
-                                  ACTIVE
-                                </label>
-                              </div>
+                              <input
+                                id="userstatustrue"
+                                type="radio"
+                                {...register("userStatus")}
+                                value="true"
+                                className="custom-control-input"
+                              />
+                              <label
+                                htmlFor="userstatustrue"
+                                className="custom-control-label"
+                              >
+                                ACTIVE
+                              </label>
                             </div>
                             <div className="custom-control custom-radio d-inline-block m-l-10">
-                              <div className="custom-control custom-radio">
-                                <input
-                                  id="userstatusfalse"
-                                  type="radio"
-                                  name="userStatus"
-                                  className="custom-control-input"
-                                  value="false"
-                                  checked={formData.userStatus === false}
-                                  onChange={handleChange}
-                                />
-                                <label
-                                  htmlFor="userstatusfalse"
-                                  className="custom-control-label"
-                                >
-                                  INACTIVE
-                                </label>
-                              </div>
+                              <input
+                                id="userstatusfalse"
+                                type="radio"
+                                {...register("userStatus")}
+                                value="false"
+                                className="custom-control-input"
+                              />
+                              <label
+                                htmlFor="userstatusfalse"
+                                className="custom-control-label"
+                              >
+                                INACTIVE
+                              </label>
                             </div>
                           </div>
                           <div className="apl-form-row m-t-25">
                             <label>Bet Status</label>
                             <div className="custom-control custom-radio d-inline-block">
-                              <div className="custom-control custom-radio">
-                                <input
-                                  id="betstatustrue"
-                                  type="radio"
-                                  name="betStatus"
-                                  className="custom-control-input"
-                                  value="true"
-                                  checked={formData.betStatus === true}
-                                  onChange={handleChange}
-                                />
-                                <label
-                                  htmlFor="betstatustrue"
-                                  className="custom-control-label"
-                                >
-                                  ACTIVE
-                                </label>
-                              </div>
+                              <input
+                                id="betstatustrue"
+                                type="radio"
+                                {...register("betStatus")}
+                                value="true"
+                                className="custom-control-input"
+                              />
+                              <label
+                                htmlFor="betstatustrue"
+                                className="custom-control-label"
+                              >
+                                ACTIVE
+                              </label>
                             </div>
                             <div className="custom-control custom-radio d-inline-block m-l-10">
-                              <div className="custom-control custom-radio">
-                                <input
-                                  id="betstatusfalse"
-                                  type="radio"
-                                  name="betStatus"
-                                  className="custom-control-input"
-                                  value="false"
-                                  checked={formData.betStatus === false}
-                                  onChange={handleChange}
-                                />
-                                <label
-                                  htmlFor="betstatusfalse"
-                                  className="custom-control-label"
-                                >
-                                  INACTIVE
-                                </label>
-                              </div>
+                              <input
+                                id="betstatusfalse"
+                                type="radio"
+                                {...register("betStatus")}
+                                value="false"
+                                className="custom-control-input"
+                              />
+                              <label
+                                htmlFor="betstatusfalse"
+                                className="custom-control-label"
+                              >
+                                INACTIVE
+                              </label>
                             </div>
                           </div>
                         </div>
@@ -346,7 +337,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
                                     placeholder="Credit"
                                     type="text"
                                     disabled
-                                    value={formData.givenCreditLimit}
+                                    value={creditLimits.given}
                                   />
                                 </span>
                               </div>
@@ -356,17 +347,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
                                   <input
                                     placeholder="Credit Limit"
                                     type="text"
-                                    name="newCreditRef"
-                                    value={newCreditRef}
-                                    onChange={(e) =>
-                                      setNewCreditRef(e.target.value)
-                                    }
-                                    onKeyPress={(e) => {
-                                      if (e.currentTarget.value.length === 14)
-                                        e.preventDefault();
-                                    }}
-                                    aria-required="false"
-                                    aria-invalid="false"
+                                    {...register("newCreditRef")}
                                   />
                                 </span>
 
@@ -374,8 +355,8 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
                                   className="d-inline-block v-m"
                                   style={{ marginLeft: "3px" }}
                                 >
-                                  &gt;={formData.minCreditLimit}
-                                  <br /> &lt;= {formData.maxCreditLimit}
+                                  &gt;={creditLimits.min}
+                                  <br /> &lt;= {creditLimits.max}
                                 </span>
                               </div>
                             </div>
@@ -385,18 +366,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
                       <section>
                         <div className="apl-section-inner">
                           <legend className="p-b-10">Notes</legend>
-                          <textarea
-                            onKeyPress={(e) => {
-                              if (e.currentTarget.value.length === 50)
-                                e.preventDefault();
-                            }}
-                            name="notes"
-                            value={formData.notes}
-                            onChange={handleChange}
-                            aria-required="false"
-                            aria-invalid="false"
-                          ></textarea>
-                          <span className="text-danger error-account"></span>
+                          <textarea {...register("notes")}></textarea>
                         </div>
                       </section>
                       <section>
@@ -408,14 +378,27 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
                                 <input
                                   placeholder=" Master Password"
                                   type="password"
-                                  name="lupassword"
-                                  value={formData.lupassword}
-                                  onChange={handleChange}
+                                  {...register("lupassword", {
+                                    required:
+                                      "The MasterPassword field is required",
+                                    minLength: {
+                                      value: 6,
+                                      message:
+                                        "Master Password must be 6 characters long"
+                                    },
+                                    maxLength: {
+                                      value: 6,
+                                      message:
+                                        "Master Password must be 6 characters long"
+                                    }
+                                  })}
                                   className="form-control"
-                                  aria-required="true"
-                                  aria-invalid="false"
                                 />
-                                <span className="text-danger error"></span>
+                                {errors.lupassword && (
+                                  <span className="text-danger error">
+                                    {errors.lupassword.message}
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </div>

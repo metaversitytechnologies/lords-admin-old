@@ -373,7 +373,15 @@ const NewAgent: React.FC = () => {
               placeholder="Master Password"
               type="password"
               {...register("lupassword", {
-                required: "The MasterPassword field is required"
+                required: "The MasterPassword field is required",
+                minLength: {
+                  value: 6,
+                  message: "Master Password must be 6 characters long"
+                },
+                maxLength: {
+                  value: 6,
+                  message: "Master Password must be 6 characters long"
+                }
               })}
               aria-required="true"
               aria-invalid={!!errors.lupassword}
