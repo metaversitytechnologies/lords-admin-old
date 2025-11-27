@@ -11,7 +11,7 @@ const NetExposure = ({ userId, isActive }) => {
   const [error, setError] = useState(null);
 
   const fetchData = useCallback(async () => {
-    if (!isActive) return;
+    if (userId && !isActive) return;
     try {
       setLoading(true);
       setError(null);
@@ -35,10 +35,8 @@ const NetExposure = ({ userId, isActive }) => {
   }, [userId, isActive]);
 
   useEffect(() => {
-    if (isActive) {
-      fetchData();
-    }
-  }, [fetchData, isActive]);
+    fetchData();
+  }, [fetchData]);
 
   return (
     <div>
