@@ -9,3 +9,7 @@ export const getFancyPnl = async (payload: object) => {
 export const getBetList = async (payload: object) => {
   return apiRequest("/bets/bet-list-by-matchid", "POST", payload);
 };
+
+export const getMyBetReport = async (payload: object) => {
+  return apiRequest("/lord/my-bet-report-lord", "POST", payload);
+};

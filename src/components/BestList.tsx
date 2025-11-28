@@ -1,362 +1,797 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getMyBetReport } from "../api/bet";
+import { useAuth } from "../context/AuthContext";
 import SearchUser from "./SearchUser";
 
-const BetList = ({ isTabView = false }) => {
-  const [userId, setUserId] = useState("");
+const eventOptions = [
+  { value: "0", label: "All" },
+  { value: "1", label: "Football" },
+  { value: "2", label: "Tennis" },
+  { value: "4", label: "Cricket" },
+  { value: "6", label: "Boxing" },
+  { value: "8", label: "Motor Sport" },
+  { value: "9", label: "Teen Patti Oneday" },
+  { value: "10", label: "Teen Patti Test" },
+  { value: "11", label: "Teen Patti 20" },
+  { value: "12", label: "Poker 20" },
+  { value: "13", label: "Poker Oneday" },
+  { value: "14", label: "Andar Bahar" },
+  { value: "15", label: "Worli" },
+  { value: "16", label: "3 Card Judgement" },
+  { value: "17", label: "Poker 9" },
+  { value: "18", label: "32 Card A" },
+  { value: "20", label: "Lottery" },
+  { value: "22", label: "Open Teenpatti" },
+  { value: "23", label: "Instant Worli" },
+  { value: "24", label: "Lucky 7" },
+  { value: "25", label: "20-20 Dragon Tiger" },
+  { value: "26", label: "Bollywood Table" },
+  { value: "27", label: "Amar Akbar Anthony" },
+  { value: "28", label: "1Day Dragon Tiger" },
+  { value: "29", label: "32 Card B" },
+  { value: "31", label: "Casino War" },
+  { value: "32", label: "20-20 Dragon Tiger Lion" },
+  { value: "33", label: "Casino Meter" },
+  { value: "35", label: "20-20 Cricket Match" },
+  { value: "36", label: "Lucky 7 - B" },
+  { value: "37", label: "Baccarat" },
+  { value: "38", label: "Andar Bahar 2" },
+  { value: "39", label: "Baccarat2" },
+  { value: "40", label: "20-20 Dragon Tiger 2" },
+  { value: "50", label: "Muflis Teenpatti" },
+  { value: "52", label: "Kabaddi" },
+  { value: "53", label: "Sic Bo" },
+  { value: "54", label: "Teenpatti Joker" },
+  { value: "55", label: "Lucky 15" },
+  { value: "56", label: "Dus ka Dum" },
+  { value: "57", label: "29Card Baccarat" },
+  { value: "58", label: "Race to 17" },
+  { value: "59", label: "20-20 Teenpatti C" },
+  { value: "70", label: "Table Tennis" },
+  { value: "71", label: "Badminton" },
+  { value: "3503", label: "Darts" },
+  { value: "7522", label: "Basketball" },
+  { value: "2378961", label: "Election" },
+  { value: "26420387", label: "Mixed Martial Arts" },
+];
+
+const BestList = () => {
+  const { user } = useAuth();
+  const userId = user?.userId;
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchUser, setSearchUser] = useState("");
+  const [sportName, setSportName] = useState("4");
+  const [currentBet, setCurrentBet] = useState(true);
+  const [matchedDeletedBet, setMatchedDeletedBet] = useState("MATCHED");
+  const [noOfRecords, setNoOfRecords] = useState(10);
+  const [index, setIndex] = useState(0);
+  const today = new Date();
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(today.getDate() - 7);
+
+  const [fromDate, setFromDate] = useState(
+    oneWeekAgo.toISOString().split("T")[0]
+  );
+  const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
+  const [activeTab, setActiveTab] = useState("Current");
+  const [activeRadio, setActiveRadio] = useState("Matched");
+  const [totalPages, setTotalPages] = useState(0);
+  const [search, setSearch] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+
+  useEffect(() => {
+    const fetchMyBetReport = async () => {
+      try {
+        setLoading(true);
+        const payload = {
+          sportName: sportName,
+          userId: searchUser || userId,
+          currentBet: currentBet,
+          matchedDeletedBet: matchedDeletedBet,
+          noOfRecords: noOfRecords,
+          index: index,
+          fromDate: !currentBet ? fromDate : "",
+          toDate: !currentBet ? toDate : ""
+        };
+        const response = await getMyBetReport(payload);
+        if (response.status) {
+          setData(response.data);
+          setFilteredData(response.data.betList);
+          setTotalPages(Math.ceil(response.data.totalRecords / noOfRecords));
+        } else {
+          setError(response.message);
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMyBetReport();
+  }, [
+    userId,
+    sportName,
+    currentBet,
+    matchedDeletedBet,
+    noOfRecords,
+    index,
+    fromDate,
+    toDate,
+    searchUser
+  ]);
+
+  useEffect(() => {
+    if (search) {
+      const filtered = data?.betList.filter((bet) =>
+        bet.userId.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(data?.betList);
+    }
+  }, [search, data]);
+
+  const handleNext = () => {
+    if (index < totalPages - 1) {
+      setIndex(index + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (index > 0) {
+      setIndex(index - 1);
+    }
+  };
+
+  const handleFirst = () => {
+    setIndex(0);
+  };
+
+  const handleLast = () => {
+    setIndex(totalPages - 1);
+  };
+
+  const handleApply = () => {
+    setSearchUser(search);
+  };
+
+  const handleCancel = () => {
+    setSportName("4");
+    setSearch("");
+    setSearchUser("");
+    const today = new Date();
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(today.getDate() - 7);
+    setFromDate(oneWeekAgo.toISOString().split("T")[0]);
+    setToDate(today.toISOString().split("T")[0]);
+    setIndex(0);
+  };
+
   const entriesOptions = [10, 20, 50, 100];
   const tabs = ["Current", "Past"];
-  const radioOptions = ["Matched", "Unmatched", "Deleted"];
-
+  const radioOptions =
+    activeTab === "Past"
+      ? ["Matched", "Unmatched", "Deleted"]
+      : ["Matched", "Unmatched"];
   return (
-    <div className={`${isTabView ? "" : "apl-section"}`}>
+    <div className="apl-section">
       <div className="bet-list">
-        {!isTabView && (
-          <div className="header">
-            <h1>Bet List</h1>
-            <span className="button-options d-inline-block">
-              <div className="disabled">
-                <span className="btn btn-secondary m-l-5">Download CSV</span>
-              </div>
-            </span>
-          </div>
-        )}
-
-        {/* Filter Form */}
-        <form className="m-b-10">
-          {isTabView ? (
-            <div className="additional-filters d-flex m-t-10">
-              <div className="datepicker-wrapper tab-datepicker d-inline-block v-t p-l-0 p-r-5 m-b-0 form-group">
-                <div
-                  className="mx-datepicker vuedatepicker"
-                  not-before="Wed Sep 17 2025 05:30:00 GMT+0530 (India Standard Time)"
-                  not-after="Mon Nov 17 2025 05:30:00 GMT+0530 (India Standard Time)"
-                  name="fromdate"
-                >
-                  <div className="mx-input-wrapper">
-                    <input
-                      name="date"
-                      type="date"
-                      autoComplete="off"
-                      placeholder="Select Date"
-                      className="mx-input"
-                    />
-                    <span className="mx-input-append mx-clear-wrapper">
-                      <i className="mx-input-icon mx-clear-icon"></i>
-                    </span>
-                    <span className="mx-input-append">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        version="1.1"
-                        viewBox="0 0 200 200"
-                        className="mx-calendar-icon"
-                      >
-                        <rect
-                          x="13"
-                          y="29"
-                          rx="14"
-                          ry="14"
-                          width="174"
-                          height="158"
-                          fill="transparent"
-                        ></rect>
-                        <line x1="46" x2="46" y1="8" y2="50"></line>
-                        <line x1="154" x2="154" y1="8" y2="50"></line>
-                        <line x1="13" x2="187" y1="70" y2="70"></line>
-                        <text
-                          x="50%"
-                          y="135"
-                          fontSize="90"
-                          strokeWidth="1"
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                        ></text>
-                      </svg>
-                    </span>
-                  </div>
-
-                  <div
-                    className="mx-datepicker-popup"
-                    style={{ display: "none" }}
-                  >
-                    {/* popup content preserved */}
-                  </div>
-                </div>
-              </div>
-
-              <br />
-
-              <span className="text-danger error-report"></span>
-
-              {/* ------------------------------------------------------- */}
-              {/* SECOND DATEPICKER                                       */}
-              {/* ------------------------------------------------------- */}
-
-              <div className="datepicker-wrapper tab-datepicker form-group d-inline-block v-t p-l-0 p-r-5 m-b-0">
-                <div
-                  className="mx-datepicker vuedatepicker"
-                  not-before="Wed Sep 17 2025 05:30:00 GMT+0530 (India Standard Time)"
-                  not-after="Mon Nov 17 2025 05:30:00 GMT+0530 (India Standard Time)"
-                  name="todate"
-                >
-                  <div className="mx-input-wrapper">
-                    <input
-                      name="date"
-                      type="date"
-                      autoComplete="off"
-                      placeholder="Select Date"
-                      className="mx-input"
-                    />
-                    <span className="mx-input-append mx-clear-wrapper">
-                      <i className="mx-input-icon mx-clear-icon"></i>
-                    </span>
-
-                    <span className="mx-input-append">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        version="1.1"
-                        viewBox="0 0 200 200"
-                        className="mx-calendar-icon"
-                      >
-                        <rect
-                          x="13"
-                          y="29"
-                          rx="14"
-                          ry="14"
-                          width="174"
-                          height="158"
-                          fill="transparent"
-                        ></rect>
-                        <line x1="46" x2="46" y1="8" y2="50"></line>
-                        <line x1="154" x2="154" y1="8" y2="50"></line>
-                        <line x1="13" x2="187" y1="70" y2="70"></line>
-                        <text
-                          x="50%"
-                          y="135"
-                          fontSize="90"
-                          strokeWidth="1"
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                        ></text>
-                      </svg>
-                    </span>
-                  </div>
-
-                  <div
-                    className="mx-datepicker-popup"
-                    style={{ display: "none" }}
-                  >
-                    {/* popup content preserved */}
-                  </div>
-                </div>
-              </div>
-
-              <br />
-
-              <span className="text-danger error-report"></span>
-
-              <button type="submit" className="btn btn-secondary m-l-5">
-                Apply
-              </button>
-              <button className="btn btn-cancel m-l-5">Cancel</button>
+        <div className="header">
+          <h1>Bet List</h1>{" "}
+          <span className="button-options d-inline-block">
+            <div id="export_1764346502742" className="">
+              <span className="btn btn-secondary m-l-5">Download CSV</span>
             </div>
-          ) : (
-            <div className="additional-filters m-t-10">
-              <div className="row">
-                <div className="col-sm-12">
-                  <div className="dropdown long-width d-inline-block v-t">
-                    <label className="p-l-5 d-block">Event</label>
-                    <select className="dropdown-toggle dropdown-button"></select>
+          </span>
+        </div>{" "}
+        <form data-vv-scope="myBets" className="m-b-10">
+          <div className="additional-filters m-t-10">
+            <div className="row">
+              <div className="col-sm-12">
+                <div className="dropdown long-width d-inline-block v-t">
+                  <label className="p-l-5 d-block">Event</label>{" "}
+                  <select
+                    className="dropdown-toggle dropdown-button"
+                    value={sportName}
+                    onChange={(e) => setSportName(e.target.value)}
+                  >
+                    {eventOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>{" "}
+                <div className="dropdown long-width m-l-10 d-inline-block v-t">
+                  <label className="p-l-5 d-block">Market</label>{" "}
+                  <select className="dropdown-toggle dropdown-button title">
+                    <option value="all" selected>
+                      All
+                    </option>{" "}
+                  </select>
+                </div>{" "}
+                <div className="dropdown m-l-10 d-inline-block v-t">
+                  <label className="p-l-5 d-block">Rate</label>{" "}
+                  <button
+                    data-toggle="dropdown"
+                    className="dropdown-toggle dropdown-button"
+                  >
+                    <span className="title">Odds: All</span>{" "}
+                    <i className="fas fa-caret-down"></i>
+                  </button>{" "}
+                  <div className="dropdown-menu dropdown-date">
+                    <span className="p-t-10 p-l-10 p-r-10">From</span>{" "}
+                    <input
+                      type="text"
+                      name=""
+                      className="p-t-10 p-l-10 p-r-10 p-b-10"
+                    />
+                    <span className="p-t-10 p-l-10 p-r-10 p-b-10">To</span>{" "}
+                    <input
+                      type="text"
+                      name=""
+                      className="p-t-10 p-l-10 p-r-10 p-b-10"
+                    />
                   </div>
-
-                  <div className="dropdown long-width m-l-10 d-inline-block v-t">
-                    <label className="p-l-5 d-block">Market</label>
-                    <select
-                      className="dropdown-toggle dropdown-button title"
-                      defaultValue="all"
-                    >
-                      <option value="all">All</option>
-                    </select>
+                </div>{" "}
+                <div className="dropdown m-l-10 d-inline-block v-t">
+                  <label className="p-l-5 d-block">Amount</label>{" "}
+                  <button
+                    data-toggle="dropdown"
+                    className="dropdown-toggle dropdown-button"
+                  >
+                    <span className="title">Stake: All</span>{" "}
+                    <i className="fas fa-caret-down"></i>
+                  </button>{" "}
+                  <div className="dropdown-menu dropdown-date">
+                    <span className="p-t-10 p-l-10 p-r-10 p-b-10">From</span>{" "}
+                    <input
+                      type="text"
+                      name=""
+                      className="p-t-10 p-l-10 p-r-10 p-b-10"
+                    />{" "}
+                    <span className="p-t-10 p-l-10 p-r-10 p-b-10">To</span>{" "}
+                    <input
+                      type="text"
+                      name=""
+                      className="p-t-10 p-l-10 p-r-10 p-b-10"
+                    />
                   </div>
-
-                  <div className="dropdown m-l-10 d-inline-block v-t">
-                    <label className="p-l-5 d-block">Rate</label>
-                    <button
-                      type="button"
-                      className="dropdown-toggle dropdown-button"
-                    >
-                      <span className="title">Odds: All</span>
-                      <i className="fas fa-caret-down"></i>
-                    </button>
-                    <div className="dropdown-menu dropdown-date">
-                      <span className="p-2">From</span>
-                      <input type="text" className="p-2" />
-                      <span className="p-2">To</span>
-                      <input type="text" className="p-2" />
-                    </div>
-                  </div>
-
-                  <div className="dropdown m-l-10 d-inline-block v-t">
-                    <label className="p-l-5 d-block">Amount</label>
-                    <button
-                      type="button"
-                      className="dropdown-toggle dropdown-button"
-                    >
-                      <span className="title">Stake: All</span>
-                      <i className="fas fa-caret-down"></i>
-                    </button>
-                    <div className="dropdown-menu dropdown-date">
-                      <span className="p-2">From</span>
-                      <input type="text" className="p-2" />
-                      <span className="p-2">To</span>
-                      <input type="text" className="p-2" />
-                    </div>
-                  </div>
-
-                  <div className="d-inline-block v-t m-l-10">
-                    <div className="search-box-container d-inline-block p-l-0 p-r-5">
-                      <label className="p-l-5 d-block">Search by user</label>
-                      <SearchUser
-                        value={userId}
-                        onChange={setUserId}
-                        placeholder="Enter Atleast 3 character"
-                      />
-                    </div>
+                </div>{" "}
+                <div className="d-inline-block v-t m-l-10">
+                  <div className="search-box-container d-inline-block p-l-0 p-r-5">
+                    <label className="p-l-5 d-block">Search by user</label>{" "}
+                    <SearchUser value={search} onChange={setSearch} />
                   </div>
                 </div>
               </div>
-
-              <div className="row m-t-10">
-                <div className="col-sm-12 text-right">
-                  <div className="form-group d-inline-block m-b-0">
-                    <button type="submit" className="btn btn-secondary m-l-5">
-                      Apply
-                    </button>
-                    <button type="button" className="btn btn-cancel m-l-5">
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </form>
-
-        {/* Tabs Section */}
-        <div className="tabs">
-          <ul className="nav nav-tabs">
-            {tabs.map((tab, index) => (
-              <li key={index} className="nav-item">
-                <a
-                  href="#"
-                  className={`nav-link ${index === 0 ? "active" : ""}`}
-                >
-                  {tab}
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          <div className="tab-content">
-            {/* Radio Filter */}
-            <div className="col-sm-12 m-b-10 p-l-0 p-r-0">
-              <form className="m-b-10">
-                <div className="form-group d-inline-block v-t m-b-0 bet-options">
-                  {radioOptions.map((option, index) => (
-                    <div
-                      key={index}
-                      className="custom-control custom-control-inline custom-radio"
-                    >
+            </div>{" "}
+            <div className="row m-t-10">
+              <div className="col-sm-12">
+                {activeTab === "Past" && (
+                  <>
+                    <div className="d-inline-block v-t p-l-0 p-r-5 form-group m-b-0">
+                      <label className="d-block p-l-5">From</label>{" "}
                       <input
-                        type="radio"
-                        name="bet-status"
-                        id={`radio-${index}`}
-                        className="custom-control-input"
+                        type="date"
+                        className="form-control"
+                        name="fromdate"
+                        value={fromDate}
+                        onChange={(e) => setFromDate(e.target.value)}
                       />
-                      <label
-                        className="custom-control-label"
-                        htmlFor={`radio-${index}`}
-                      >
-                        <span>{option}</span>
-                      </label>
                     </div>
-                  ))}
+                    <div className="form-group d-inline-block v-t p-l-0 p-r-5 m-b-0">
+                      <label className="d-block p-l-5">To</label>{" "}
+                      <input
+                        type="date"
+                        className="form-control"
+                        name="todate"
+                        value={toDate}
+                        onChange={(e) => setToDate(e.target.value)}
+                      />
+                    </div>
+                  </>
+                )}
+
+                <div className="text-right d-inline-block v-t p-l-0 p-r-5 m-b-0 form-group float-right">
+                  <label className="d-block p-l-5">&nbsp;</label>{" "}
+                  <button
+                    type="button"
+                    className="btn btn-secondary m-l-5"
+                    onClick={handleApply}
+                  >
+                    Apply
+                  </button>{" "}
+                  <button
+                    type="button"
+                    className="btn btn-cancel m-l-5"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>{" "}
+        <div className="tabs">
+          <div className="">
+            <ul role="tablist" className="nav nav-tabs">
+              {tabs.map((tab, index) => (
+                <li
+                  key={index}
+                  role="presentation"
+                  className={`nav-item ${activeTab === tab ? "active" : ""}`}
+                  onClick={() => {
+                    setActiveTab(tab);
+                    setCurrentBet(tab === "Current");
+                    if (tab === "Current" && activeRadio === "Deleted") {
+                      setActiveRadio("Matched");
+                      setMatchedDeletedBet("MATCHED");
+                    }
+                  }}
+                >
+                  <a
+                    role="tab"
+                    aria-selected={activeTab === tab}
+                    aria-setsize="2"
+                    aria-posinset={index + 1}
+                    href="#"
+                    target="_self"
+                    className={`nav-link ${activeTab === tab ? "active" : ""}`}
+                    id={`__BVID__${52 + index * 2}___BV_tab_button__`}
+                    aria-controls={`__BVID__${52 + index * 2}`}
+                  >
+                    {tab}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="tab-content" id="__BVID__51__BV_tab_container_">
+            <div
+              role="tabpanel"
+              aria-hidden="false"
+              className="tab-pane active"
+              id="__BVID__52"
+              aria-labelledby="__BVID__52___BV_tab_button__"
+            ></div>{" "}
+            <div
+              role="tabpanel"
+              aria-hidden="true"
+              className="tab-pane"
+              id="__BVID__54"
+              aria-labelledby="__BVID__54___BV_tab_button__"
+              style={{ display: "none" }}
+            ></div>{" "}
+            <div className="col-sm-12 m-b-10 p-l-0 p-r-0">
+              <form data-vv-scope="myBets" className="m-b-10">
+                <div className="form-group d-inline-block v-t m-b-0 p-l-0 p-r-0 bet-options">
+                  <fieldset className="form-group" id="__BVID__56">
+                    <div>
+                      <div
+                        role="radiogroup"
+                        tabIndex={-1}
+                        className="bv-no-focus-ring"
+                        id="__BVID__57"
+                      >
+                        {radioOptions.map((option, index) => (
+                          <div
+                            key={index}
+                            className="custom-control custom-control-inline custom-radio"
+                          >
+                            <input
+                              type="radio"
+                              name="radio-inline"
+                              className="custom-control-input"
+                              value={option}
+                              id={`__BVID__57_BV_option_${index}`}
+                              checked={activeRadio === option}
+                              onChange={() => {
+                                setActiveRadio(option);
+                                setMatchedDeletedBet(option.toUpperCase());
+                              }}
+                            />
+                            <label
+                              className="custom-control-label"
+                              htmlFor={`__BVID__57_BV_option_${index}`}
+                            >
+                              <span>{option}</span>
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </fieldset>
                 </div>
               </form>
-            </div>
-
-            {/* Table Controls */}
+            </div>{" "}
             <div className="table-responsive col-sm-12">
               <div className="row col-page">
                 <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
-                  <label className="form-label">
-                    Show{" "}
-                    <select className="form-control custom-select custom-select-sm">
-                      {entriesOptions.map((num) => (
-                        <option key={num} value={num}>
-                          {num}
-                        </option>
-                      ))}
-                    </select>{" "}
-                    entries
-                  </label>
+                  <div className="row dataTables_length">
+                    <div className="p-l-m col">
+                      <label htmlFor="input-small">
+                        Show
+                        <select
+                          className="form-control custom-select custom-select-sm"
+                          id="__BVID__61"
+                          value={noOfRecords}
+                          onChange={(e) =>
+                            setNoOfRecords(parseInt(e.target.value))
+                          }
+                        >
+                          {entriesOptions.map((value) => (
+                            <option key={value} value={value}>
+                              {value}
+                            </option>
+                          ))}
+                        </select>
+                        entries
+                      </label>
+                    </div>
+                  </div>
+                </div>{" "}
+                <div className="col-sm-12 col-md-6">
+                  <div className="dataTables_filter">
+                    <div className="row">
+                      <div className="f-l-m col">
+                        <label>
+                          Search:
+                          <input
+                            type="text"
+                            placeholder="Type to Search"
+                            className="form-control form-control-sm"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-
-                <div className="col-sm-12 col-md-6 text-right">
-                  <label>
-                    Search:{" "}
-                    <input
-                      type="text"
-                      placeholder="Type to Search"
-                      className="form-control form-control-sm"
-                    />
-                  </label>
+              </div>{" "}
+              <div className="row">
+                <div className="col-sm-12 p-l-0 p-r-5">
+                  <table
+                    id="mybettadmin"
+                    role="table"
+                    aria-busy="false"
+                    aria-colcount="9"
+                    className="table b-table table table-striped b-table-stacked-md"
+                  >
+                    <thead role="rowgroup" className="">
+                      <tr role="row" className="">
+                        <th
+                          role="columnheader"
+                          scope="col"
+                          tabIndex={0}
+                          aria-colindex="1"
+                          aria-sort="none"
+                          className="position-relative text-center"
+                        >
+                          <div>Place Date</div>
+                          <span className="sr-only">
+                            {" "}
+                            (Click to sort ascending)
+                          </span>
+                        </th>
+                        <th
+                          role="columnheader"
+                          scope="col"
+                          tabIndex={0}
+                          aria-colindex="2"
+                          aria-sort="none"
+                          className="position-relative text-left"
+                        >
+                          <div>Description</div>
+                          <span className="sr-only">
+                            {" "}
+                            (Click to sort ascending)
+                          </span>
+                        </th>
+                        <th
+                          role="columnheader"
+                          scope="col"
+                          tabIndex={0}
+                          aria-colindex="3"
+                          aria-sort="none"
+                          className="position-relative text-left"
+                        >
+                          <div>User name</div>
+                          <span className="sr-only">
+                            {" "}
+                            (Click to sort ascending)
+                          </span>
+                        </th>
+                        <th
+                          role="columnheader"
+                          scope="col"
+                          tabIndex={0}
+                          aria-colindex="4"
+                          aria-sort="none"
+                          className="position-relative text-left"
+                        >
+                          <div>Bet Type</div>
+                          <span className="sr-only">
+                            {" "}
+                            (Click to sort ascending)
+                          </span>
+                        </th>
+                        <th
+                          role="columnheader"
+                          scope="col"
+                          tabIndex={0}
+                          aria-colindex="5"
+                          aria-sort="none"
+                          className="position-relative text-right"
+                        >
+                          <div>User Rate</div>
+                          <span className="sr-only">
+                            {" "}
+                            (Click to sort ascending)
+                          </span>
+                        </th>
+                        <th
+                          role="columnheader"
+                          scope="col"
+                          tabIndex={0}
+                          aria-colindex="6"
+                          aria-sort="none"
+                          className="position-relative text-center"
+                        >
+                          <div>Win/Loss</div>
+                          <span className="sr-only">
+                            {" "}
+                            (Click to sort ascending)
+                          </span>
+                        </th>
+                        <th
+                          role="columnheader"
+                          scope="col"
+                          aria-colindex="7"
+                          className="text-left"
+                        >
+                          <div>IP</div>
+                        </th>
+                        <th
+                          role="columnheader"
+                          scope="col"
+                          aria-colindex="8"
+                          className="text-right"
+                        >
+                          <div>Browser Details</div>
+                        </th>
+                        <th
+                          role="columnheader"
+                          scope="col"
+                          tabIndex={0}
+                          aria-colindex="9"
+                          aria-sort="none"
+                          className="position-relative text-right"
+                        >
+                          <div>Amount</div>
+                          <span className="sr-only">
+                            {" "}
+                            (Click to sort ascending)
+                          </span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody role="rowgroup">
+                      {loading ? (
+                        <tr>
+                          <td colSpan={9} className="text-center">
+                            Loading...
+                          </td>
+                        </tr>
+                      ) : error ? (
+                        <tr>
+                          <td colSpan={9} className="text-center">
+                            {error}
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredData?.map((bet, index) => (
+                          <tr key={index} role="row">
+                            <td
+                              aria-colindex="1"
+                              data-label="Place Date"
+                              role="cell"
+                              className="text-center"
+                            >
+                              <div>{bet.lastUpdated}</div>
+                            </td>
+                            <td
+                              aria-colindex="2"
+                              data-label="Description"
+                              role="cell"
+                              className="text-left"
+                            >
+                              <div>{bet.selectionName}</div>
+                            </td>
+                            <td
+                              aria-colindex="3"
+                              data-label="User name"
+                              role="cell"
+                              className="text-left"
+                            >
+                              <div>{bet.userId}</div>
+                            </td>
+                            <td
+                              aria-colindex="4"
+                              data-label="Bet Type"
+                              role="cell"
+                              className="text-left"
+                            >
+                              <div>{bet.back ? "BACK" : "LAY"}</div>
+                            </td>
+                            <td
+                              aria-colindex="5"
+                              data-label="User Rate"
+                              role="cell"
+                              className="text-right"
+                            >
+                              <div>{bet.odds.toFixed(2)}</div>
+                            </td>
+                            <td
+                              aria-colindex="6"
+                              data-label="Win/Loss"
+                              role="cell"
+                              className="text-center"
+                            >
+                              <div>
+                                <span
+                                  className={
+                                    bet.profitLiability > 0
+                                      ? "text-success"
+                                      : "text-danger"
+                                  }
+                                >
+                                  {bet.profitLiability > 0
+                                    ? "WIN"
+                                    : bet.profitLiability < 0
+                                    ? "LOSS"
+                                    : "TIE"}
+                                </span>{" "}
+                              </div>
+                            </td>
+                            <td
+                              aria-colindex="7"
+                              data-label="IP"
+                              role="cell"
+                              className="text-left"
+                            >
+                              <div>
+                                N/A
+                                <a
+                                  title="IP Details"
+                                  href="#"
+                                  target="_self"
+                                  className=""
+                                >
+                                  <i className="fa fa-eye m-l-5 curser-point float-right"></i>
+                                </a>
+                              </div>
+                            </td>
+                            <td
+                              aria-colindex="8"
+                              data-label="Browser Details"
+                              role="cell"
+                              className="text-right"
+                            >
+                              <div>
+                                <a
+                                  href="#"
+                                  onClick={(e) => e.preventDefault()}
+                                  data-toggle="tooltip"
+                                  data-placement="top"
+                                  title="N/A"
+                                  className="text-success"
+                                >
+                                  Detail
+                                </a>
+                              </div>
+                            </td>
+                            <td
+                              aria-colindex="9"
+                              data-label="Amount"
+                              role="cell"
+                              className="text-right"
+                            >
+                              <div>{bet.matched.toFixed(2)}</div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>{" "}
+              <div className="row">
+                <div className="my-1 p-m-l col">
+                  <ul
+                    role="menubar"
+                    aria-disabled="false"
+                    aria-label="Pagination"
+                    className="pagination my-0 b-pagination justify-content-end"
+                  >
+                    <li
+                      role="presentation"
+                      className={`page-item ${index === 0 ? "disabled" : ""}`}
+                    >
+                      <span
+                        role="menuitem"
+                        aria-label="Go to first page"
+                        onClick={handleFirst}
+                        className="page-link"
+                      >
+                        «
+                      </span>
+                    </li>
+                    <li
+                      role="presentation"
+                      className={`page-item ${index === 0 ? "disabled" : ""}`}
+                    >
+                      <span
+                        role="menuitem"
+                        aria-label="Go to previous page"
+                        onClick={handlePrev}
+                        className="page-link"
+                      >
+                        ‹
+                      </span>
+                    </li>
+                    <li role="presentation" className="page-item active">
+                      <button
+                        role="menuitemradio"
+                        type="button"
+                        aria-label={`Go to page ${index + 1}`}
+                        aria-checked="true"
+                        aria-posinset={index + 1}
+                        aria-setsize={totalPages}
+                        tabIndex={0}
+                        className="page-link"
+                      >
+                        {index + 1}
+                      </button>
+                    </li>
+                    <li
+                      role="presentation"
+                      className={`page-item ${
+                        index === totalPages - 1 ? "disabled" : ""
+                      }`}
+                    >
+                      <span
+                        role="menuitem"
+                        aria-label="Go to next page"
+                        onClick={handleNext}
+                        className="page-link"
+                      >
+                        ›
+                      </span>
+                    </li>
+                    <li
+                      role="presentation"
+                      className={`page-item ${
+                        index === totalPages - 1 ? "disabled" : ""
+                      }`}
+                    >
+                      <span
+                        role="menuitem"
+                        aria-label="Go to last page"
+                        onClick={handleLast}
+                        className="page-link"
+                      >
+                        »
+                      </span>
+                    </li>
+                  </ul>
                 </div>
               </div>
-
-              {/* Bet Table */}
-              <table className="table table-striped b-table table-stacked-md">
-                <thead>
-                  <tr>
-                    <th className="text-center">Place Date</th>
-                    <th className="text-left">Description</th>
-                    <th className="text-left">User Name</th>
-                    <th className="text-left">Bet Type</th>
-                    <th className="text-right">User Rate</th>
-                    <th className="text-center">Win/Loss</th>
-                    <th className="text-left">IP</th>
-                    <th className="text-right">Browser Details</th>
-                    <th className="text-right">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td colSpan={9}>
-                      <p className="text-center m-0">
-                        There are no records to show
-                      </p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
-              {/* Pagination */}
-              <ul className="pagination justify-content-end my-0">
-                <li className="page-item disabled">
-                  <span className="page-link">«</span>
-                </li>
-                <li className="page-item disabled">
-                  <span className="page-link">‹</span>
-                </li>
-                <li className="page-item active">
-                  <button className="page-link">1</button>
-                </li>
-                <li className="page-item disabled">
-                  <span className="page-link">›</span>
-                </li>
-                <li className="page-item disabled">
-                  <span className="page-link">»</span>
-                </li>
-              </ul>
             </div>
           </div>
         </div>
@@ -364,5 +799,4 @@ const BetList = ({ isTabView = false }) => {
     </div>
   );
 };
-
-export default BetList;
+export default BestList;

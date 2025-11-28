@@ -1,4 +1,4 @@
- interface oddsResponse {
+interface oddsResponse {
   Odds: Odd[];
   Bookmaker: Bookmaker[];
   Fancy: Fancy2[];
@@ -91,4 +91,43 @@
   srno: number;
   provider: string;
   rem: string;
+}
+
+// types for my-bet-report-lord
+export interface MyBetReportPayload {
+    sportName: string;
+    userId: string;
+    currentBet: boolean;
+    matchedDeletedBet: string;
+    noOfRecords: number;
+    index: number;
+}
+
+export interface Bet {
+    userId: string;
+    matchName: string | null;
+    marketName: string;
+    selectionName: string;
+    odds: number;
+    priceValue: number;
+    avgMatched: number;
+    matched: number;
+    currency: string;
+    profitLiability: number;
+    lastUpdated: string;
+    back: boolean;
+}
+
+export interface MyBetReportData {
+    totalAmount: number;
+    totalBet: number;
+    totalPages: number;
+    currentPage: number;
+    betList: Bet[];
+}
+
+export interface MyBetReportResponse {
+    status: boolean;
+    message: string | null;
+    data: MyBetReportData;
 }
