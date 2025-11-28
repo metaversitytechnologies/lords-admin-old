@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import BalanceInfo from "./BalanceInfo";
-import BetList from "./BestList";
 import AccountStatement from "./AccountStatement";
 import TransferStatement from "./TransferStatement";
 import NetExposure from "./Netexposure";

@@ -796,7 +796,10 @@ const CreateUserForm: React.FC = () => {
       </ReusableModal>
       <UserStatusModal
         show={isUserStatusModalOpen}
-        handleClose={handleCloseUserStatusModal}
+        handleClose={() => {
+          handleCloseUserStatusModal();
+          fetchUsers();
+        }}
         user={selectedUser}
       />
       {selectedUser && (

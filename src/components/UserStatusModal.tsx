@@ -29,7 +29,7 @@ const UserStatusModal: React.FC<UserStatusModalProps> = ({
   useEffect(() => {
     if (user) {
       reset({
-        active: user.active // Assuming 'user.active' holds the current status
+        active: user.userActive
       });
     }
   }, [user, reset]);
@@ -47,6 +47,7 @@ const UserStatusModal: React.FC<UserStatusModalProps> = ({
         message: "User status updated successfully!",
         type: "success"
       });
+      reset();
       setTimeout(() => {
         handleClose();
       }, 1000);

@@ -54,7 +54,7 @@ const Login: React.FC = () => {
         throw new Error(data.message || "Login failed");
       }
     } catch (error: any) {
-      setErrorMessage(error?.message || "Login failed");
+      // setErrorMessage(error?.message || "Login failed");
     } finally {
       setLoading(false);
     }
