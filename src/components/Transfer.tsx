@@ -1,4 +1,42 @@
+import { useEffect, useState } from "react";
+import { getChildListLord } from "../api/user";
+import { useAuth } from "../context/AuthContext";
+
+interface User {
+  userId: string;
+  accountType: string;
+  creditLimit: number;
+  netExposure: number;
+  availabeCredit: number;
+}
+
 const Transfer = () => {
+  const { user } = useAuth();
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      const payload = {
+        userId: user.userId,
+        index: 0,
+        noOfRecords: 20,
+        username: ""
+      };
+      getChildListLord(payload)
+        .then((response) => {
+          if (response.data) {
+            setUsers(response.data);
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch child list:", error);
+          setLoading(false);
+        });
+    }
+  }, [user]);
+
   return (
     <div className="apl-section">
       <div className="listing-grid w-100 float-left bank">
@@ -50,30 +88,55 @@ const Transfer = () => {
                 </thead>
 
                 <tbody>
-                  <tr>
-                    <td>clishak</td>
-                    <td>User</td>
-                    <td className="text-right">
-                      <span>2000.00</span>
-                    </td>
-                    <td className="text-right">
-                      <span>0.00</span>
-                    </td>
-                    <td className="text-right">
-                      <span>2193.00</span>
-                    </td>
-                    <td className="text-right">
-                      <span>193.00</span>
-                    </td>
-                    <td className="text-center">
-                      <a href="javascript:void(0)" className="text-success">
-                        All <i className="fas fa-arrow-right"></i>
-                      </a>
-                      <input type="text" name="amount" placeholder="0" />
-                      <button className="btn btn-primary">Submit</button>
-                    </td>
-                    <td className="bank-row-width"></td>
-                  </tr>
+                  {loading ? (
+                    <tr>
+                      <td colSpan={8} className="text-center">
+                        Loading...
+                      </td>
+                    </tr>
+                  ) : users.length > 0 ? (
+                    users.map((childUser) => (
+                      <tr key={childUser.userId}>
+                        <td>{childUser.userId}</td>
+                        <td>{childUser.accountType}</td>
+                        <td className="text-right">
+                          <span>{childUser.creditLimit.toFixed(2)}</span>
+                        </td>
+                        <td className="text-right">
+                          <span>{childUser.netExposure.toFixed(2)}</span>
+                        </td>
+                        <td className="text-right">
+                          <span>{childUser.availabeCredit.toFixed(2)}</span>
+                        </td>
+                        <td className="text-right">
+                          <span>
+                            {(
+                              childUser.creditLimit - childUser.availabeCredit
+                            ).toFixed(2)}
+                          </span>
+                        </td>
+                        <td className="text-center">
+                          <a
+                            href="javascript:void(0)"
+                            className="text-success"
+                          >
+                            All <i className="fas fa-arrow-right"></i>
+                          </a>
+                          <input type="text" name="amount" placeholder="0" />
+                          <button className="btn btn-primary" disabled>
+                            Submit
+                          </button>
+                        </td>
+                        <td className="bank-row-width"></td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={8} className="text-center">
+                        No users found.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
