@@ -10,7 +10,7 @@ import "./styles/styles.css";
 import "./styles/theme.css";
 import "./styles/custom.css";
 import Footer from "./components/Footer";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import { useAuth } from "./context/AuthContext";
 import { useEffect } from "react";
@@ -18,6 +18,8 @@ import FlashMessage from "./components/FlashMessage";
 
 function App() {
   const { logout, flash, setFlash } = useAuth();
+  const location = useLocation();
+  const showFooter = !location.pathname.startsWith("/change-password-success");
   useEffect(() => {
     const handleLogout = (event: Event) => {
       const customEvent = event as CustomEvent;
@@ -43,7 +45,7 @@ function App() {
       <main className="main-content">
         <Outlet />
       </main>
-      <Footer />
+      {showFooter && <Footer />}
     </div>
   );
 }

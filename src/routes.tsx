@@ -22,6 +22,7 @@ import ClientAccountStatement from "./components/ClientAccountStatement";
 import NewAgent from "./components/NewAgent";
 import CreateUserForm from "./components/CreateUserForm";
 import DownlineReports from "./components/DownlineReports";
+import ChangePasswordSuccess from "./components/ChangePasswordSuccess";
 import ChangePassword from "./components/ChangePassword";
 
 export const router = createBrowserRouter([
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
       {
         path: "login",
         element: <Login />
+      },
+      {
+        path: "change-password-success/:id",
+        element: <ChangePasswordSuccess />
       },
       {
         path: "/",

@@ -124,3 +124,25 @@ export const getStatementUseridwiseLord = async (payload: object) => {
   return apiRequest('/lord/statement-useridwise-lord', 'POST', payload);
 };
 
+export const changePasswordApi = async (payload: {
+  oldPassword: any;
+  newPassword: any;
+  token: any;
+  userid: any;
+}) => {
+  const response = await fetch(`${API_BASE_URL}/user/first-login-cp-lord`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Password change failed");
+  }
+
+  return response.json();
+};
+

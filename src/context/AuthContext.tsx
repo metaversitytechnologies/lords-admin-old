@@ -30,6 +30,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (token: string, user?: AuthUser) => void;
   logout: (message?: string) => void;
+  softLogout: (message?: string) => void;
   flash: Flash | null;
   setFlash: React.Dispatch<React.SetStateAction<Flash | null>>;
 }
@@ -84,6 +85,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const softLogout = (message?: string) => {
+    globalThis.localStorage.removeItem("token");
+    globalThis.localStorage.removeItem("user");
+    globalThis.localStorage.removeItem("lastLogin");
+    setToken(null);
+    setUser(null);
+    setLastLogin(null);
+    if (message) {
+      setFlash({ message, type: "error" });
+    }
+  };
+
   const value = useMemo(
     () => ({
       token,
@@ -92,6 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       isAuthenticated: !!token,
       login,
       logout,
+      softLogout,
       flash,
       setFlash
     }),
