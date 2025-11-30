@@ -146,3 +146,9 @@ export const changePasswordApi = async (payload: {
   return response.json();
 };
 
+export const changePasswordSelf = async (payload: {
+  currentPassword?: string;
+  newPassword?: string;
+}) => {
+  return apiRequest('/user/change-password-self', 'POST', payload);
+};

@@ -8,12 +8,15 @@ interface User {
   creditLimit: number;
   netExposure: number;
   availabeCredit: number;
+  gt: number;
 }
 
 const Transfer = () => {
   const { user } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [amountValues, setAmountValues] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (user) {
@@ -23,11 +26,10 @@ const Transfer = () => {
         noOfRecords: 20,
         username: ""
       };
+
       getChildListLord(payload)
         .then((response) => {
-          if (response.data) {
-            setUsers(response.data);
-          }
+          if (response.data) setUsers(response.data);
           setLoading(false);
         })
         .catch((error) => {
@@ -37,15 +39,31 @@ const Transfer = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (users.length > 0) {
+      const initialAmounts: Record<string, string> = {};
+
+      users.forEach((u) => {
+        initialAmounts[u.userId] = "0";
+      });
+
+      setAmountValues(initialAmounts);
+    }
+  }, [users]);
+
+  // Flip GT when clicking "All"
+  const handleFlipGT = (childUser: User) => {
+    const flipped = childUser.gt > 0 ? -childUser.gt : Math.abs(childUser.gt);
+
+    setAmountValues((prev) => ({
+      ...prev,
+      [childUser.userId]: flipped.toFixed(2)
+    }));
+  };
+
   return (
     <div className="apl-section">
       <div className="listing-grid w-100 float-left bank">
-        {/* Flash message wrapper */}
-        <div className="master-flash-message">
-          <div className="flash__wrapper"></div>
-        </div>
-
-        {/* Header and Transfer All */}
         <div className="m-t-10">
           <div className="header">
             <h1>Transfer</h1>
@@ -69,8 +87,7 @@ const Transfer = () => {
           </div>
         </div>
 
-        {/* Table Section */}
-        <div className="m-t-10">
+        <div>
           <div className="col-md-12 p-l-0 p-r-5">
             <div className="table-responsvie">
               <table id="bankdatahtmladmin" className="table table-striped">
@@ -99,34 +116,50 @@ const Transfer = () => {
                       <tr key={childUser.userId}>
                         <td>{childUser.userId}</td>
                         <td>{childUser.accountType}</td>
+
                         <td className="text-right">
-                          <span>{childUser.creditLimit.toFixed(2)}</span>
+                          {childUser.creditLimit.toFixed(2)}
                         </td>
+
                         <td className="text-right">
-                          <span>{childUser.netExposure.toFixed(2)}</span>
+                          {childUser.netExposure.toFixed(2)}
                         </td>
+
                         <td className="text-right">
-                          <span>{childUser.availabeCredit.toFixed(2)}</span>
+                          {childUser.availabeCredit.toFixed(2)}
                         </td>
+
                         <td className="text-right">
-                          <span>
-                            {(
-                              childUser.creditLimit - childUser.availabeCredit
-                            ).toFixed(2)}
-                          </span>
+                          {childUser.gt.toFixed(2)}
                         </td>
+
                         <td className="text-center">
+                          {/* REPLACEMENT: Safe button instead of javascript:void(0) */}
                           <a
-                            href="javascript:void(0)"
-                            className="text-success"
+                            className="text-success link-btn p-r-5"
+                            onClick={() => handleFlipGT(childUser)}
                           >
                             All <i className="fas fa-arrow-right"></i>
                           </a>
-                          <input type="text" name="amount" placeholder="0" />
-                          <button className="btn btn-primary" disabled>
+
+                          <input
+                            type="text"
+                            name="amount"
+                            value={amountValues[childUser.userId] || ""}
+                            onChange={(e) =>
+                              setAmountValues({
+                                ...amountValues,
+                                [childUser.userId]: e.target.value
+                              })
+                            }
+                            placeholder="0"
+                          />
+
+                          <button className="btn btn-primary m-l-5">
                             Submit
                           </button>
                         </td>
+
                         <td className="bank-row-width"></td>
                       </tr>
                     ))

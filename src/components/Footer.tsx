@@ -1,13 +1,13 @@
 import React from "react";
-import { useAuth } from "../context/AuthContext";
+import { useLocation } from "react-router-dom";
 
 const Footer: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const location = useLocation();
 
   return (
     <footer
       className={`${
-        isAuthenticated ? "footer" : "login-footer"
+        location.pathname === "/login" ? "login-footer" : "footer"
       } footer-color customfooter`}
     >
       <p className="m-b-0 upper-footer">

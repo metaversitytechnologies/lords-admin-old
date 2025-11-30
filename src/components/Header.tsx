@@ -7,6 +7,7 @@ import {
   faSignOutAlt,
   faAngleDown
 } from "@fortawesome/free-solid-svg-icons";
+import ChangePasswordSelfModal from "./ChangePasswordSelfModal";
 
 const Header: React.FC = () => {
   const { isAuthenticated, user, lastLogin, logout } = useAuth();
@@ -14,6 +15,8 @@ const Header: React.FC = () => {
 
   const [now, setNow] = useState<Date>(new Date());
   const [timeZone, setTimeZone] = useState<string | undefined>(undefined);
+  const [showChangePasswordModal, setShowChangePasswordModal] =
+    useState<boolean>(false); // State for modal
 
   // Dropdown states
   const [tzOpen, setTzOpen] = useState(false);
@@ -41,6 +44,16 @@ const Header: React.FC = () => {
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const openChangePasswordModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowChangePasswordModal(true);
+    setSettingsOpen(false); // Close settings dropdown when modal opens
+  };
+
+  const closeChangePasswordModal = () => {
+    setShowChangePasswordModal(false);
   };
 
   const displayName =
@@ -208,7 +221,11 @@ const Header: React.FC = () => {
 
             {settingsOpen && (
               <div className="dropdown-menu show">
-                <a href="#" className="dropdown-item">
+                <a
+                  href="#"
+                  className="dropdown-item"
+                  onClick={openChangePasswordModal}
+                >
                   Change Password
                 </a>
                 <a href="/secureauth" className="dropdown-item">
@@ -231,6 +248,12 @@ const Header: React.FC = () => {
           </li>
         </ul>
       </div>
+
+      {/* Change Password Modal */}
+      <ChangePasswordSelfModal
+        show={showChangePasswordModal}
+        handleClose={closeChangePasswordModal}
+      />
     </header>
   );
 };

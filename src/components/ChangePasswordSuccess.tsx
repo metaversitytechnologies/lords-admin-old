@@ -7,6 +7,7 @@ const ChangePasswordSuccess: React.FC = () => {
   const auth = useAuth();
   const location = useLocation();
   const logoutType = location.state?.logoutType;
+  const domain = globalThis.location.hostname.replace(/^www\./, "");
 
   useEffect(() => {
     if (logoutType === "soft") {
@@ -33,7 +34,7 @@ const ChangePasswordSuccess: React.FC = () => {
           of the website can be done only with this password and keep one thing
           in mind, do not share this password with anyone.
         </h2>
-        <h2 className="mt-3">Thank you, Team lordsexch.now</h2>
+        <h2 className="mt-3">Thank you, Team {domain}</h2>
         <div className="font-hindi">
           <h1 className="mt-5">
             <span className="text-success">
@@ -49,7 +50,7 @@ const ChangePasswordSuccess: React.FC = () => {
             हस्तांतरण केवल इस पासवर्ड से किए जा सकते हैं और एक बात का ध्यान
             रखें, इस पासवर्ड को किसी के साथ साझा न करें।
           </h2>
-          <h2 className="mt-3">धन्यवाद, टीम lordsexch.now</h2>
+          <h2 className="mt-3">धन्यवाद, टीम {domain}</h2>
         </div>
         <Link
           to="/login"

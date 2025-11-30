@@ -338,6 +338,10 @@ h1 {
     margin-bottom: 30px;
 }
 
+.changePasswordForm  .form-group {
+    margin-bottom: 20px;
+}
+
 .login-form>section label {
     float: none;
     font-weight: normal;
@@ -686,6 +690,10 @@ footer {
 .toggle-label {
     display: inline-block;
     margin-right: 6px;
+}
+
+.link-btn{
+    cursor: pointer;
 }
 
 .switchToggle input[type="checkbox"] {
