@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getBetTicker } from "../api/auth";
 import SearchUser from "./SearchUser";
 
@@ -60,6 +60,7 @@ const BetTicker = () => {
   const [error, setError] = useState(null);
   const [oddsDropdownOpen, setOddsDropdownOpen] = useState(false);
   const [stakeDropdownOpen, setStakeDropdownOpen] = useState(false);
+  const [counter, setCounter] = useState(3);
 
   // Filter States
   const [sportName, setSportName] = useState("All");
@@ -69,7 +70,7 @@ const BetTicker = () => {
   const [maxOdds, setMaxOdds] = useState("");
   const [userId, setUserId] = useState("");
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -93,11 +94,24 @@ const BetTicker = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [sportName, minStake, maxStake, minOdds, maxOdds, userId]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCounter((prevCounter) => {
+        if (prevCounter === 1) {
+          fetchData();
+          return 3;
+        }
+        return prevCounter - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [fetchData]);
 
   const handleApply = (e) => {
     e.preventDefault();
@@ -243,11 +257,14 @@ const BetTicker = () => {
                   Cancel
                 </button>
                 <div className="float-right">
-                  <span className="counter">{bets.length}</span>
+                  <span className="counter">{counter}</span>
                   <button
                     type="button"
                     className="btn btn-secondary m-l-10"
-                    onClick={fetchData}
+                    onClick={() => {
+                      fetchData();
+                      setCounter(3);
+                    }}
                   >
                     Refresh
                   </button>

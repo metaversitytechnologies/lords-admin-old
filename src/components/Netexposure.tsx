@@ -10,6 +10,8 @@ const NetExposure = ({ userId, isActive }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [counter, setCounter] = useState(8);
+
   const fetchData = useCallback(async () => {
     if (userId && !isActive) return;
     try {
@@ -38,6 +40,21 @@ const NetExposure = ({ userId, isActive }) => {
     fetchData();
   }, [fetchData]);
 
+  useEffect(() => {
+    if (!userId) {
+      const timer = setInterval(() => {
+        setCounter((prevCounter) => {
+          if (prevCounter === 1) {
+            fetchData();
+            return 8;
+          }
+          return prevCounter - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [userId, fetchData]);
+
   return (
     <div>
       <div id="net-exposure" className="tab-pane net-exposure">
@@ -46,8 +63,14 @@ const NetExposure = ({ userId, isActive }) => {
         </div>
         {!userId && (
           <div className="float-right">
-            <span className="counter">{data ? data.length : 0}</span>
-            <button className="btn btn-secondary m-l-10" onClick={fetchData}>
+            <span className="counter">{counter}</span>
+            <button
+              className="btn btn-secondary m-l-10"
+              onClick={() => {
+                fetchData();
+                setCounter(8);
+              }}
+            >
               Refresh
             </button>
           </div>
