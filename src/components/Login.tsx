@@ -34,24 +34,37 @@ const Login: React.FC = () => {
       const data = await loginApi(loginid, password);
 
       if (data?.token) {
-        const tokenPayload = JSON.parse(atob(data.token.split(".")[1]));
-
-        const user = {
-          // From JWT Token
-          exp: tokenPayload.exp,
-          // From API response body
-          userId: data.userId,
-          username: data.username,
-          userType: data.userType,
-          passwordtype: data.passwordtype,
-          partnership: data.partnership,
-          userTypeInfo: data.userTypeInfo
-        };
+        let user;
+        if (data.passwordtype === 'old') {
+          user = {
+            // From API response body
+            userId: data.userId,
+            username: data.username,
+            userType: data.userType,
+            passwordtype: data.passwordtype,
+            partnership: data.partnership,
+            userTypeInfo: data.userTypeInfo,
+            exp: 0
+          };
+        } else {
+          const tokenPayload = JSON.parse(atob(data.token.split('.')[1]));
+          user = {
+            // From JWT Token
+            exp: tokenPayload.exp,
+            // From API response body
+            userId: data.userId,
+            username: data.username,
+            userType: data.userType,
+            passwordtype: data.passwordtype,
+            partnership: data.partnership,
+            userTypeInfo: data.userTypeInfo
+          };
+        }
         auth.login(data.token, user);
         setShowModal(false);
-        navigate("/dashboardhome");
+        navigate('/dashboardhome');
       } else {
-        throw new Error(data.message || "Login failed");
+        throw new Error(data.message || 'Login failed');
       }
     } catch (error: any) {
       // setErrorMessage(error?.message || "Login failed");

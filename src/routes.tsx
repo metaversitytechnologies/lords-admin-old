@@ -22,6 +22,7 @@ import ClientAccountStatement from "./components/ClientAccountStatement";
 import NewAgent from "./components/NewAgent";
 import CreateUserForm from "./components/CreateUserForm";
 import DownlineReports from "./components/DownlineReports";
+import ChangePassword from "./components/ChangePassword";
 
 export const router = createBrowserRouter([
   {
@@ -63,6 +64,7 @@ export const router = createBrowserRouter([
           { path: "gamereports", element: <GameReports /> },
           { path: "fraudreport", element: <MessageReport /> },
           { path: "createagent", element: <NewAgent /> },
+          { path: "changepassword", element: <ChangePassword /> },
           {
             path: "downlinereports/:id/",
             element: <DownlineReports />

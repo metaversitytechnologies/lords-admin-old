@@ -123,11 +123,15 @@ export const useAuth = () => {
 export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const location = useLocation();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (user?.passwordtype === "old" && location.pathname !== "/changepassword") {
+    return <Navigate to="/changepassword" replace />;
   }
 
   return <>{children}</>;

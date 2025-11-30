@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getBalance } from '../api/auth';
+import { useAuth } from '../context/AuthContext';
 
 interface BalanceData {
   netExposure: number;
@@ -13,6 +14,7 @@ const Balance: React.FC = () => {
   const [balance, setBalance] = useState<BalanceData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   const fetchBalance = async () => {
     setLoading(true);
@@ -32,12 +34,22 @@ const Balance: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchBalance();
-  }, []);
+    if (user?.passwordtype !== 'old') {
+      fetchBalance();
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
 
   const handleRefresh = () => {
-    fetchBalance();
+    if (user?.passwordtype !== 'old') {
+      fetchBalance();
+    }
   };
+
+  if (user?.passwordtype === 'old') {
+    return null; // Or some placeholder
+  }
 
   return (
     <div className="balance">
