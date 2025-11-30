@@ -24,6 +24,7 @@ import CreateUserForm from "./components/CreateUserForm";
 import DownlineReports from "./components/DownlineReports";
 import ChangePasswordSuccess from "./components/ChangePasswordSuccess";
 import ChangePassword from "./components/ChangePassword";
+import SecureAuth from "./components/SecureAuth";
 
 export const router = createBrowserRouter([
   {
@@ -70,6 +71,7 @@ export const router = createBrowserRouter([
           { path: "fraudreport", element: <MessageReport /> },
           { path: "createagent", element: <NewAgent /> },
           { path: "changepassword", element: <ChangePassword /> },
+          { path: "secureauth", element: <SecureAuth /> },
           {
             path: "downlinereports/:id/",
             element: <DownlineReports />

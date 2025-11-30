@@ -111,151 +111,157 @@ const Header: React.FC = () => {
       })()
     : "-";
 
-  return (
-    <header className="header">
-      <div className="logo-area float-left">
-        <div className="logo">
-          <Link
-            to="/dashboardhome"
-            aria-current="page"
-            className="logo router-link-exact-active router-link-active"
-          >
-            <img
-              src="https://d3kb8xz339pq18.cloudfront.net/v12/static/themes/lordsexch.now/admin/logo.png"
-              alt="Logo"
-            />
-          </Link>
+    const openSecureAuth = (e: React.MouseEvent) => {
+      e.preventDefault();
+      navigate("/secureauth");
+      setSettingsOpen(false);
+    };
+
+    return (
+      <header className="header">
+        <div className="logo-area float-left">
+          <div className="logo">
+            <Link
+              to="/dashboardhome"
+              aria-current="page"
+              className="logo router-link-exact-active router-link-active"
+            >
+              <img
+                src="https://d3kb8xz339pq18.cloudfront.net/v12/static/themes/lordsexch.now/admin/logo.png"
+                alt="Logo"
+              />
+            </Link>
+          </div>
         </div>
-      </div>
 
-      {/* Clock + Timezone Dropdown */}
-      <div className="clock float-left">
-        <span style={{ marginRight: "3px" }}>{formattedNow}</span>
-        <span className="time">{formattedTime}</span>
+        {/* Clock + Timezone Dropdown */}
+        <div className="clock float-left">
+          <span style={{ marginRight: "3px" }}>{formattedNow}</span>
+          <span className="time">{formattedTime}</span>
 
-        <div
-          className="clock-timezone-settings dropdown"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <a
-            href="#"
-            className="dropdown-toggle"
-            role="button"
-            onClick={(e) => {
-              e.preventDefault();
-              setTzOpen(!tzOpen);
-              setSettingsOpen(false);
-            }}
+          <div
+            className="clock-timezone-settings dropdown"
+            onClick={(e) => e.stopPropagation()}
           >
-            ({getTimezoneOffset(timeZone)}
-            <FontAwesomeIcon icon={faAngleDown} className="m-l-5" />)
-          </a>
-
-          {tzOpen && (
-            <div className="dropdown-menu show">
-              <a
-                href="#"
-                className="dropdown-item"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setTimeZone("UTC");
-                  setTzOpen(false);
-                }}
-              >
-                System time - (GMT +00:00)
-              </a>
-
-              <a
-                href="#"
-                className="dropdown-item"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setTimeZone(undefined);
-                  setTzOpen(false);
-                }}
-              >
-                Your computer time - ({"GMT " + getTimezoneOffset(undefined)})
-              </a>
-
-              <a
-                href="#"
-                className="dropdown-item"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setTimeZone("Asia/Kolkata");
-                  setTzOpen(false);
-                }}
-              >
-                India Standard time - (GMT +05:30)
-              </a>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Right side info bar */}
-      <div className="infobar float-right">
-        <ul className="linkbar">
-          <li>
-            <p>Logged in as {displayName}</p>
-            <p className="last-login">
-              Last logged in : <span>{formattedLastLogin}</span>
-            </p>
-          </li>
-
-          {/* ⚙️ Settings Dropdown */}
-          <li className="dropdown" onClick={(e) => e.stopPropagation()}>
             <a
               href="#"
               className="dropdown-toggle"
               role="button"
               onClick={(e) => {
                 e.preventDefault();
-                setSettingsOpen(!settingsOpen);
-                setTzOpen(false);
+                setTzOpen(!tzOpen);
+                setSettingsOpen(false);
               }}
             >
-              <FontAwesomeIcon icon={faCog} className="m-r-5" />{" "}
-              <span>Settings</span>
+              ({getTimezoneOffset(timeZone)}
+              <FontAwesomeIcon icon={faAngleDown} className="m-l-5" />)
             </a>
 
-            {settingsOpen && (
+            {tzOpen && (
               <div className="dropdown-menu show">
                 <a
                   href="#"
                   className="dropdown-item"
-                  onClick={openChangePasswordModal}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setTimeZone("UTC");
+                    setTzOpen(false);
+                  }}
                 >
-                  Change Password
+                  System time - (GMT +00:00)
                 </a>
-                <a href="/secureauth" className="dropdown-item">
-                  Secure Auth
+
+                <a
+                  href="#"
+                  className="dropdown-item"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setTimeZone(undefined);
+                    setTzOpen(false);
+                  }}
+                >
+                  Your computer time - ({"GMT " + getTimezoneOffset(undefined)})
+                </a>
+
+                <a
+                  href="#"
+                  className="dropdown-item"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setTimeZone("Asia/Kolkata");
+                    setTzOpen(false);
+                  }}
+                >
+                  India Standard time - (GMT +05:30)
                 </a>
               </div>
             )}
-          </li>
+          </div>
+        </div>
 
-          {/* Logout */}
-          <li>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="btn text-white p-0"
-            >
-              <FontAwesomeIcon icon={faSignOutAlt} className="m-r-5" />{" "}
-              <span>LogOut</span>
-            </button>
-          </li>
-        </ul>
-      </div>
+        {/* Right side info bar */}
+        <div className="infobar float-right">
+          <ul className="linkbar">
+            <li>
+              <p>Logged in as {displayName}</p>
+              <p className="last-login">
+                Last logged in : <span>{formattedLastLogin}</span>
+              </p>
+            </li>
 
-      {/* Change Password Modal */}
-      <ChangePasswordSelfModal
-        show={showChangePasswordModal}
-        handleClose={closeChangePasswordModal}
-      />
-    </header>
-  );
+            {/* ⚙️ Settings Dropdown */}
+            <li className="dropdown" onClick={(e) => e.stopPropagation()}>
+              <a
+                href="#"
+                className="dropdown-toggle"
+                role="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setSettingsOpen(!settingsOpen);
+                  setTzOpen(false);
+                }}
+              >
+                <FontAwesomeIcon icon={faCog} className="m-r-5" />{" "}
+                <span>Settings</span>
+              </a>
+
+              {settingsOpen && (
+                <div className="dropdown-menu show">
+                  <a
+                    href="#"
+                    className="dropdown-item"
+                    onClick={openChangePasswordModal}
+                  >
+                    Change Password
+                  </a>
+                  <a onClick={openSecureAuth} className="dropdown-item">
+                    Secure Auth
+                  </a>
+                </div>
+              )}
+            </li>
+
+            {/* Logout */}
+            <li>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="btn text-white p-0"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} className="m-r-5" />{" "}
+                <span>LogOut</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        {/* Change Password Modal */}
+        <ChangePasswordSelfModal
+          show={showChangePasswordModal}
+          handleClose={closeChangePasswordModal}
+        />
+      </header>
+    );
 };
 
 export default Header;
