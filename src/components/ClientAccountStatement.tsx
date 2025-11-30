@@ -20,11 +20,8 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // ---------------------------------------------
-  // 👉 Fetch Function (only depends on dates)
-  // ---------------------------------------------
   const fetchData = useCallback(
-    async (finalId: string) => {
+    async (finalId: string, from: string, to: string) => {
       if (!finalId) return;
 
       setLoading(true);
@@ -32,8 +29,8 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
 
       try {
         const payload = {
-          fromDate,
-          toDate,
+          fromDate: from,
+          toDate: to,
           noOfRecords: 10,
           index: 0,
           userId: finalId
@@ -53,18 +50,21 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
         setLoading(false);
       }
     },
-    [fromDate, toDate]
+    []
   );
 
+  // Initial load only
   useEffect(() => {
     const initialId = childId || user?.userId;
     if (initialId) {
-      fetchData(initialId);
+      fetchData(initialId, fromDate, toDate);
     }
-  }, [childId, user, fetchData]);
+  }, [childId, user]);
 
+  // Search button click
   const handleSearch = () => {
-    fetchData(userId);
+    const finalId = userId || childId || user?.userId;
+    fetchData(finalId, fromDate, toDate);
   };
 
   return (
