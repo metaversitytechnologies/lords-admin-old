@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getMyBetReport } from "../api/bet";
 import { useAuth } from "../context/AuthContext";
 import SearchUser from "./SearchUser";
@@ -61,8 +61,7 @@ const BestList = () => {
   const [betList, setBetList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchUser, setSearchUser] = useState("");
-  const [sportId, setSportId] = useState("");
+  const [sportId, setSportId] = useState("0");
   const [noOfRecords, setNoOfRecords] = useState(10);
   const [index, setIndex] = useState(0);
   const today = new Date();
@@ -76,80 +75,72 @@ const BestList = () => {
   const [activeTab, setActiveTab] = useState("Current");
   const [activeRadio, setActiveRadio] = useState("Matched");
   const [search, setSearch] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
+  const [oddsFrom, setOddsFrom] = useState("");
+  const [oddsTo, setOddsTo] = useState("");
+  const [stakeFrom, setStakeFrom] = useState("");
+  const [stakeTo, setStakeTo] = useState("");
+  const isInitialMount = useRef(true);
 
-  useEffect(() => {
-    const fetchMyBetReport = async () => {
-      try {
-        setLoading(true);
+  const fetchMyBetReport = async () => {
+    try {
+      setLoading(true);
 
-        const currentBet = activeTab === "Current";
-        const matchedDeletedBet = activeRadio.toUpperCase();
-        const sportLabel =
-          eventOptions.find((e) => e.value === sportId)?.label || "All";
+      const currentBet = activeTab === "Current";
+      const matchedDeletedBet = activeRadio.toUpperCase();
+      const sportLabel =
+        eventOptions.find((e) => e.value === sportId)?.label || "All";
 
-        const payload = {
-          sportName: sportLabel,
-          userId: searchUser,
-          currentBet: currentBet,
-          matchedDeletedBet: matchedDeletedBet,
-          noOfRecords: noOfRecords,
-          index: index,
-          fromDate: !currentBet ? fromDate : "",
-          toDate: !currentBet ? toDate : ""
-        };
-        const response = await getMyBetReport(payload);
-        if (response.status) {
-          setBetList(response.data.betList);
-          setFilteredData(response.data.betList);
-        } else {
-          setError(response.message);
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+      const payload = {
+        sportName: sportLabel,
+        userId: search,
+        currentBet: currentBet,
+        matchedDeletedBet: matchedDeletedBet,
+        noOfRecords: noOfRecords,
+        index: index,
+        fromDate: !currentBet ? fromDate : "",
+        toDate: !currentBet ? toDate : "",
+        oddsFrom: oddsFrom,
+        oddsTo: oddsTo,
+        stakeFrom: stakeFrom,
+        stakeTo: stakeTo,
+      };
+      const response = await getMyBetReport(payload);
+      if (response.status) {
+        setBetList(response.data.betList);
+      } else {
+        setError(response.message);
       }
-    };
-
-    fetchMyBetReport();
-  }, [
-    userId,
-    sportId,
-    activeTab,
-    activeRadio,
-    noOfRecords,
-    index,
-    fromDate,
-    toDate,
-    searchUser
-  ]);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (search) {
-      const filtered = betList.filter((bet) =>
-        bet.userId.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredData(filtered);
-    } else {
-      setFilteredData(betList);
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      fetchMyBetReport();
     }
-  }, [search, betList]);
+  }, []);
 
   const handleApply = () => {
-    setSearchUser(search);
+    fetchMyBetReport();
   };
 
   const handleCancel = () => {
     setSportId("0");
     setSearch("");
-    setSearchUser("");
     const today = new Date();
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(today.getDate() - 7);
     setFromDate(oneWeekAgo.toISOString().split("T")[0]);
     setToDate(today.toISOString().split("T")[0]);
     setIndex(0);
+    setOddsFrom("");
+    setOddsTo("");
+    setStakeFrom("");
+    setStakeTo("");
   };
 
   const entriesOptions = [10, 20, 50, 100];
@@ -210,12 +201,16 @@ const BestList = () => {
                       type="text"
                       name=""
                       className="p-t-10 p-l-10 p-r-10 p-b-10"
+                      value={oddsFrom}
+                      onChange={(e) => setOddsFrom(e.target.value)}
                     />
                     <span className="p-t-10 p-l-10 p-r-10 p-b-10">To</span>{" "}
                     <input
                       type="text"
                       name=""
                       className="p-t-10 p-l-10 p-r-10 p-b-10"
+                      value={oddsTo}
+                      onChange={(e) => setOddsTo(e.target.value)}
                     />
                   </div>
                 </div>{" "}
@@ -234,12 +229,16 @@ const BestList = () => {
                       type="text"
                       name=""
                       className="p-t-10 p-l-10 p-r-10 p-b-10"
+                      value={stakeFrom}
+                      onChange={(e) => setStakeFrom(e.target.value)}
                     />{" "}
                     <span className="p-t-10 p-l-10 p-r-10 p-b-10">To</span>{" "}
                     <input
                       type="text"
                       name=""
                       className="p-t-10 p-l-10 p-r-10 p-b-10"
+                      value={stakeTo}
+                      onChange={(e) => setStakeTo(e.target.value)}
                     />
                   </div>
                 </div>{" "}
@@ -574,7 +573,7 @@ const BestList = () => {
                           </td>
                         </tr>
                       ) : (
-                        filteredData?.map((bet, index) => (
+                        betList?.map((bet, index) => (
                           <tr key={index} role="row">
                             <td
                               aria-colindex="1"

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { getBetTicker } from "../api/auth";
 import SearchUser from "./SearchUser";
 
@@ -62,25 +62,32 @@ const BetTicker = () => {
   const [stakeDropdownOpen, setStakeDropdownOpen] = useState(false);
   const [counter, setCounter] = useState(3);
 
+  const oddsDropdownRef = useRef(null);
+  const stakeDropdownRef = useRef(null);
+
   // Filter States
-  const [sportName, setSportName] = useState("All");
-  const [minStake, setMinStake] = useState("");
-  const [maxStake, setMaxStake] = useState("");
-  const [minOdds, setMinOdds] = useState("");
-  const [maxOdds, setMaxOdds] = useState("");
-  const [userId, setUserId] = useState("");
+  const [filters, setFilters] = useState({
+    sportName: "All",
+    minStake: "",
+    maxStake: "",
+    minOdds: "",
+    maxOdds: "",
+    userId: ""
+  });
+
+  const [appliedFilters, setAppliedFilters] = useState(filters);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const payload = {
-        sportName: sportName.toLowerCase(),
-        minStake: minStake || null,
-        maxStake: maxStake || null,
-        minOdds: minOdds || null,
-        maxOdds: maxOdds || null,
-        userId: userId || null
+        sportName: appliedFilters.sportName.toLowerCase(),
+        minStake: appliedFilters.minStake || null,
+        maxStake: appliedFilters.maxStake || null,
+        minOdds: appliedFilters.minOdds || null,
+        maxOdds: appliedFilters.maxOdds || null,
+        userId: appliedFilters.userId || null
       };
       const response = await getBetTicker(payload);
       if (response.status) {
@@ -94,7 +101,7 @@ const BetTicker = () => {
     } finally {
       setLoading(false);
     }
-  }, [sportName, minStake, maxStake, minOdds, maxOdds, userId]);
+  }, [appliedFilters]);
 
   useEffect(() => {
     fetchData();
@@ -113,18 +120,47 @@ const BetTicker = () => {
     return () => clearInterval(timer);
   }, [fetchData]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        oddsDropdownRef.current &&
+        !oddsDropdownRef.current.contains(event.target)
+      ) {
+        setOddsDropdownOpen(false);
+      }
+      if (
+        stakeDropdownRef.current &&
+        !stakeDropdownRef.current.contains(event.target)
+      ) {
+        setStakeDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleFilterChange = (field, value) => {
+    setFilters((prev) => ({ ...prev, [field]: value }));
+  };
+
   const handleApply = (e) => {
     e.preventDefault();
-    fetchData();
+    setAppliedFilters(filters);
   };
 
   const handleCancel = () => {
-    setSportName("All");
-    setMinStake("");
-    setMaxStake("");
-    setMinOdds("");
-    setMaxOdds("");
-    setUserId("");
+    const defaultFilters = {
+      sportName: "All",
+      minStake: "",
+      maxStake: "",
+      minOdds: "",
+      maxOdds: "",
+      userId: ""
+    };
+    setFilters(defaultFilters);
+    setAppliedFilters(defaultFilters);
   };
 
   const getPnlStyle = (pnl) => {
@@ -152,8 +188,10 @@ const BetTicker = () => {
                   <select
                     name="event"
                     className="dropdown-toggle dropdown-button"
-                    value={sportName}
-                    onChange={(e) => setSportName(e.target.value)}
+                    value={filters.sportName}
+                    onChange={(e) =>
+                      handleFilterChange("sportName", e.target.value)
+                    }
                   >
                     {events.map((event) => (
                       <option key={event} value={event}>
@@ -167,7 +205,10 @@ const BetTicker = () => {
                     <option value="all">All</option>
                   </select>
                 </div>
-                <div className="dropdown m-l-10 d-inline-block v-t">
+                <div
+                  className="dropdown m-l-10 d-inline-block v-t"
+                  ref={oddsDropdownRef}
+                >
                   <button
                     type="button"
                     data-toggle="dropdown"
@@ -188,21 +229,28 @@ const BetTicker = () => {
                       type="text"
                       name=""
                       className="p-t-10 p-l-10 p-r-10 p-b-10"
-                      value={minOdds}
-                      onChange={(e) => setMinOdds(e.target.value)}
+                      value={filters.minOdds}
+                      onChange={(e) =>
+                        handleFilterChange("minOdds", e.target.value)
+                      }
                     />
                     <span className="p-t-10 p-l-10 p-r-10 p-b-10">To</span>
                     <input
                       type="text"
                       name="turate"
                       className="p-t-10 p-l-10 p-r-10 p-b-10"
-                      value={maxOdds}
-                      onChange={(e) => setMaxOdds(e.target.value)}
+                      value={filters.maxOdds}
+                      onChange={(e) =>
+                        handleFilterChange("maxOdds", e.target.value)
+                      }
                     />
                     <span className="text-danger error-account"></span>
                   </div>
                 </div>
-                <div className="dropdown m-l-10 d-inline-block v-t">
+                <div
+                  className="dropdown m-l-10 d-inline-block v-t"
+                  ref={stakeDropdownRef}
+                >
                   <button
                     type="button"
                     data-toggle="dropdown"
@@ -223,16 +271,20 @@ const BetTicker = () => {
                       type="text"
                       name=""
                       className="p-t-10 p-l-10 p-r-10 p-b-10"
-                      value={minStake}
-                      onChange={(e) => setMinStake(e.target.value)}
+                      value={filters.minStake}
+                      onChange={(e) =>
+                        handleFilterChange("minStake", e.target.value)
+                      }
                     />
                     <span className="p-t-10 p-l-10 p-r-10 p-b-10">To</span>
                     <input
                       type="text"
                       name="tamt"
                       className="p-t-10 p-l-10 p-r-10 p-b-10"
-                      value={maxStake}
-                      onChange={(e) => setMaxStake(e.target.value)}
+                      value={filters.maxStake}
+                      onChange={(e) =>
+                        handleFilterChange("maxStake", e.target.value)
+                      }
                     />
                     <span className="text-danger error-account"></span>
                   </div>
@@ -240,8 +292,8 @@ const BetTicker = () => {
                 <div className="d-inline-block v-t m-l-10">
                   <div className="search-box-container d-inline-block p-l-0 p-r-5">
                     <SearchUser
-                      value={userId}
-                      onChange={setUserId}
+                      value={filters.userId}
+                      onChange={(value) => handleFilterChange("userId", value)}
                       placeholder="Enter Atleast 3 character"
                     />
                   </div>
