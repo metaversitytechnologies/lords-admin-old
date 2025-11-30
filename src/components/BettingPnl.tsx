@@ -24,7 +24,9 @@ const BettingPnl = ({ userId }) => {
       const payload = {
         userId,
         fromDate,
-        toDate
+        toDate,
+        noOfRecords: 10,
+        index: 0
       };
       const response = await getBettingPnl(payload);
       if (response.data) {
