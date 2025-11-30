@@ -38,11 +38,11 @@ const Login: React.FC = () => {
 
         const user = {
           // From JWT Token
-          userId: tokenPayload.sub,
-          username: tokenPayload.sub,
-          userType: tokenPayload.usertype,
           exp: tokenPayload.exp,
           // From API response body
+          userId: data.userId,
+          username: data.username,
+          userType: data.userType,
           passwordtype: data.passwordtype,
           partnership: data.partnership,
           userTypeInfo: data.userTypeInfo
