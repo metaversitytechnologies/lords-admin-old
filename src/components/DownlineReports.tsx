@@ -41,7 +41,7 @@ const DownlineReports = () => {
     {
       id: "balance",
       label: "Balance",
-      component: <BalanceInfo isTabView={isTabView} />
+      component: <BalanceInfo childId={id} />
     },
     {
       id: "betlist",
@@ -66,12 +66,12 @@ const DownlineReports = () => {
     {
       id: "exposure",
       label: "Net Exposure",
-      component: <NetExposure userId={id} isActive={activeTab === 'exposure'} />
+      component: <NetExposure userId={id} isActive={activeTab === "exposure"} />
     },
     {
       id: "clients",
       label: "Clients Account Statement",
-      component: <ClientAccountStatement />
+      component: <ClientAccountStatement childId={id} />
     }
   ];
 
@@ -291,7 +291,7 @@ const DownlineReports = () => {
                         display: activeTab === tab.id ? "block" : "none"
                       }}
                     >
-                      {tab.component}
+                      {activeTab === tab.id && tab.component}
                     </div>
                   ))}
                 </div>

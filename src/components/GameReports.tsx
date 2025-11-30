@@ -6,6 +6,15 @@ import SearchUser from "./SearchUser";
 const GameReports = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userId, setUserId] = useState("");
+  const today = new Date();
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(today.getDate() - 7);
+
+  const [fromDate, setFromDate] = useState(
+    oneWeekAgo.toISOString().split("T")[0]
+  );
+  const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
+
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -134,11 +143,21 @@ const GameReports = () => {
           </div>
           <div className="datepicker-wrapper d-inline-block col-md-2 form-group v-t p-l-0 p-r-5 m-b-15">
             <label className="p-l-5 d-block">From</label>
-            <input type="date" className="form-control" />
+            <input
+              type="date"
+              className="form-control"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+            />
           </div>
           <div className="datepicker-wrapper form-group d-inline-block col-md-2 v-t p-l-0 p-r-5">
             <label className="p-l-5 d-block">To</label>
-            <input type="date" className="form-control" />
+            <input
+              type="date"
+              className="form-control"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+            />
           </div>
           <div className="select-report d-inline-block col-md-2 form-group v-t report-search p-l-0 p-r-5">
             <label className="p-l-5">Search by user</label>

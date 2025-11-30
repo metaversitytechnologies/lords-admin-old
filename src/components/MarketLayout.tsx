@@ -31,7 +31,7 @@ const MarketLayout = () => {
 
   const fetchOddsPnl = async () => {
     try {
-      const response = await getOddsPnl({ matchId: "34966369" ?? "" });
+      const response = await getOddsPnl({ id });
       console.log("Odds Data Response:", response);
       setOdssPnl(response?.data);
     } catch (err: any) {
@@ -40,7 +40,7 @@ const MarketLayout = () => {
   };
   const fetchFancyPnl = async () => {
     try {
-      const response = await getFancyPnl({ matchId: "34966369" ?? "" });
+      const response = await getFancyPnl({ matchId: id });
       console.log("Odds Data Response:", response);
       setFancyPnl(response?.data);
     } catch (err: any) {
@@ -49,7 +49,7 @@ const MarketLayout = () => {
   };
   const fetchBetList = async () => {
     try {
-      const response = await getBetList({ matchId: "34966369" ?? "" });
+      const response = await getBetList({ matchId: id });
       console.log("Odds Data Response:", response);
       setBetListData(response?.data);
     } catch (err: any) {

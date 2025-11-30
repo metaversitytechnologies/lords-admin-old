@@ -120,3 +120,7 @@ export const updatePwUserPermission = async (payload: object) => {
   return apiRequest('/pw-lord/update-pwuser-permission', 'POST', payload);
 };
 
+export const getStatementUseridwiseLord = async (payload: object) => {
+  return apiRequest('/lord/statement-useridwise-lord', 'POST', payload);
+};
+

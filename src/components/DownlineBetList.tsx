@@ -9,10 +9,14 @@ const DownlineBetList = ({ userId }) => {
   const [betData, setBetData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const today = new Date();
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(today.getDate() - 7);
+
   const [fromDate, setFromDate] = useState(
-    new Date().toISOString().split("T")[0]
+    oneWeekAgo.toISOString().split("T")[0]
   );
-  const [toDate, setToDate] = useState(new Date().toISOString().split("T")[0]);
+  const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
   const [pagination, setPagination] = useState({
     totalPages: 1,
     currentPage: 1

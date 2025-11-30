@@ -58,13 +58,11 @@ const eventOptions = [
 const BestList = () => {
   const { user } = useAuth();
   const userId = user?.userId;
-  const [data, setData] = useState(null);
+  const [betList, setBetList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchUser, setSearchUser] = useState("");
-  const [sportName, setSportName] = useState("4");
-  const [currentBet, setCurrentBet] = useState(true);
-  const [matchedDeletedBet, setMatchedDeletedBet] = useState("MATCHED");
+  const [sportId, setSportId] = useState("");
   const [noOfRecords, setNoOfRecords] = useState(10);
   const [index, setIndex] = useState(0);
   const today = new Date();
@@ -77,7 +75,6 @@ const BestList = () => {
   const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
   const [activeTab, setActiveTab] = useState("Current");
   const [activeRadio, setActiveRadio] = useState("Matched");
-  const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
@@ -85,9 +82,15 @@ const BestList = () => {
     const fetchMyBetReport = async () => {
       try {
         setLoading(true);
+
+        const currentBet = activeTab === "Current";
+        const matchedDeletedBet = activeRadio.toUpperCase();
+        const sportLabel =
+          eventOptions.find((e) => e.value === sportId)?.label || "All";
+
         const payload = {
-          sportName: sportName,
-          userId: searchUser || userId,
+          sportName: sportLabel,
+          userId: searchUser,
           currentBet: currentBet,
           matchedDeletedBet: matchedDeletedBet,
           noOfRecords: noOfRecords,
@@ -97,9 +100,8 @@ const BestList = () => {
         };
         const response = await getMyBetReport(payload);
         if (response.status) {
-          setData(response.data);
+          setBetList(response.data.betList);
           setFilteredData(response.data.betList);
-          setTotalPages(Math.ceil(response.data.totalRecords / noOfRecords));
         } else {
           setError(response.message);
         }
@@ -113,9 +115,9 @@ const BestList = () => {
     fetchMyBetReport();
   }, [
     userId,
-    sportName,
-    currentBet,
-    matchedDeletedBet,
+    sportId,
+    activeTab,
+    activeRadio,
     noOfRecords,
     index,
     fromDate,
@@ -125,41 +127,21 @@ const BestList = () => {
 
   useEffect(() => {
     if (search) {
-      const filtered = data?.betList.filter((bet) =>
+      const filtered = betList.filter((bet) =>
         bet.userId.toLowerCase().includes(search.toLowerCase())
       );
       setFilteredData(filtered);
     } else {
-      setFilteredData(data?.betList);
+      setFilteredData(betList);
     }
-  }, [search, data]);
-
-  const handleNext = () => {
-    if (index < totalPages - 1) {
-      setIndex(index + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (index > 0) {
-      setIndex(index - 1);
-    }
-  };
-
-  const handleFirst = () => {
-    setIndex(0);
-  };
-
-  const handleLast = () => {
-    setIndex(totalPages - 1);
-  };
+  }, [search, betList]);
 
   const handleApply = () => {
     setSearchUser(search);
   };
 
   const handleCancel = () => {
-    setSportName("4");
+    setSportId("0");
     setSearch("");
     setSearchUser("");
     const today = new Date();
@@ -174,8 +156,8 @@ const BestList = () => {
   const tabs = ["Current", "Past"];
   const radioOptions =
     activeTab === "Past"
-      ? ["Matched", "Unmatched", "Deleted"]
-      : ["Matched", "Unmatched"];
+      ? ["Matched", "Deleted"]
+      : ["Matched", "Unmatched", "Deleted"];
   return (
     <div className="apl-section">
       <div className="bet-list">
@@ -195,8 +177,8 @@ const BestList = () => {
                   <label className="p-l-5 d-block">Event</label>{" "}
                   <select
                     className="dropdown-toggle dropdown-button"
-                    value={sportName}
-                    onChange={(e) => setSportName(e.target.value)}
+                    value={sportId}
+                    onChange={(e) => setSportId(e.target.value)}
                   >
                     {eventOptions.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -327,10 +309,8 @@ const BestList = () => {
                   className={`nav-item ${activeTab === tab ? "active" : ""}`}
                   onClick={() => {
                     setActiveTab(tab);
-                    setCurrentBet(tab === "Current");
                     if (tab === "Current" && activeRadio === "Deleted") {
                       setActiveRadio("Matched");
-                      setMatchedDeletedBet("MATCHED");
                     }
                   }}
                 >
@@ -392,7 +372,6 @@ const BestList = () => {
                               checked={activeRadio === option}
                               onChange={() => {
                                 setActiveRadio(option);
-                                setMatchedDeletedBet(option.toUpperCase());
                               }}
                             />
                             <label
@@ -711,87 +690,6 @@ const BestList = () => {
                   </table>
                 </div>
               </div>{" "}
-              <div className="row">
-                <div className="my-1 p-m-l col">
-                  <ul
-                    role="menubar"
-                    aria-disabled="false"
-                    aria-label="Pagination"
-                    className="pagination my-0 b-pagination justify-content-end"
-                  >
-                    <li
-                      role="presentation"
-                      className={`page-item ${index === 0 ? "disabled" : ""}`}
-                    >
-                      <span
-                        role="menuitem"
-                        aria-label="Go to first page"
-                        onClick={handleFirst}
-                        className="page-link"
-                      >
-                        «
-                      </span>
-                    </li>
-                    <li
-                      role="presentation"
-                      className={`page-item ${index === 0 ? "disabled" : ""}`}
-                    >
-                      <span
-                        role="menuitem"
-                        aria-label="Go to previous page"
-                        onClick={handlePrev}
-                        className="page-link"
-                      >
-                        ‹
-                      </span>
-                    </li>
-                    <li role="presentation" className="page-item active">
-                      <button
-                        role="menuitemradio"
-                        type="button"
-                        aria-label={`Go to page ${index + 1}`}
-                        aria-checked="true"
-                        aria-posinset={index + 1}
-                        aria-setsize={totalPages}
-                        tabIndex={0}
-                        className="page-link"
-                      >
-                        {index + 1}
-                      </button>
-                    </li>
-                    <li
-                      role="presentation"
-                      className={`page-item ${
-                        index === totalPages - 1 ? "disabled" : ""
-                      }`}
-                    >
-                      <span
-                        role="menuitem"
-                        aria-label="Go to next page"
-                        onClick={handleNext}
-                        className="page-link"
-                      >
-                        ›
-                      </span>
-                    </li>
-                    <li
-                      role="presentation"
-                      className={`page-item ${
-                        index === totalPages - 1 ? "disabled" : ""
-                      }`}
-                    >
-                      <span
-                        role="menuitem"
-                        aria-label="Go to last page"
-                        onClick={handleLast}
-                        className="page-link"
-                      >
-                        »
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
             </div>
           </div>
         </div>

@@ -1,4 +1,15 @@
+import { useState } from 'react';
+
 const ProfitLoss: React.FC = () => {
+  const today = new Date();
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(today.getDate() - 7);
+
+  const [fromDate, setFromDate] = useState(
+    oneWeekAgo.toISOString().split("T")[0]
+  );
+  const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
+
   return (
     <section className="apl-section">
       <div>
@@ -74,7 +85,12 @@ const ProfitLoss: React.FC = () => {
               className="form-group v-t m-l-10 d-inline-block"
             >
               <label>From:</label>
-              <input type="date" className="form-control" />
+              <input
+                type="date"
+                className="form-control"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+              />
             </div>
             <span className="text-danger error-report m-l-10"></span>
             <div
@@ -82,7 +98,12 @@ const ProfitLoss: React.FC = () => {
               className="form-group v-t d-inline-block"
             >
               <label className="d-block">To</label>
-              <input type="date" className="form-control" />
+              <input
+                type="date"
+                className="form-control"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+              />
             </div>
             <span className="text-danger error-report"></span>
             <div className="m-l-5 m-b-10 d-inline-block v-t">

@@ -8,22 +8,14 @@ const BettingPnl = ({ userId }) => {
   const [error, setError] = useState(null);
   const [selectedMarket, setSelectedMarket] = useState(null);
 
-  // Function to get the start of the day
-  const getStartOfDay = () => {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    return now.toISOString().slice(0, 10);
-  };
+  const today = new Date();
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(today.getDate() - 7);
 
-  // Function to get the end of the day
-  const getEndOfDay = () => {
-    const now = new Date();
-    now.setHours(23, 59, 59, 999);
-    return now.toISOString().slice(0, 10);
-  };
-
-  const [fromDate, setFromDate] = useState(getStartOfDay());
-  const [toDate, setToDate] = useState(getEndOfDay());
+  const [fromDate, setFromDate] = useState(
+    oneWeekAgo.toISOString().split("T")[0]
+  );
+  const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
 
   const fetchBettingPnl = async () => {
     setLoading(true);

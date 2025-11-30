@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Sidebar = () => {
+interface SidebarProps {
+  isCollapsed: boolean;
+  toggleCollapse: () => void;
+}
+
+const Sidebar = ({ isCollapsed, toggleCollapse }: SidebarProps) => {
   const [activeMenu, setActiveMenu] = useState("Account Management");
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const menus = [
     {
@@ -51,14 +55,9 @@ const Sidebar = () => {
     setActiveMenu((prev) => (prev === title && hasLinks ? "" : title));
   };
 
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-
   return (
     <div className="left-pane-wrapper">
-      <div className={`left-pane ${isCollapsed ? "collapsed" : ""}`}>
-        {/* ------------------ MENU (HIDDEN WHEN COLLAPSED) ------------------ */}
+      <div className="left-pane">
         {!isCollapsed && (
           <nav className="menu">
             <ul className="list-unstyled m-0">

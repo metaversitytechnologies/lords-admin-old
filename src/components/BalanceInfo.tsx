@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getBalanceByUserId } from "../api/auth";
 
-const BalanceInfo = ({ isTabView = false }) => {
+const BalanceInfo = ({ childId }) => {
   const [balanceData, setBalanceData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,7 +14,9 @@ const BalanceInfo = ({ isTabView = false }) => {
         setLoading(true);
         setError(null);
         try {
-          const response = await getBalanceByUserId({ userId });
+          const response = await getBalanceByUserId({
+            userId: childId || userId
+          });
           setBalanceData(response.data);
           console.log(balanceData);
         } catch (err) {
@@ -31,8 +33,8 @@ const BalanceInfo = ({ isTabView = false }) => {
   if (error) return <div className="alert alert-danger">{error}</div>;
 
   return (
-    <div className={`${isTabView ? "" : "balance"}`}>
-      {!isTabView && (
+    <div className={`${childId ? "" : "balance"}`}>
+      {!childId && (
         <div className="header">
           <h1>Balance Information</h1>
         </div>

@@ -37,7 +37,7 @@ const MatchedUnmatched: React.FC<MatchedUnmatchedProps> = ({ matchId }) => {
     const fetchBets = async () => {
       try {
         const response = await getUnsettledByMatchId({
-          matchId: parseInt("34966369", 10),
+          matchId: matchId,
           matchedDeletedBet: activeTab
         });
         if (activeTab === "MATCHED") {
@@ -336,7 +336,7 @@ const MatchedUnmatched: React.FC<MatchedUnmatchedProps> = ({ matchId }) => {
         size="xl"
         position="top"
       >
-        <ViewMoreBetsModal matchId={"34966369"} />
+        <ViewMoreBetsModal matchId={matchId} />
       </ReusableModal>
     </>
   );

@@ -1,148 +1,188 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import SearchUser from "./SearchUser";
+import { getStatementUseridwiseLord } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
 
-const ClientAccountStatement: React.FC = () => {
+const ClientAccountStatement: React.FC = ({ childId }) => {
+  const { user } = useAuth();
+
   const [userId, setUserId] = useState("");
+  const today = new Date();
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(today.getDate() - 7);
+
+  const [fromDate, setFromDate] = useState(
+    oneWeekAgo.toISOString().split("T")[0]
+  );
+  const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
+
+  const [statementData, setStatementData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // ---------------------------------------------
+  // 👉 Fetch Function (only depends on dates)
+  // ---------------------------------------------
+  const fetchData = useCallback(
+    async (finalId: string) => {
+      if (!finalId) return;
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const payload = {
+          fromDate,
+          toDate,
+          noOfRecords: 10,
+          index: 0,
+          userId: finalId
+        };
+
+        const response = await getStatementUseridwiseLord(payload);
+
+        if (response.status) {
+          setStatementData(response.data);
+        } else {
+          setError(response.message || "Failed to fetch statement.");
+        }
+      } catch (err) {
+        console.error(err);
+        setError("An error occurred while fetching the statement.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fromDate, toDate]
+  );
+
+  useEffect(() => {
+    const initialId = childId || user?.userId;
+    if (initialId) {
+      fetchData(initialId);
+    }
+  }, [childId, user, fetchData]);
+
+  const handleSearch = () => {
+    fetchData(userId);
+  };
+
   return (
     <div>
       <div className="column m-r-40">
         <div className="header">
-          <h1>Clients Account Statement</h1>
+          {!childId && <h1>Clients Account Statement</h1>}
         </div>
+
         <div>
           <div
             style={{ width: "270px" }}
             className="form-group v-t m-r-20 d-inline-block"
           >
             <label>From:</label>
-            <input type="date" className="form-control" />
+            <input
+              type="date"
+              className="form-control"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+            />
           </div>
+
           <div
             style={{ width: "270px" }}
             className="form-group v-t m-r-20 d-inline-block"
           >
             <label>To:</label>
-            <input type="date" className="form-control" />
+            <input
+              type="date"
+              className="form-control"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+            />
           </div>
-          <div className="select-report d-inline-block col-md-2 form-group v-t report-search p-l-0 p-r-5">
-            <label className="p-l-5">Search by user</label>
-            <div className="search-box-container">
-              <SearchUser
-                value={userId}
-                onChange={setUserId}
-                placeholder="Enter Atleast 3 character"
-              />
+
+          {!childId && (
+            <div className="select-report d-inline-block col-md-2 form-group v-t report-search p-l-0 p-r-5">
+              <label className="p-l-5">Search by user</label>
+              <div className="search-box-container">
+                <SearchUser
+                  value={userId}
+                  onChange={setUserId}
+                  placeholder="Enter At least 3 characters"
+                />
+              </div>
             </div>
-          </div>
+          )}
+
           <div className="form-group m-r-20 d-inline-block">
             <label className="d-block">&nbsp;</label>
-            <button className="btn btn-primary" style={{ height: "35px" }}>
+            <button
+              className="btn btn-primary"
+              style={{ height: "35px" }}
+              onClick={handleSearch}
+            >
               <i className="fa fa-search m-r-5"></i>Search
             </button>
           </div>
         </div>
+
+        {error && <div className="alert alert-danger">{error}</div>}
       </div>
+
       <div className="table-responsive col-sm-12">
         <table className="table table-striped">
           <thead>
             <tr>
               <th>Date</th>
               <th>Description</th>
-              <th></th>
-              <th className="text-right">P&amp;L</th>
+              <th>P&L</th>
               <th className="text-right">Credit Limit</th>
               <th className="text-right">Balance</th>
             </tr>
           </thead>
+
           <tbody>
-            <tr className="group">
-              <td>
-                <b>16/11/2025</b>
-              </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>14:18:16</td>
-              <td>Betting P&amp;L</td>
-              <td style={{ cursor: "pointer" }}>
-                Cricket - India v South Africa - Bookmaker
-              </td>
-              <td className="text-right negative">-120.00</td>
-              <td className="text-right">-</td>
-              <td className="text-right positive">1997.50</td>
-            </tr>
-            <tr>
-              <td>07:51:01</td>
-              <td>Betting P&amp;L</td>
-              <td style={{ cursor: "pointer" }}>
-                Cricket - Adelaide Strikers W v Perth Scorchers W - Bookmaker
-              </td>
-              <td className="text-right positive">74.50</td>
-              <td className="text-right">-</td>
-              <td className="text-right positive">2117.50</td>
-            </tr>
-            <tr>
-              <td>05:13:47</td>
-              <td>Betting P&amp;L</td>
-              <td style={{ cursor: "pointer" }}>
-                Cricket - 6 over runs AS W(AS W vs PS W)adv - Normal
-              </td>
-              <td className="text-right negative">-50.00</td>
-              <td className="text-right">-</td>
-              <td className="text-right positive">2043.00</td>
-            </tr>
-            <tr>
-              <td>04:45:50</td>
-              <td>Betting P&amp;L</td>
-              <td style={{ cursor: "pointer" }}>
-                Cricket - Match 1st over run(AS W vs PS W)adv - Normal
-              </td>
-              <td className="text-right negative">-50.00</td>
-              <td className="text-right">-</td>
-              <td className="text-right positive">2093.00</td>
-            </tr>
-            <tr className="group">
-              <td>
-                <b>12/11/2025</b>
-              </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>20:31:22</td>
-              <td>Betting P&amp;L</td>
-              <td style={{ cursor: "pointer" }}>
-                Cricket - Mpumalanga Rhinos v Limpopo - Bookmaker
-              </td>
-              <td className="text-right negative">-50.00</td>
-              <td className="text-right">-</td>
-              <td className="text-right positive">2143.00</td>
-            </tr>
-            <tr className="group">
-              <td>
-                <b>09/11/2025</b>
-              </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>00:00:00</td>
-              <td>Transfer</td>
-              <td style={{ cursor: "pointer" }}>Opening Balance</td>
-              <td className="text-right positive">2193.00</td>
-              <td className="text-right">-</td>
-              <td className="text-right positive">2193.00</td>
-            </tr>
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="text-center">
+                  Loading...
+                </td>
+              </tr>
+            ) : statementData?.dataList?.length ? (
+              statementData.dataList.map((daily) => (
+                <React.Fragment key={daily.date}>
+                  <tr className="group">
+                    <td colSpan={5}>
+                      <b>{new Date(daily.date).toLocaleDateString()}</b>
+                    </td>
+                  </tr>
+
+                  {daily.dataList.map((entry, index) => (
+                    <tr key={index}>
+                      <td>{entry.date}</td>
+                      <td>{entry.description}</td>
+                      <td
+                        className={`text-right ${
+                          entry.pnl >= 0 ? "positive" : "negative"
+                        }`}
+                      >
+                        {entry.pnl.toFixed(2)}
+                      </td>
+                      <td className="text-right">{entry.creditLimit}</td>
+                      <td className="text-right positive">
+                        {entry.balance.toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+                </React.Fragment>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="text-center">
+                  No data available.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
