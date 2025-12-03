@@ -31,7 +31,7 @@ const MarketLayout = () => {
 
   const fetchOddsPnl = async () => {
     try {
-      const response = await getOddsPnl({ id });
+      const response = await getOddsPnl({ matchId: id });
       console.log("Odds Data Response:", response);
       setOdssPnl(response?.data);
     } catch (err: any) {
@@ -57,8 +57,6 @@ const MarketLayout = () => {
     }
   };
 
-  console.log("Odds Data State:", oddsPnl);
-
   useEffect(() => {
     fetchOdds();
     fetchOddsPnl();
@@ -72,23 +70,31 @@ const MarketLayout = () => {
     return () => clearInterval(interval); // cleanup
   }, []);
 
+  // console.log("Odds Data State:", oddsData);
+
   return (
     <div>
       <div className="listing-grid w-100 float-left ">
         <div>
           <div className="market-container">
             <div className="left-market">
-              <MatchOddsMarket oddsData={oddsData?.Odds} pnlData={oddsPnl}/>
+              <MatchOddsMarket oddsData={oddsData?.Odds} pnlData={oddsPnl} />
               {/* <TiedMatchMarket market={sample.tiedMarket} /> */}
               {/* <OverByOverMarket market={sample.overMarket} /> */}
               {oddsData?.Fancy2?.length !== 0 && (
-                <FancyMarket fancyData={oddsData?.Fancy2}  fancyPnldata={fancyPnl}/>
+                <FancyMarket
+                  fancyData={oddsData?.Fancy2}
+                  fancyPnldata={fancyPnl}
+                />
               )}
             </div>
             <div className="right-market">
               <Scorecard />
               <MatchedUnmatched matchId={id ?? ""} />
-              <BookmakerMarket  pnlData={oddsPnl} bookmakerData={oddsData?.Bookmaker} />
+              <BookmakerMarket
+                pnlData={oddsPnl}
+                bookmakerData={oddsData?.Bookmaker}
+              />
               <LiveTvDrag />
             </div>
           </div>

@@ -37,11 +37,13 @@ const FancyMarket = ({ fancyData, fancyPnldata }: FancyMarketProps) => (
           return (
             <div className="fancy-tripple" key={i}>
               <div
-                className={`bet-table-row ${r?.gstatus ? "suspendedtext" : ""}`}
+                className={`bet-table-row ${
+                  r?.sb === "S" ? "suspendedtext" : ""
+                }`}
                 data-title="SUSPENDED">
                 <div className="nation-name">
                   <p>
-                    <span>{r.nation}</span>
+                    <span>{r.na}</span>
                   </p>
                   <p className="mb-0">
                     <span style={{ color: bet >= 0 ? "green" : "red" }}>
@@ -58,10 +60,10 @@ const FancyMarket = ({ fancyData, fancyPnldata }: FancyMarketProps) => (
                   </p>
                 </div>
                 <div className="bl-box lay ">
-                  <span className="d-block odds">{r.l1 || "—"}</span>
+                  <span className="d-block odds">{r.l || "—"}</span>
                 </div>
                 <div className="bl-box back ">
-                  <span className="d-block odds">{r.b1 || "—"}</span>
+                  <span className="d-block odds">{r.b || "—"}</span>
                 </div>
                 <div className="fancy-min-max">
                   Min:<span>{r.minBet}</span> Max:<span>{r.maxBet}</span>

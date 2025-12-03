@@ -9,7 +9,11 @@ const getAuthHeaders = () => {
 };
 
 export const getOddsData = async (matchId: string) => {
-  const response = await fetch(`${API_BASE_URL}/betfair_api/fancy/${matchId}`, {
+  // const response = await fetch(`${API_BASE_URL}/betfair_api/fancy/${matchId}`, {
+  //   method: "GET",
+  //   headers: getAuthHeaders(),
+  // });
+  const response = await fetch(`${API_BASE_URL}api/fancy/v1/${matchId}`, {
     method: "GET",
     headers: getAuthHeaders(),
   });
