@@ -13,3 +13,11 @@ export const getBetList = async (payload: object) => {
 export const getMyBetReport = async (payload: object) => {
   return apiRequest("/lord/my-bet-report-lord", "POST", payload);
 };
+
+export const getPnlReportByMarketId = async (payload: object) => {
+  return apiRequest("/lord/pnl-report-by-marketid-lord", "POST", payload);
+};
+
+export const getBetListByMarketId = async (payload: object) => {
+  return apiRequest("/lord/bet-list-by-marketid-lord", "POST", payload);
+};
