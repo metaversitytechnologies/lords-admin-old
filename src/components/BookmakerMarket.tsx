@@ -7,7 +7,7 @@ const BookmakerMarket = ({ bookmakerData, pnlData }: BookmakerMarketProps) => {
     if (!Array.isArray(data)) return {};
 
     return data.reduce((acc, item) => {
-      const key = item.t;
+      const key = item.na;
 
       if (!acc[key]) acc[key] = [];
 
@@ -82,9 +82,9 @@ const BookmakerMarket = ({ bookmakerData, pnlData }: BookmakerMarketProps) => {
                     return (
                       <div
                         className={`bet-table-row ${
-                          r?.gstatus ? "suspendedtext" : ""
+                          r?.sb === "S" ? "suspendedtext" : ""
                         }`}
-                        data-title={r?.gstatus}
+                        data-title={r?.sb?"SUSPENDED":""}
                         key={idx}>
                         <div className="nation-name">
                           <p>
@@ -110,10 +110,10 @@ const BookmakerMarket = ({ bookmakerData, pnlData }: BookmakerMarketProps) => {
                           <span className="d-block odds">{"—"}</span>
                         </div>
                         <div className="bl-box back  changed">
-                          <span className="d-block odds">{r.b1 || "—"}</span>
+                          <span className="d-block odds">{r.b || "—"}</span>
                         </div>
                         <div className="bl-box lay  changed">
-                          <span className="d-block odds">{r.l1 || "—"}</span>
+                          <span className="d-block odds">{r.l || "—"}</span>
                         </div>
                         <div className="bl-box lay1 suspended">
                           <span className="d-block odds">{"—"}</span>

@@ -15,10 +15,11 @@ const layClasses: Record<number, string> = {
 };
 
 const MatchOddsMarket = ({ oddsData, pnlData }: MatchOddsMarketProps) => {
+  console.log("Match Odds Market Pnl Data:", oddsData);
   return (
     <div className="market-4 mt-2">
       {oddsData?.map((row, rIdx) => {
-        const myPnl = pnlData.find((item) => item?.marketId == row?.marketId);
+        const myPnl = pnlData.find((item) => item?.marketId == row?.mid);
         const plnOddsArray = myPnl
           ? [
               { pnl: myPnl.pnl1, selectionId: myPnl.selection1 },
@@ -56,18 +57,18 @@ const MatchOddsMarket = ({ oddsData, pnlData }: MatchOddsMarketProps) => {
                 <div className="bl-title"></div>
               </div>
 
-              {row?.runners?.map((b, bIdx) => {
+              {row?.r?.map((b, bIdx) => {
                 const pnlValue =
-                  plnOddsArray.find((pnl) => pnl.selectionId == b?.selectionId)
-                    ?.pnl || 0;
+                  plnOddsArray.find((pnl) => pnl.selectionId == b?.rid)?.pnl ||
+                  0;
                 return (
                   <div
                     key={bIdx}
                     className="bet-table-row"
-                    data-title={row.status || "ACTIVE"}>
+                    data-title={row.sb || "ACTIVE"}>
                     <div className="nation-name">
                       <p>
-                        <span>{b?.name}</span>
+                        <span>{b?.na}</span>
                       </p>
                       {pnlValue >= 0 ? (
                         <p className="mb-0" style={{ color: "green" }}>
@@ -80,41 +81,54 @@ const MatchOddsMarket = ({ oddsData, pnlData }: MatchOddsMarketProps) => {
                       )}
                     </div>
 
-                    {/* --- ALWAYS SHOW 3 BACK COLUMNS --- */}
-                    {[...Array(3)]
-                      .map((_, idx) => {
-                        const item = b?.ex?.availableToBack?.[idx];
-                        return (
-                          <div key={idx} className={backClasses[idx]}>
-                            <span className="d-block odds">
-                              {item?.price ?? "-"}
-                            </span>
-                            {item?.size !== undefined ? (
-                              <span className="d-block">{item.size}</span>
-                            ) : (
-                              <span className="d-block">-</span>
-                            )}
-                          </div>
-                        );
-                      })
-                      .reverse()}
-
-                    {/* --- ALWAYS SHOW 3 LAY COLUMNS --- */}
-                    {[...Array(3)].map((_, idx) => {
-                      const item = b?.ex?.availableToLay?.[idx];
-                      return (
-                        <div key={idx} className={layClasses[idx]}>
-                          <span className="d-block odds">
-                            {item?.price ?? "-"}
-                          </span>
-                          {item?.size !== undefined ? (
-                            <span className="d-block">{item.size}</span>
-                          ) : (
-                            <span className="d-block">-</span>
-                          )}
-                        </div>
-                      );
-                    })}
+                    <div className="bl-box back2 changed">
+                      <span className="d-block odds">{b?.b3 ?? "-"}</span>
+                      {b?.br3 !== undefined ? (
+                        <span className="d-block">{b.br3}</span>
+                      ) : (
+                        <span className="d-block">-</span>
+                      )}
+                    </div>
+                    <div className="bl-box back1 changed">
+                      <span className="d-block odds">{b?.b2 ?? "-"}</span>
+                      {b?.br2 !== undefined ? (
+                        <span className="d-block">{b.br2}</span>
+                      ) : (
+                        <span className="d-block">-</span>
+                      )}
+                    </div>
+                    <div className="bl-box back changed">
+                      <span className="d-block odds">{b?.b1 ?? "-"}</span>
+                      {b?.br1 !== undefined ? (
+                        <span className="d-block">{b.br1}</span>
+                      ) : (
+                        <span className="d-block">-</span>
+                      )}
+                    </div>
+                    <div className="bl-box lay changed">
+                      <span className="d-block odds">{b?.l1 ?? "-"}</span>
+                      {b?.lr1 !== undefined ? (
+                        <span className="d-block">{b.lr1}</span>
+                      ) : (
+                        <span className="d-block">-</span>
+                      )}
+                    </div>
+                    <div className="bl-box lay1 changed">
+                      <span className="d-block odds">{b?.l2 ?? "-"}</span>
+                      {b?.lr2 !== undefined ? (
+                        <span className="d-block">{b.lr2}</span>
+                      ) : (
+                        <span className="d-block">-</span>
+                      )}
+                    </div>
+                    <div className="bl-box lay2 changed">
+                      <span className="d-block odds">{b?.l3 ?? "-"}</span>
+                      {b?.lr3 !== undefined ? (
+                        <span className="d-block">{b.lr3}</span>
+                      ) : (
+                        <span className="d-block">-</span>
+                      )}
+                    </div>
                   </div>
                 );
               })}
