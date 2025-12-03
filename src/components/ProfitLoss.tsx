@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getPnlReportByMarketId } from "../api/bet";
-import MarketBets from "./MarketBets";
+import MarketBets from "./MarketBets"; // Import MarketBets
 
 interface Market {
   marketId: string;
@@ -29,24 +29,12 @@ const ProfitLoss: React.FC = () => {
     oneWeekAgo.toISOString().split("T")[0]
   );
   const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
-  const [eventName, setEventName] = useState("All");
+  const [eventName, setEventName] = useState("0");
   const [marketName, setMarketName] = useState("all");
   const [reportData, setReportData] = useState<DateReport[]>([]);
   const [loading, setLoading] = useState(false);
   const [grandTotal, setGrandTotal] = useState(0);
-
-  const [showMarketBets, setShowMarketBets] = useState(false);
-  const [selectedMarket, setSelectedMarket] = useState<Market | null>(null);
-
-  const handleViewBets = (market: Market) => {
-    setSelectedMarket(market);
-    setShowMarketBets(true);
-  };
-
-  const handleBackToMarkets = () => {
-    setShowMarketBets(false);
-    setSelectedMarket(null);
-  };
+  const [selectedMarket, setSelectedMarket] = useState<Market | null>(null); // State for selected market
 
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -56,7 +44,7 @@ const ProfitLoss: React.FC = () => {
         eventName: eventName === "All" ? "" : eventName,
         marketName: marketName === "all" ? "" : marketName,
         fromDate,
-        toDate,
+        toDate
       };
       const response = await getPnlReportByMarketId(payload);
       const data: DateReport[] = response.data;
@@ -86,8 +74,19 @@ const ProfitLoss: React.FC = () => {
   };
 
   useEffect(() => {
-    handleSearch();
-  }, []);
+    // Fetch data only when not viewing bets
+    if (!selectedMarket) {
+      handleSearch();
+    }
+  }, [selectedMarket]);
+
+  const handleViewBets = (market: Market) => {
+    setSelectedMarket(market);
+  };
+
+  const handleBack = () => {
+    setSelectedMarket(null);
+  };
 
   return (
     <section className="apl-section">
@@ -108,10 +107,10 @@ const ProfitLoss: React.FC = () => {
                 value={eventName}
                 onChange={(e) => setEventName(e.target.value)}
               >
-                <option value="All">All</option>
-                <option value="Football">Football</option>
-                <option value="Tennis">Tennis</option>
-                <option value="Cricket">Cricket</option>
+                <option value="0">All</option>
+                <option value="1">Football</option>
+                <option value="2">Tennis</option>
+                <option value="4">Cricket</option>
               </select>
             </div>
             <div className="dropdown long-width m-l-10 d-inline-block v-t">
@@ -167,10 +166,10 @@ const ProfitLoss: React.FC = () => {
           </form>
         </div>
       </div>
-      {showMarketBets ? (
-        <MarketBets market={selectedMarket} onBack={handleBackToMarkets} />
-      ) : (
-        <div className="table-responsive pnl-by-market">
+      <div className="table-responsive pnl-by-market">
+        {selectedMarket ? (
+          <MarketBets market={selectedMarket} onBack={handleBack} />
+        ) : (
           <table className="table table-striped">
             <thead>
               <tr>
@@ -268,8 +267,8 @@ const ProfitLoss: React.FC = () => {
               </tbody>
             )}
           </table>
-        </div>
-      )}
+        )}
+      </div>
     </section>
   );
 };

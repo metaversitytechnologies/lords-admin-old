@@ -61,7 +61,7 @@ const DownlineReports = () => {
     {
       id: "transfer",
       label: "Transfer Statement",
-      component: <TransferStatement />
+      component: <TransferStatement childId={id} />
     },
     {
       id: "exposure",

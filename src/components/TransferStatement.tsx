@@ -1,17 +1,50 @@
-const TransferStatement = () => {
-  const statementData = [
-    {
-      date: "02/11/2025",
-      records: [{ time: "12:38:56 PM", payee: "Upline", amount: -8.0 }]
-    },
-    {
-      date: "29/10/2025",
-      records: [
-        { time: "07:59:03 PM", payee: "clishak", amount: 100.0 },
-        { time: "07:43:51 PM", payee: "Upline", amount: 100.0 }
-      ]
-    }
-  ];
+import { useEffect, useState } from "react";
+import { getTransferStatementLord } from "../api/user";
+
+interface IStatementRecord {
+  time: string;
+  payerPayee: string;
+  amount: number;
+}
+
+interface IApiStatementEntry {
+  date: string;
+  dataList: IStatementRecord[];
+}
+
+const TransferStatement = ({ childId }) => {
+  const [statementData, setStatementData] = useState<IApiStatementEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const userData = localStorage.getItem("user");
+  const userId = userData ? JSON.parse(userData).userId : null;
+
+  useEffect(() => {
+    const fetchStatementData = async () => {
+      try {
+        setLoading(true);
+        const response = await getTransferStatementLord({
+          userId: childId || userId
+        });
+        if (response.data) {
+          setStatementData(response.data);
+        }
+        setError(null);
+      } catch (err) {
+        setError("Failed to fetch transfer statement.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStatementData();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    const [year, month, day] = dateString.split("-");
+    return `${day}/${month}/${year}`;
+  };
 
   return (
     <div className="apl-section">
@@ -33,40 +66,65 @@ const TransferStatement = () => {
               <th className="text-right">Amount</th>
             </tr>
           </thead>
-
-          {statementData.map((entry, index) => (
-            <tbody key={index}>
-              {/* Date Row */}
+          {loading ? (
+            <tbody>
               <tr>
-                <td colSpan={3} className="transferDate">
-                  <span>{entry.date}</span>
+                <td colSpan={3} className="text-center">
+                  Loading...
                 </td>
               </tr>
-
-              {/* Records for that date */}
-              {entry.records.map((record, i) => (
-                <tr key={i}>
-                  <td className="transferTime">
-                    <span>{record.time}</span>
-                  </td>
-                  <td>
-                    <span>{record.payee}</span>
-                  </td>
-                  <td className="text-right">
-                    <span
-                      className={`positive ${
-                        record.amount < 0 ? "negative" : "positive"
-                      }`}
-                    >
-                      {record.amount < 0
-                        ? record.amount.toFixed(2)
-                        : record.amount.toFixed(2)}
-                    </span>
+            </tbody>
+          ) : error ? (
+            <tbody>
+              <tr>
+                <td colSpan={3} className="text-center text-danger">
+                  {error}
+                </td>
+              </tr>
+            </tbody>
+          ) : statementData.length > 0 ? (
+            statementData.map((entry, index) => (
+              <tbody key={index}>
+                {/* Date Row */}
+                <tr>
+                  <td colSpan={3} className="transferDate">
+                    <span>{formatDate(entry.date)}</span>
                   </td>
                 </tr>
-              ))}
+
+                {/* Records for that date */}
+                {entry.dataList.map((record, i) => (
+                  <tr key={i}>
+                    <td className="transferTime">
+                      <span>{record.time}</span>
+                    </td>
+                    <td>
+                      <span>{record.payerPayee}</span>
+                    </td>
+                    <td className="text-right">
+                      <span
+                        className={`positive ${
+                          record.amount < 0 ? "negative" : "positive"
+                        }`}
+                      >
+                        {record.amount < 0
+                          ? record.amount.toFixed(2)
+                          : record.amount.toFixed(2)}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            ))
+          ) : (
+            <tbody>
+              <tr>
+                <td colSpan={3} className="text-center">
+                  No records found.
+                </td>
+              </tr>
             </tbody>
-          ))}
+          )}
         </table>
       </div>
     </div>
