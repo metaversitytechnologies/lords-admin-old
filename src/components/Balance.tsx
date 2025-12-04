@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { getBalance } from '../api/auth';
-import { useAuth } from '../context/AuthContext';
+import React, { useState, useEffect } from "react";
+import { getBalance } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
 
 interface BalanceData {
   netExposure: number;
@@ -24,17 +24,17 @@ const Balance: React.FC = () => {
       if (response.status && response.data) {
         setBalance(response.data);
       } else {
-        setError(response.message || 'Failed to fetch balance');
+        setError(response.message || "Failed to fetch balance");
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred');
+      setError(err.message || "An error occurred");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (user?.passwordtype !== 'old') {
+    if (user?.passwordtype !== "old") {
       fetchBalance();
     } else {
       setLoading(false);
@@ -42,12 +42,12 @@ const Balance: React.FC = () => {
   }, [user]);
 
   const handleRefresh = () => {
-    if (user?.passwordtype !== 'old') {
+    if (user?.passwordtype !== "old") {
       fetchBalance();
     }
   };
 
-  if (user?.passwordtype === 'old') {
+  if (user?.passwordtype === "old") {
     return null; // Or some placeholder
   }
 
@@ -55,22 +55,49 @@ const Balance: React.FC = () => {
     <div className="balance">
       <div className="status">
         <dt className="status-list">
-          <dt>Balance Down:</dt> <dd className={`positive ${balance && balance.balanceDown < 0 ? 'negative' : ''}`}> {balance ? balance.balanceDown.toFixed(2) : '...'}</dd>
-          <dt>Balance Up:</dt> <dd className={`positive ${balance && balance.balanceUp >= 0 ? 'positive' : ''}`}>{balance ? balance.balanceUp.toFixed(2) : '...'}</dd>
-          <dt>Net Exposure:</dt> <dd className={`positive ${balance && balance.netExposure < 0 ? 'negative' : ''}`}>{balance ? balance.netExposure.toFixed(2) : '...'}</dd>{" "}
-          <dt>Available Credit:</dt> <dd>{balance ? balance.availableCredit.toFixed(2) : '...'}</dd>
+          <dt>Balance Down:</dt>{" "}
+          <dd
+            className={`positive ${
+              balance && balance.balanceDown <= 0 ? "negative" : "positive"
+            }`}
+          >
+            {" "}
+            {balance ? balance.balanceDown.toFixed(2) : "..."}
+          </dd>
+          <dt>Balance Up:</dt>{" "}
+          <dd
+            className={`positive ${
+              balance && balance.balanceUp <= 0 ? "negative" : "positive"
+            }`}
+          >
+            {balance ? balance.balanceUp.toFixed(2) : "..."}
+          </dd>
+          <dt>Net Exposure:</dt>{" "}
+          <dd
+            className={`positive ${
+              balance && balance.netExposure <= 0 ? "negative" : "positive"
+            }`}
+          >
+            {balance ? balance.netExposure.toFixed(2) : "..."}
+          </dd>{" "}
+          <dt>Available Credit:</dt>{" "}
+          <dd>{balance ? balance.availableCredit.toFixed(2) : "..."}</dd>
         </dt>
 
         <div
           className="d-inline-block float-right"
           style={{ marginTop: "-5px" }}
         >
-          <button className="btn btn-secondary d-inline-block" onClick={handleRefresh} disabled={loading}>
-            {loading ? 'Refreshing...' : 'Refresh'}
+          <button
+            className="btn btn-secondary d-inline-block"
+            onClick={handleRefresh}
+            disabled={loading}
+          >
+            {loading ? "Refreshing..." : "Refresh"}
           </button>
         </div>
       </div>
-      {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+      {error && <div style={{ color: "red", marginTop: "10px" }}>{error}</div>}
     </div>
   );
 };
