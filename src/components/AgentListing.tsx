@@ -236,7 +236,7 @@ const AgentListing: React.FC = () => {
                       !isExpanded ? "hidden-field" : "field-show"
                     }`}
                   >
-                    {agent.created}
+                    {agent.createdAt}
                   </td>
                   <td
                     className={`text-right ${
