@@ -13,6 +13,7 @@ type FormValues = {
   creditRef: string;
   userRate: string;
   userLevel: string;
+  exposureLimit: string;
   lupassword: string;
   notes: string;
 };
@@ -31,7 +32,8 @@ const NewAgent: React.FC = () => {
       betStatus: "1",
       userLevel: "",
       userRate: "1",
-      creditRef: "0"
+      creditRef: "0",
+      exposureLimit: "0"
     }
   });
   const [error, setError] = useState<string | null>(null);
@@ -47,9 +49,10 @@ const NewAgent: React.FC = () => {
   }, []);
 
   const password = watch("password");
+  const selectedUserLevel = watch("userLevel");
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const payload = {
+    const payload: any = {
       userId: data.userId,
       password: data.password,
       userStatus: data.userStatus === "1",
@@ -60,6 +63,10 @@ const NewAgent: React.FC = () => {
       lupassword: data.lupassword,
       notes: data.notes
     };
+
+    if (data.userLevel === "USER") {
+      payload.exposureLimit = parseFloat(data.exposureLimit) || 0;
+    }
 
     try {
       const response = await createUser(payload);
@@ -350,6 +357,21 @@ const NewAgent: React.FC = () => {
                       </span>
                     )}
                   </div>
+                  {selectedUserLevel === "USER" && (
+                    <div className="m-t-30">
+                      <label>Exposure Limit</label>
+                      <span>
+                        <input
+                          placeholder="Exposure Limit"
+                          type="text"
+                          maxLength={21}
+                          {...register("exposureLimit")}
+                          aria-required="false"
+                          aria-invalid="false"
+                        />
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
