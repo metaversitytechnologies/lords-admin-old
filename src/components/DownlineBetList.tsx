@@ -256,27 +256,30 @@ const DownlineBetList = ({ userId }) => {
                                     Place Date
                                   </th>
                                   <th className="position-relative text-left">
-                                    Match Name
+                                    Description
                                   </th>
                                   <th className="position-relative text-left">
-                                    Market Name
-                                  </th>
-                                  <th className="position-relative text-left">
-                                    Selection Name
-                                  </th>
-                                  <th className="position-relative text-left">
-                                    User name
+                                    User Name
                                   </th>
                                   <th className="position-relative text-left">
                                     Bet Type
                                   </th>
-                                  <th className="position-relative text-right">
-                                    Odds
+                                  <th className="position-relative text-left">
+                                    User Rate
+                                  </th>
+                                  {/* <th className="position-relative text-left">
+                                    Profit
                                   </th>
                                   <th className="position-relative text-right">
-                                    Stack
-                                  </th>
+                                    Win/Loss
+                                  </th> */}
                                   <th className="text-left">IP</th>
+                                  <th className="position-relative text-right">
+                                    Browser Details
+                                  </th>
+                                  <th className="position-relative text-right">
+                                    Amount
+                                  </th>
                                 </tr>
                               </thead>
                               <tbody role="rowgroup">
@@ -335,18 +338,6 @@ const DownlineBetList = ({ userId }) => {
                                           data-label="Market Name"
                                           className="text-left"
                                         >
-                                          {bet.marketname}
-                                        </td>
-                                        <td
-                                          data-label="Selection Name"
-                                          className="text-left"
-                                        >
-                                          {bet.selectionname}
-                                        </td>
-                                        <td
-                                          data-label="User name"
-                                          className="text-left"
-                                        >
                                           {bet.userid}
                                         </td>
                                         <td
@@ -359,21 +350,53 @@ const DownlineBetList = ({ userId }) => {
                                         </td>
                                         <td
                                           data-label="Odds"
-                                          className="text-right"
+                                          className="text-left"
                                         >
                                           {bet.odds}
                                         </td>
+                                        {/* <td
+                                          data-label="Bet Type"
+                                          className={`text-left ${
+                                            bet.isback ? "back-bet" : "lay-bet"
+                                          }`}
+                                        >
+                                          {bet.isback ? "BACK" : "LAY"}
+                                        </td>
                                         <td
-                                          data-label="Stack"
+                                          data-label="Odds"
                                           className="text-right"
                                         >
-                                          {bet.stack}
-                                        </td>
+                                          {bet.odds}
+                                        </td> */}
                                         <td
                                           data-label="IP"
                                           className="text-left"
                                         >
                                           {bet.userIp}
+                                        </td>
+                                        <td
+                                          data-label="Stack"
+                                          className="text-right"
+                                        >
+                                          {(() => {
+                                            try {
+                                              const info =
+                                                typeof bet.deviceInfo ===
+                                                "string"
+                                                  ? JSON.parse(bet.deviceInfo)
+                                                  : bet.deviceInfo;
+                                              return info?.userAgent || "";
+                                            } catch {
+                                              return "";
+                                            }
+                                          })()}
+                                        </td>
+
+                                        <td
+                                          data-label="Stack"
+                                          className="text-right"
+                                        >
+                                          {bet.stack}
                                         </td>
                                       </tr>
                                     ))
