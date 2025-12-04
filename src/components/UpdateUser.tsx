@@ -12,6 +12,7 @@ type FormValues = {
   notes: string;
   lupassword: string;
   newCreditRef: number | string;
+  exposureLimit: number;
 };
 
 interface UpdateUserProps {
@@ -37,6 +38,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
     min: 0,
     max: 0
   });
+  const [currentExposureLimit, setCurrentExposureLimit] = useState(0);
 
   const password = watch("password");
 
@@ -56,6 +58,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
             userRate: userDetails.userRate,
             notes: userDetails.notes,
             newCreditRef: userDetails.givenCreditLimit,
+            exposureLimit: userDetails.exposureLimit,
             password: "",
             confirmPassword: "",
             lupassword: ""
@@ -65,6 +68,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
             min: userDetails.minCreditLimit,
             max: userDetails.maxCreditLimit
           });
+          setCurrentExposureLimit(userDetails.exposureLimit);
         } catch (error) {
           console.error("Failed to fetch user details for update:", error);
           setError(
@@ -90,6 +94,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
       userStatus: data.userStatus === "true",
       betStatus: data.betStatus === "true",
       creditRef: Number(data.newCreditRef),
+      exposureLimit: Number(data.exposureLimit),
       userRate: Number(data.userRate),
       userLevel: agent.accountType.toUpperCase(),
       lupassword: data.lupassword,
@@ -363,6 +368,45 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
                           </div>
                         </div>
                       </section>
+                      {agent.accountType.toUpperCase() === "USER" && (
+                        <section>
+                          <div className="apl-section-inner">
+                            <legend className="p-b-10">Change Exposure</legend>
+                            <div className="apl-form-row">
+                              <div className="d-inline-block">
+                                <div className="apl-form-row">
+                                  <span>
+                                    <input
+                                      placeholder="Exposure Limit"
+                                      value={currentExposureLimit}
+                                      type="text"
+                                      disabled
+                                    />
+                                  </span>
+                                </div>
+                                <div className="apl-form-row">
+                                  <label> New Exposure Limit</label>
+                                  <span>
+                                    <input
+                                      placeholder="Exposure Limit"
+                                      type="text"
+                                      {...register("exposureLimit")}
+                                      onKeyPress={(e) => {
+                                        if (
+                                          e.currentTarget.value.length === 21
+                                        ) {
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                    />
+                                  </span>
+                                </div>
+                                <span className="text-danger error-account"></span>
+                              </div>
+                            </div>
+                          </div>
+                        </section>
+                      )}
                       <section>
                         <div className="apl-section-inner">
                           <legend className="p-b-10">Notes</legend>
