@@ -78,15 +78,43 @@ const MarketLayout = () => {
         <div>
           <div className="market-container">
             <div className="left-market">
-              <MatchOddsMarket oddsData={oddsData?.Odds} pnlData={oddsPnl} />
+              <MatchOddsMarket
+                oddsData={oddsData?.Odds}
+                pnlData={oddsPnl}
+                filterName="Tied Match"
+                showOnly={false}
+              />
               {/* <TiedMatchMarket market={sample.tiedMarket} /> */}
               {/* <OverByOverMarket market={sample.overMarket} /> */}
-              {oddsData?.Fancy2?.length !== 0 && (
+              {/* {oddsData?.Fancy2?.length !== 0 && (
                 <FancyMarket
                   fancyData={oddsData?.Fancy2}
                   fancyPnldata={fancyPnl}
                 />
-              )}
+              )} */}
+
+              {oddsData &&
+                Object.keys(oddsData)?.map((fancyMarket: string) => {
+                  if (
+                    ["Odds", "Bookmaker", "CricketCasino"].includes(fancyMarket)
+                  )
+                    return <></>;
+                  if (oddsData[fancyMarket]?.length > 0)
+                    return (
+                      // <FancyNew
+                      //   handlePlaceBet={handlePlaceBet}
+                      //   matchDetais={newOddsData[fancyMarket]}
+                      //   profit={profits?.Fancy}
+                      //   marketName={fancyMarket}
+                      // />
+                      <FancyMarket
+                        fancyData={oddsData?.[fancyMarket]}
+                        fancyPnldata={fancyPnl}
+                        fancyMarket={fancyMarket}
+                      />
+                    );
+                  return <></>;
+                })}
             </div>
             <div className="right-market">
               <Scorecard />
@@ -94,6 +122,12 @@ const MarketLayout = () => {
               <BookmakerMarket
                 pnlData={oddsPnl}
                 bookmakerData={oddsData?.Bookmaker}
+              />
+              <MatchOddsMarket
+                oddsData={oddsData?.Odds}
+                pnlData={oddsPnl}
+                filterName="Tied Match"
+                showOnly={true}
               />
               <LiveTvDrag />
             </div>

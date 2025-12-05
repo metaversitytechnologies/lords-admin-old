@@ -1,25 +1,31 @@
 interface MatchOddsMarketProps {
   oddsData: Odd[] | undefined;
   pnlData: any;
+  filterName: string;
+  showOnly: boolean;
 }
 
-const backClasses: Record<number, string> = {
-  2: "bl-box back2 changed",
-  1: "bl-box back1 changed",
-  0: "bl-box back changed",
-};
-const layClasses: Record<number, string> = {
-  2: "bl-box lay2 changed",
-  1: "bl-box lay1 changed",
-  0: "bl-box lay changed",
-};
+// const backClasses: Record<number, string> = {
+//   2: "bl-box back2 changed",
+//   1: "bl-box back1 changed",
+//   0: "bl-box back changed",
+// };
+// const layClasses: Record<number, string> = {
+//   2: "bl-box lay2 changed",
+//   1: "bl-box lay1 changed",
+//   0: "bl-box lay changed",
+// };
 
-const MatchOddsMarket = ({ oddsData, pnlData }: MatchOddsMarketProps) => {
-  console.log("Match Odds Market Pnl Data:", oddsData);
+const MatchOddsMarket = ({ oddsData, pnlData, filterName, showOnly }: MatchOddsMarketProps) => {
+  const sortedMarkets = [...(oddsData || [])].sort((a, b) => {
+    if (a.ty === "Match Odds") return -1;
+    if (b.ty === "Match Odds") return 1;
+    return 0;
+  });
   return (
     <div className="market-4 mt-2">
-      {oddsData?.map((row, rIdx) => {
-        const myPnl = pnlData.find((item) => item?.marketId == row?.mid);
+      {sortedMarkets?.map((row, rIdx) => {
+        const myPnl = pnlData?.find((item) => item?.marketId == row?.mid);
         const plnOddsArray = myPnl
           ? [
               { pnl: myPnl.pnl1, selectionId: myPnl.selection1 },
@@ -28,11 +34,19 @@ const MatchOddsMarket = ({ oddsData, pnlData }: MatchOddsMarketProps) => {
             ]
           : [];
 
+        if (filterName) {
+          if (showOnly) {
+            if (row?.ty !== filterName) return null;
+          } else {
+            if (row?.ty === filterName) return null;
+          }
+        }
+
         return (
           <div className="bet-table" key={rIdx}>
             <div className="bet-table-header">
               <div className="nation-name">
-                <span>{row.Name}</span>
+                <span>{row.ty}</span>
                 <button
                   type="button"
                   className="btn btn btn-submit bet-lock-btn btn-secondary">
