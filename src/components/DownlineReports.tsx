@@ -8,6 +8,7 @@ import ClientAccountStatement from "./ClientAccountStatement";
 import BettingPnl from "./BettingPnl";
 import { getWinLossActivity } from "../api/auth";
 import DownlineBetList from "./DownlineBetList";
+import DownlineAccountStatement from "./DownlineAccountStatement";
 
 const DownlineReports = () => {
   const [activeTab, setActiveTab] = useState("activity");
@@ -56,7 +57,7 @@ const DownlineReports = () => {
     {
       id: "statement",
       label: "Statement",
-      component: <AccountStatement isTabView={isTabView} />
+      component: <DownlineAccountStatement childId={id} />
     },
     {
       id: "transfer",

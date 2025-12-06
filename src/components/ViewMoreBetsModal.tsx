@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { getUnsettledByMatchId } from "../api/auth";
+import { getBetListByMarketId } from "../api/bet";
 import SearchUser from "./SearchUser";
 
 interface ViewMoreBetsModalProps {
-  matchId: string;
+  matchId?: string;
+  marketId?: string;
 }
 
-const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({ matchId }) => {
+const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
+  matchId,
+  marketId
+}) => {
   const [activeTab, setActiveTab] = useState("matched");
   const [bets, setBets] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -19,19 +24,24 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({ matchId }) => {
   const [filterBetType, setFilterBetType] = useState("");
 
   const fetchBets = async (filters?: any) => {
-    if (!matchId) return;
+    if (!matchId && !marketId) return;
 
     setLoading(true);
 
     const payload: any = {
-      matchId: parseInt(matchId, 10),
-      matchedDeletedBet: activeTab.toUpperCase(),
       betType: filters?.betType || "ALL",
       minAmount: filters?.minAmount || null,
       maxAmount: filters?.maxAmount || null,
       ipAddress: filters?.ipAddress || null,
       userId: filters?.userId || null
     };
+
+    if (marketId) {
+      payload.marketId = marketId;
+    } else if (matchId) {
+      payload.matchId = matchId;
+      payload.matchedDeletedBet = activeTab.toUpperCase();
+    }
 
     // As per request, send null for non-selected filters.
     // An empty string for a filter is considered "not selected".
@@ -42,8 +52,19 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({ matchId }) => {
     if (!payload.userId) delete payload.userId;
 
     try {
-      const response = await getUnsettledByMatchId(payload);
-      setBets(response.data || []);
+      let response;
+      if (marketId) {
+        response = await getBetListByMarketId(payload);
+        const transformedData = response.data.map((bet: any) => ({
+          ...bet,
+          back: bet.isback,
+          amount: bet.stake
+        }));
+        setBets(transformedData || []);
+      } else {
+        response = await getUnsettledByMatchId(payload);
+        setBets(response.data || []);
+      }
     } catch (error) {
       console.error(`Error fetching ${activeTab} bets:`, error);
       setBets([]);
@@ -54,7 +75,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({ matchId }) => {
 
   useEffect(() => {
     fetchBets();
-  }, [activeTab, matchId]);
+  }, [activeTab, matchId, marketId]);
 
   const handleFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();

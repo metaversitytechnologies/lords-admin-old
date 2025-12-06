@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getChildListLord } from "../api/user";
+import { getChildListLord, bankDepositWithdraw } from "../api/user";
 import { useAuth } from "../context/AuthContext";
 
 interface User {
@@ -11,12 +11,20 @@ interface User {
   gt: number;
 }
 
+interface Status {
+  loading: boolean;
+  message: string;
+  type: "success" | "error" | "";
+}
+
 const Transfer = () => {
   const { user } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [masterPassword, setMasterPassword] = useState("");
 
   const [amountValues, setAmountValues] = useState<Record<string, string>>({});
+  const [statuses, setStatuses] = useState<Record<string, Status>>({});
 
   useEffect(() => {
     if (user) {
@@ -42,12 +50,19 @@ const Transfer = () => {
   useEffect(() => {
     if (users.length > 0) {
       const initialAmounts: Record<string, string> = {};
+      const initialStatuses: Record<string, Status> = {};
 
       users.forEach((u) => {
         initialAmounts[u.userId] = "0";
+        initialStatuses[u.userId] = {
+          loading: false,
+          message: "",
+          type: ""
+        };
       });
 
       setAmountValues(initialAmounts);
+      setStatuses(initialStatuses);
     }
   }, [users]);
 
@@ -59,6 +74,85 @@ const Transfer = () => {
       ...prev,
       [childUser.userId]: flipped.toFixed(2)
     }));
+  };
+
+  const handleSubmit = async (childUser: User) => {
+    const userId = childUser.userId;
+
+    if (!masterPassword) {
+      setStatuses((prev) => ({
+        ...prev,
+        [userId]: {
+          loading: false,
+          message: "Password is empty.",
+          type: "error"
+        }
+      }));
+      setTimeout(() => {
+        setStatuses((prev) => ({
+          ...prev,
+          [userId]: { loading: false, message: "", type: "" }
+        }));
+      }, 3000);
+      return;
+    }
+
+    setStatuses((prev) => ({
+      ...prev,
+      [userId]: { loading: true, message: "", type: "" }
+    }));
+
+    try {
+      const response = await bankDepositWithdraw({
+        userid: userId,
+        amount: amountValues[userId],
+        lupassword: masterPassword
+      });
+
+      if (response.status) {
+        setStatuses((prev) => ({
+          ...prev,
+          [userId]: {
+            loading: false,
+            message: "Success!",
+            type: "success"
+          }
+        }));
+      } else {
+        const message =
+          response.message === "invalid password"
+            ? "Enter Master Password Correct"
+            : response.message || "An error occurred.";
+        setStatuses((prev) => ({
+          ...prev,
+          [userId]: {
+            loading: false,
+            message,
+            type: "error"
+          }
+        }));
+      }
+    } catch (error: any) {
+      const message =
+        error.message === "invalid password"
+          ? "Enter Master Password Correct"
+          : error.message || "An error occurred.";
+      setStatuses((prev) => ({
+        ...prev,
+        [userId]: {
+          loading: false,
+          message,
+          type: "error"
+        }
+      }));
+    } finally {
+      setTimeout(() => {
+        setStatuses((prev) => ({
+          ...prev,
+          [userId]: { loading: false, message: "", type: "" }
+        }));
+      }, 3000);
+    }
   };
 
   return (
@@ -79,6 +173,8 @@ const Transfer = () => {
                 name="masterPassword"
                 placeholder="Master Password"
                 className="master-input"
+                value={masterPassword}
+                onChange={(e) => setMasterPassword(e.target.value)}
               />
               <button className="btn btn-primary v-t m-l-5 p-l-5 p-r-5">
                 Transfer All
@@ -155,12 +251,30 @@ const Transfer = () => {
                             placeholder="0"
                           />
 
-                          <button className="btn btn-primary m-l-5">
-                            Submit
+                          <button
+                            className="btn btn-primary m-l-5"
+                            onClick={() => handleSubmit(childUser)}
+                            disabled={statuses[childUser.userId]?.loading}
+                          >
+                            {statuses[childUser.userId]?.loading
+                              ? "..."
+                              : "Submit"}
                           </button>
                         </td>
 
-                        <td className="bank-row-width"></td>
+                        <td className="bank-row-width">
+                          {statuses[childUser.userId] && (
+                            <span
+                              className={
+                                statuses[childUser.userId].type === "success"
+                                  ? "text-success"
+                                  : "text-danger"
+                              }
+                            >
+                              {statuses[childUser.userId].message}
+                            </span>
+                          )}
+                        </td>
                       </tr>
                     ))
                   ) : (

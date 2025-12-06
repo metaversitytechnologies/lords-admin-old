@@ -1,11 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReusableModal from "./ReusableModal";
 import ViewMoreBetsModal from "./ViewMoreBetsModal";
 import SearchUser from "./SearchUser";
+import { getGameReportLord } from "../api/reports";
+
+interface Report {
+  date: string;
+  description: string;
+  credit: number;
+  debit: number;
+  closing: number;
+  matchId: string;
+}
 
 const GameReports = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userId, setUserId] = useState("");
+  const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
   const today = new Date();
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(today.getDate() - 7);
@@ -14,15 +25,21 @@ const GameReports = () => {
     oneWeekAgo.toISOString().split("T")[0]
   );
   const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
+  const [eventType, setEventType] = useState("4"); // Default to Cricket
+  const [reportData, setReportData] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-
-  const handleOpenModal = () => {
+  const handleOpenModal = (matchId: string) => {
+    setSelectedMatchId(matchId);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setSelectedMatchId(null);
   };
+
   const eventNames = [
     { value: "0", label: "All" },
     { value: "1", label: "Football" },
@@ -75,64 +92,43 @@ const GameReports = () => {
     { value: "26420387", label: "Mixed Martial Arts" }
   ];
 
-  const reportData = [
-    {
-      date: "2025-11-02",
-      description: "lucky15 / Lucky 15161251102122141 / Lucky 15 / Wicket",
-      credit: "-",
-      debit: "-100.00",
-      closing: "-100.00"
-    },
-    {
-      date: "2025-11-02",
-      description: "btable / Rno. 120251102122533 / btable / Ghulam",
-      credit: "100.00",
-      debit: "-",
-      closing: "0.00"
-    },
-    {
-      date: "2025-11-02",
-      description:
-        "btable / Rno. 120251102122635 / btable / Sahib Bibi Aur Ghulam",
-      credit: "100.00",
-      debit: "-",
-      closing: "100.00"
-    },
-    {
-      date: "2025-11-02",
-      description:
-        "btable / Rno. 120251102122736 / btable / Kis Kis Ko Pyaar Karoon",
-      credit: "100.00",
-      debit: "-",
-      closing: "200.00"
-    },
-    {
-      date: "2025-11-02",
-      description: "Cricket / Australia v India / Bookmaker / India",
-      credit: "93.00",
-      debit: "-",
-      closing: "293.00"
-    },
-    {
-      date: "2025-11-12",
-      description:
-        "Cricket / Mpumalanga Rhinos v Limpopo / Bookmaker / Mpumalanga Rhinos",
-      credit: "-",
-      debit: "-50.00",
-      closing: "243.00"
+  const loadReport = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await getGameReportLord(fromDate, toDate, eventType);
+      setReportData(response.data || []);
+    } catch (err) {
+      setError("Failed to load report. Please try again.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  useEffect(() => {
+    loadReport();
+  }, []);
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    loadReport();
+  };
 
   return (
     <div>
       <div className="listing-grid w-100 float-left m-t-0">
-        <form className="m-b-10">
+        <form className="m-b-10" onSubmit={handleFormSubmit}>
           <div className="header">
             <h1>Game Report</h1>
           </div>
           <div className="select-report d-inline-block col-md-2 form-group v-t p-l-0 p-r-5">
             <label className="p-l-5">Event Name</label>
-            <select className="form-control">
+            <select
+              className="form-control"
+              value={eventType}
+              onChange={(e) => setEventType(e.target.value)}
+            >
               <option value="9999.9999">Select Event Name</option>
               {eventNames.map((event) => (
                 <option key={event.value} value={event.value}>
@@ -171,14 +167,19 @@ const GameReports = () => {
           </div>
           <div className="d-inline-block v-t m-l-0">
             <label className="d-block">&nbsp;</label>
-            <button type="submit" className="btn btn-primary btn-load-c v-t">
-              Load
+            <button
+              type="submit"
+              className="btn btn-primary btn-load-c v-t"
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Load"}
             </button>
             <div className="d-inline-block m-l-5">
               <span className="btn btn-secondary m-l-5">Download CSV</span>
             </div>
           </div>
         </form>
+        {error && <div className="alert alert-danger">{error}</div>}
         <div className="table-responsive col-sm-12">
           <div className="row col-page">
             <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
@@ -240,60 +241,74 @@ const GameReports = () => {
                   </tr>
                 </thead>
                 <tbody role="rowgroup">
-                  {reportData.map((row, index) => (
-                    <tr role="row" key={index}>
-                      <td
-                        aria-colindex="1"
-                        data-label="Date"
-                        role="cell"
-                        className="text-center"
-                      >
-                        <div>{row.date}</div>
-                      </td>
-                      <td
-                        aria-colindex="2"
-                        data-label="Description"
-                        role="cell"
-                      >
-                        <div>
-                          <a
-                            href="#"
-                            className="underline text-info"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleOpenModal();
-                            }}
-                          >
-                            {row.description}
-                          </a>
-                        </div>
-                      </td>
-                      <td
-                        aria-colindex="3"
-                        data-label="Credit"
-                        role="cell"
-                        className="text-right"
-                      >
-                        <div>{row.credit}</div>
-                      </td>
-                      <td
-                        aria-colindex="4"
-                        data-label="Debit"
-                        role="cell"
-                        className="text-right"
-                      >
-                        <div>{row.debit}</div>
-                      </td>
-                      <td
-                        aria-colindex="5"
-                        data-label="Closing"
-                        role="cell"
-                        className="text-right"
-                      >
-                        <div>{row.closing}</div>
+                  {loading ? (
+                    <tr>
+                      <td colSpan={5} className="text-center">
+                        Loading...
                       </td>
                     </tr>
-                  ))}
+                  ) : reportData.length > 0 ? (
+                    reportData.map((row, index) => (
+                      <tr role="row" key={index}>
+                        <td
+                          aria-colindex="1"
+                          data-label="Date"
+                          role="cell"
+                          className="text-center"
+                        >
+                          <div>{row.date}</div>
+                        </td>
+                        <td
+                          aria-colindex="2"
+                          data-label="Description"
+                          role="cell"
+                        >
+                          <div>
+                            <a
+                              href="#"
+                              className="underline text-info"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleOpenModal(row.marketId);
+                              }}
+                            >
+                              {row.description}
+                            </a>
+                          </div>
+                        </td>
+                        <td
+                          aria-colindex="3"
+                          data-label="Credit"
+                          role="cell"
+                          className="text-right"
+                        >
+                          <div>{row.credit}</div>
+                        </td>
+                        <td
+                          aria-colindex="4"
+                          data-label="Debit"
+                          role="cell"
+                          className="text-right"
+                        >
+                          <div>{row.debit}</div>
+                        </td>
+                        <td
+                          aria-colindex="5"
+                          data-label="Closing"
+                          role="cell"
+                          className="text-right"
+                        >
+                          <div>{row.closing}</div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="text-center">
+                        No data available
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -330,7 +345,7 @@ const GameReports = () => {
         size="xl"
         position="top"
       >
-        <ViewMoreBetsModal />
+        <ViewMoreBetsModal marketId={selectedMatchId} />
       </ReusableModal>
     </div>
   );

@@ -17,11 +17,8 @@ interface Statement {
   closing: number;
 }
 
-interface Props {
-  childId?: string | null; // 👈 childId comes from props
-}
 
-const AccountStatement: React.FC<Props> = ({ childId }) => {
+const AccountStatement: React.FC = () => {
   const { user } = useAuth();
 
   // User searched from SearchUser
@@ -41,13 +38,8 @@ const AccountStatement: React.FC<Props> = ({ childId }) => {
   const [statementData, setStatementData] = useState<Statement[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // 🔥 FINAL USER-ID PRIORITY LOGIC
   const finalUserId =
-    searchedUserId.trim() !== ""
-      ? searchedUserId
-      : childId
-      ? childId
-      : user?.userId || "";
+    searchedUserId.trim() !== "" ? searchedUserId : user?.userId || "";
 
   const fetchStatement = async () => {
     if (!finalUserId) return;
@@ -75,10 +67,9 @@ const AccountStatement: React.FC<Props> = ({ childId }) => {
     setLoading(false);
   };
 
-  // 🔄 Fetch when activeTab or finalUserId changes
   useEffect(() => {
     fetchStatement();
-  }, [activeTab, finalUserId]);
+  }, [activeTab]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
