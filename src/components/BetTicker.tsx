@@ -77,8 +77,10 @@ const BetTicker = () => {
 
   const [appliedFilters, setAppliedFilters] = useState(filters);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
+  const fetchData = useCallback(async (showLoading = true) => {
+    if (showLoading) {
+      setLoading(true);
+    }
     setError(null);
     try {
       const payload = {
@@ -97,9 +99,13 @@ const BetTicker = () => {
       }
     } catch (err) {
       setError(err.message);
-      setBets([]);
+      if (showLoading) {
+        setBets([]);
+      }
     } finally {
-      setLoading(false);
+      if (showLoading) {
+        setLoading(false);
+      }
     }
   }, [appliedFilters]);
 
@@ -111,7 +117,7 @@ const BetTicker = () => {
     const timer = setInterval(() => {
       setCounter((prevCounter) => {
         if (prevCounter === 1) {
-          fetchData();
+          fetchData(false);
           return 3;
         }
         return prevCounter - 1;
