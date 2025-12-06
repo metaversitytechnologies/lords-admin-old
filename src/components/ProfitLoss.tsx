@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getPnlReportByMarketId } from "../api/bet";
 import MarketBets from "./MarketBets"; // Import MarketBets
+import ReusableDatePicker from "./DatePicker";
 
 interface Market {
   marketId: string;
@@ -25,10 +26,8 @@ const ProfitLoss: React.FC = () => {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(today.getDate() - 7);
 
-  const [fromDate, setFromDate] = useState(
-    oneWeekAgo.toISOString().split("T")[0]
-  );
-  const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
+  const [fromDate, setFromDate] = useState<Date | null>(oneWeekAgo);
+  const [toDate, setToDate] = useState<Date | null>(today);
   const [eventName, setEventName] = useState("0");
   const [marketName, setMarketName] = useState("all");
   const [reportData, setReportData] = useState<DateReport[]>([]);
@@ -43,8 +42,8 @@ const ProfitLoss: React.FC = () => {
       const payload = {
         eventName: eventName === "All" ? "" : eventName,
         marketName: marketName === "all" ? "" : marketName,
-        fromDate,
-        toDate
+        fromDate: fromDate?.toISOString().split("T")[0],
+        toDate: toDate?.toISOString().split("T")[0]
       };
       const response = await getPnlReportByMarketId(payload);
       const data: DateReport[] = response.data;
@@ -128,11 +127,9 @@ const ProfitLoss: React.FC = () => {
               className="form-group v-t m-l-10 d-inline-block"
             >
               <label>From:</label>
-              <input
-                type="date"
-                className="form-control"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
+              <ReusableDatePicker
+                selected={fromDate}
+                onChange={setFromDate}
               />
             </div>
             <div
@@ -140,11 +137,9 @@ const ProfitLoss: React.FC = () => {
               className="form-group v-t d-inline-block"
             >
               <label className="d-block">To</label>
-              <input
-                type="date"
-                className="form-control"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
+              <ReusableDatePicker
+                selected={toDate}
+                onChange={setToDate}
               />
             </div>
             <div className="m-l-5 m-b-10 d-inline-block v-t">

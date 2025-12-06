@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { getMyBetReport } from "../api/bet";
 import { useAuth } from "../context/AuthContext";
 import SearchUser from "./SearchUser";
+import ReusableDatePicker from "./DatePicker";
 
 const eventOptions = [
   { value: "0", label: "All" },
@@ -68,10 +69,8 @@ const BestList = () => {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(today.getDate() - 7);
 
-  const [fromDate, setFromDate] = useState(
-    oneWeekAgo.toISOString().split("T")[0]
-  );
-  const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
+  const [fromDate, setFromDate] = useState<Date | null>(oneWeekAgo);
+  const [toDate, setToDate] = useState<Date | null>(today);
   const [activeTab, setActiveTab] = useState("Current");
   const [activeRadio, setActiveRadio] = useState("Matched");
   const [search, setSearch] = useState("");
@@ -97,8 +96,8 @@ const BestList = () => {
         matchedDeletedBet: matchedDeletedBet,
         noOfRecords: noOfRecords,
         index: index,
-        fromDate: !currentBet ? fromDate : "",
-        toDate: !currentBet ? toDate : "",
+        fromDate: !currentBet ? fromDate?.toISOString().split("T")[0] : "",
+        toDate: !currentBet ? toDate?.toISOString().split("T")[0] : "",
         oddsFrom: oddsFrom,
         oddsTo: oddsTo,
         stakeFrom: stakeFrom,
@@ -134,8 +133,8 @@ const BestList = () => {
     const today = new Date();
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(today.getDate() - 7);
-    setFromDate(oneWeekAgo.toISOString().split("T")[0]);
-    setToDate(today.toISOString().split("T")[0]);
+    setFromDate(oneWeekAgo);
+    setToDate(today);
     setIndex(0);
     setOddsFrom("");
     setOddsTo("");
@@ -256,22 +255,16 @@ const BestList = () => {
                   <>
                     <div className="d-inline-block v-t p-l-0 p-r-5 form-group m-b-0">
                       <label className="d-block p-l-5">From</label>{" "}
-                      <input
-                        type="date"
-                        className="form-control"
-                        name="fromdate"
-                        value={fromDate}
-                        onChange={(e) => setFromDate(e.target.value)}
+                      <ReusableDatePicker
+                        selected={fromDate}
+                        onChange={setFromDate}
                       />
                     </div>
                     <div className="form-group d-inline-block v-t p-l-0 p-r-5 m-b-0">
                       <label className="d-block p-l-5">To</label>{" "}
-                      <input
-                        type="date"
-                        className="form-control"
-                        name="todate"
-                        value={toDate}
-                        onChange={(e) => setToDate(e.target.value)}
+                      <ReusableDatePicker
+                        selected={toDate}
+                        onChange={setToDate}
                       />
                     </div>
                   </>

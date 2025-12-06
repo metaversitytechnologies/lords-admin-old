@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
+import ReusableDatePicker from "./DatePicker";
 
 const MessageReport: React.FC = () => {
+  const [fromDate, setFromDate] = useState<Date | null>(new Date());
+  const [toDate, setToDate] = useState<Date | null>(new Date());
   return (
     <>
       <div className="listing-grid w-100 float-left m-t-0">
@@ -10,12 +13,12 @@ const MessageReport: React.FC = () => {
           </div>
           <div className="datepicker-wrapper d-inline-block col-md-2 form-group v-t p-l-0 p-r-5">
             <label className="p-l-5">From</label>
-            <input type="date" className="form-control" />
+            <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
             <span className="text-danger error-report"></span>
           </div>
           <div className="datepicker-wrapper form-group d-inline-block col-md-2 v-t p-l-0 p-r-5">
             <label className="p-l-5">To</label>
-            <input type="date" className="form-control" />
+            <ReusableDatePicker selected={toDate} onChange={setToDate} />
             <span className="text-danger error-report"></span>
           </div>
           <div className="d-inline-block v-t p-l-0 p-r-5">

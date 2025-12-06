@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import SearchUser from "./SearchUser";
 import { getStatementUseridwiseLord } from "../api/auth";
 import { useAuth } from "../context/AuthContext";
+import ReusableDatePicker from "./DatePicker";
 
 const ClientAccountStatement: React.FC = ({ childId }) => {
   const { user } = useAuth();
@@ -11,10 +12,8 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(today.getDate() - 7);
 
-  const [fromDate, setFromDate] = useState(
-    oneWeekAgo.toISOString().split("T")[0]
-  );
-  const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
+  const [fromDate, setFromDate] = useState<Date | null>(oneWeekAgo);
+  const [toDate, setToDate] = useState<Date | null>(today);
 
   const [statementData, setStatementData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -57,14 +56,14 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
   useEffect(() => {
     const initialId = childId || user?.userId;
     if (initialId) {
-      fetchData(initialId, fromDate, toDate);
+      fetchData(initialId, fromDate?.toISOString().split("T")[0], toDate?.toISOString().split("T")[0]);
     }
   }, [childId, user]);
 
   // Search button click
   const handleSearch = () => {
     const finalId = userId || childId || user?.userId;
-    fetchData(finalId, fromDate, toDate);
+    fetchData(finalId, fromDate?.toISOString().split("T")[0], toDate?.toISOString().split("T")[0]);
   };
 
   return (
@@ -80,11 +79,9 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
             className="form-group v-t m-r-20 d-inline-block"
           >
             <label>From:</label>
-            <input
-              type="date"
-              className="form-control"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
+            <ReusableDatePicker
+              selected={fromDate}
+              onChange={setFromDate}
             />
           </div>
 
@@ -93,11 +90,9 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
             className="form-group v-t m-r-20 d-inline-block"
           >
             <label>To:</label>
-            <input
-              type="date"
-              className="form-control"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
+            <ReusableDatePicker
+              selected={toDate}
+              onChange={setToDate}
             />
           </div>
 

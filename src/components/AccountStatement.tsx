@@ -3,6 +3,7 @@ import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
 import SearchUser from "./SearchUser";
 import { getAccountStatement } from "../api/reports";
 import { useAuth } from "../context/AuthContext";
+import ReusableDatePicker from "./DatePicker";
 
 interface Statement {
   date: string;
@@ -29,10 +30,8 @@ const AccountStatement: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [ipDetails, setIpDetails] = useState<IpDetails | null>(null);
 
-  const [fromDate, setFromDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
-  const [toDate, setToDate] = useState(new Date().toISOString().split("T")[0]);
+  const [fromDate, setFromDate] = useState<Date | null>(new Date());
+  const [toDate, setToDate] = useState<Date | null>(new Date());
 
   const [balanceType, setBalanceType] = useState("ALL");
   const [statementData, setStatementData] = useState<Statement[]>([]);
@@ -50,8 +49,8 @@ const AccountStatement: React.FC = () => {
       const payload = {
         pnlStatement: activeTab === "pnl",
         userId: finalUserId, // <-- applied logic
-        fromDate,
-        toDate,
+        fromDate: fromDate?.toISOString().split("T")[0],
+        toDate: toDate?.toISOString().split("T")[0],
         noOfRecords: 50,
         index: 0,
         balanceType
@@ -139,21 +138,17 @@ const AccountStatement: React.FC = () => {
             {/* Date Inputs */}
             <div className="datepicker-wrapper d-inline-block col-md-2 form-group p-l-0 p-r-5">
               <label className="p-l-5">From</label>
-              <input
-                type="date"
-                className="form-control"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
+              <ReusableDatePicker
+                selected={fromDate}
+                onChange={setFromDate}
               />
             </div>
 
             <div className="datepicker-wrapper d-inline-block col-md-2 form-group p-l-0 p-r-5">
               <label className="p-l-5">To</label>
-              <input
-                type="date"
-                className="form-control"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
+              <ReusableDatePicker
+                selected={toDate}
+                onChange={setToDate}
               />
             </div>
 

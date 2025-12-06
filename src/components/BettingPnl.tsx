@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getBettingPnl } from "../api/auth";
 import MarketPnlBreakdown from "./MarketPnlBreakdown";
+import ReusableDatePicker from "./DatePicker";
 
 const BettingPnl = ({ userId }) => {
   const [data, setData] = useState([]);
@@ -12,10 +13,8 @@ const BettingPnl = ({ userId }) => {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(today.getDate() - 7);
 
-  const [fromDate, setFromDate] = useState(
-    oneWeekAgo.toISOString().split("T")[0]
-  );
-  const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
+  const [fromDate, setFromDate] = useState<Date | null>(oneWeekAgo);
+  const [toDate, setToDate] = useState<Date | null>(today);
 
   const fetchBettingPnl = async () => {
     setLoading(true);
@@ -23,8 +22,8 @@ const BettingPnl = ({ userId }) => {
     try {
       const payload = {
         userId,
-        fromDate,
-        toDate,
+        fromDate: fromDate?.toISOString().split("T")[0],
+        toDate: toDate?.toISOString().split("T")[0],
         noOfRecords: 10,
         index: 0
       };
@@ -61,20 +60,16 @@ const BettingPnl = ({ userId }) => {
         <div className="header">
           <div className="datepicker-wrapper d-inline-block col-md-2 form-group v-t p-l-0 p-r-5">
             <label className="p-l-5">From</label>
-            <input
-              type="date"
-              className="form-control"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
+            <ReusableDatePicker
+              selected={fromDate}
+              onChange={setFromDate}
             />
           </div>
           <div className="datepicker-wrapper form-group d-inline-block col-md-2 v-t p-l-0 p-r-5">
             <label className="p-l-5 d-block">To</label>
-            <input
-              type="date"
-              className="form-control"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
+            <ReusableDatePicker
+              selected={toDate}
+              onChange={setToDate}
             />
           </div>
           <div className="d-inline-block v-t p-l-0 p-r-5">

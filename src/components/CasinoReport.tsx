@@ -1,9 +1,11 @@
 import { useState } from "react";
 import CasinoResultModal from "./CasinoResultModal";
+import ReusableDatePicker from "./DatePicker";
 
 export default function CasinoReport() {
   const [show, setShow] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [fromDate, setFromDate] = useState<Date | null>(new Date());
 
   const handleClose = () => {
     setShow(false);
@@ -47,7 +49,7 @@ export default function CasinoReport() {
         <div className="m-b-10">
           <div className="col-md-2 v-t p-l-0 p-r-5 form-group d-inline-block">
             <label>From</label>
-            <input type="date" className="form-control" />
+            <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
           </div>
           <div className="select-report d-inline-block col-md-2 form-group v-t p-l-0 p-r-5">
             <label className="p-l-5">Account Type</label>

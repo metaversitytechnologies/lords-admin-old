@@ -3,6 +3,7 @@ import ReusableModal from "./ReusableModal";
 import ViewMoreBetsModal from "./ViewMoreBetsModal";
 import SearchUser from "./SearchUser";
 import { getGameReportLord } from "../api/reports";
+import ReusableDatePicker from "./DatePicker";
 
 interface Report {
   date: string;
@@ -21,10 +22,8 @@ const GameReports = () => {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(today.getDate() - 7);
 
-  const [fromDate, setFromDate] = useState(
-    oneWeekAgo.toISOString().split("T")[0]
-  );
-  const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
+  const [fromDate, setFromDate] = useState<Date | null>(oneWeekAgo);
+  const [toDate, setToDate] = useState<Date | null>(today);
   const [eventType, setEventType] = useState("4"); // Default to Cricket
   const [reportData, setReportData] = useState<Report[]>([]);
   const [loading, setLoading] = useState(false);
@@ -96,7 +95,7 @@ const GameReports = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await getGameReportLord(fromDate, toDate, eventType);
+      const response = await getGameReportLord(fromDate?.toISOString().split("T")[0], toDate?.toISOString().split("T")[0], eventType);
       setReportData(response.data || []);
     } catch (err) {
       setError("Failed to load report. Please try again.");
@@ -139,20 +138,16 @@ const GameReports = () => {
           </div>
           <div className="datepicker-wrapper d-inline-block col-md-2 form-group v-t p-l-0 p-r-5 m-b-15">
             <label className="p-l-5 d-block">From</label>
-            <input
-              type="date"
-              className="form-control"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
+            <ReusableDatePicker
+              selected={fromDate}
+              onChange={setFromDate}
             />
           </div>
           <div className="datepicker-wrapper form-group d-inline-block col-md-2 v-t p-l-0 p-r-5">
             <label className="p-l-5 d-block">To</label>
-            <input
-              type="date"
-              className="form-control"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
+            <ReusableDatePicker
+              selected={toDate}
+              onChange={setToDate}
             />
           </div>
           <div className="select-report d-inline-block col-md-2 form-group v-t report-search p-l-0 p-r-5">
@@ -219,7 +214,7 @@ const GameReports = () => {
             <div className="col-sm-12 p-l-0 p-r-5">
               <table
                 role="table"
-                className="table b-table table-striped b-table-stacked-md"
+                className="table b-table table table-striped b-table-stacked-md"
               >
                 <thead role="rowgroup">
                   <tr role="row">

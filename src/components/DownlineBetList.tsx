@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getBetDetailUseridwiseLord } from "../api/auth";
+import ReusableDatePicker from "./DatePicker";
 
 const DownlineBetList = ({ userId }) => {
   const [activeTab, setActiveTab] = useState("current");
@@ -13,10 +14,8 @@ const DownlineBetList = ({ userId }) => {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(today.getDate() - 7);
 
-  const [fromDate, setFromDate] = useState(
-    oneWeekAgo.toISOString().split("T")[0]
-  );
-  const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
+  const [fromDate, setFromDate] = useState<Date | null>(oneWeekAgo);
+  const [toDate, setToDate] = useState<Date | null>(today);
   const [pagination, setPagination] = useState({
     totalPages: 1,
     currentPage: 1
@@ -30,8 +29,8 @@ const DownlineBetList = ({ userId }) => {
         userId: userId,
         matchedDeletedBet: betType.toUpperCase(),
         currentBet: activeTab === "current",
-        fromDate: fromDate,
-        toDate: toDate,
+        fromDate: fromDate?.toISOString().split("T")[0],
+        toDate: toDate?.toISOString().split("T")[0],
         index: page - 1,
         noOfRecords: parseInt(entriesPerPage)
       };
@@ -76,19 +75,15 @@ const DownlineBetList = ({ userId }) => {
                 <div className="bet-list">
                   <div className="additional-filters d-flex m-t-10">
                     <div className="d-inline-block p-r-10 form-group v-t p-l-0 ">
-                      <input
-                        type="date"
-                        className="form-control"
-                        value={fromDate}
-                        onChange={(e) => setFromDate(e.target.value)}
+                      <ReusableDatePicker
+                        selected={fromDate}
+                        onChange={setFromDate}
                       />
                     </div>
                     <div className="form-group d-inline-block v-t p-l-0 p-r-10">
-                      <input
-                        type="date"
-                        className="form-control"
-                        value={toDate}
-                        onChange={(e) => setToDate(e.target.value)}
+                      <ReusableDatePicker
+                        selected={toDate}
+                        onChange={setToDate}
                       />
                     </div>
                     <div>
