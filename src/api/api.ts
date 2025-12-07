@@ -9,6 +9,9 @@ const getAuthHeaders = () => {
   };
 };
 
+// Flag to prevent multiple logout events from firing simultaneously
+let isLoggingOut = false;
+
 export const apiRequest = async (
   endpoint: string,
   method: "GET" | "POST" | "PUT" | "DELETE" = "POST",
@@ -26,8 +29,16 @@ export const apiRequest = async (
   const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
 
   if (response.status === 401) {
-    // Dispatch a custom event to trigger logout
-    window.dispatchEvent(new CustomEvent("logout", { detail: { message: "Your session has expired. Please log in again." } }));
+    if (!isLoggingOut) {
+      isLoggingOut = true;
+      // Dispatch a custom event to trigger logout
+      window.dispatchEvent(new CustomEvent("logout", { detail: { message: "Your session has expired. Please log in again." } }));
+      
+      // Reset the flag after a delay to allow for re-login
+      setTimeout(() => {
+        isLoggingOut = false;
+      }, 5000);
+    }
     // We can also throw an error to stop further processing in the caller
     throw new Error("Unauthorized");
   }
