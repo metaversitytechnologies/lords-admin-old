@@ -9,7 +9,7 @@ const getAuthHeaders = () => {
 
 export const getOddsData = async (matchId: string) => {
 
-  const response = await fetch(`http://103.189.88.178:8081/api/fancy/v1/${matchId}`, {
+  const response = await fetch(`https://oddsapi.khelo7.com/api/fancy/v1/${matchId}`, {
     method: "GET",
     headers: getAuthHeaders(),
   });
