@@ -1,4 +1,3 @@
-const API_BASE_URL = import.meta.env.VITE_ODDS_API;
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
@@ -9,11 +8,8 @@ const getAuthHeaders = () => {
 };
 
 export const getOddsData = async (matchId: string) => {
-  // const response = await fetch(`${API_BASE_URL}/betfair_api/fancy/${matchId}`, {
-  //   method: "GET",
-  //   headers: getAuthHeaders(),
-  // });
-  const response = await fetch(`${API_BASE_URL}api/fancy/v1/${matchId}`, {
+
+  const response = await fetch(`http://103.189.88.178:8081/api/fancy/v1/${matchId}`, {
     method: "GET",
     headers: getAuthHeaders(),
   });
