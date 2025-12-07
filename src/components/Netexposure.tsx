@@ -12,29 +12,36 @@ const NetExposure = ({ userId, isActive }) => {
 
   const [counter, setCounter] = useState(8);
 
-  const fetchData = useCallback(async () => {
-    if (userId && !isActive) return;
-    try {
-      setLoading(true);
-      setError(null);
-      let response;
-      if (userId) {
-        response = await getNetExposureDetailByUserId({ userId });
-      } else {
-        response = await getNetExposureDetail();
-      }
+  const fetchData = useCallback(
+    async (showLoading = true) => {
+      if (userId && !isActive) return;
+      try {
+        if (showLoading) {
+          setLoading(true);
+        }
+        setError(null);
+        let response;
+        if (userId) {
+          response = await getNetExposureDetailByUserId({ userId });
+        } else {
+          response = await getNetExposureDetail();
+        }
 
-      if (response.status) {
-        setData(response.data);
-      } else {
-        setError(response.message);
+        if (response.status) {
+          setData(response.data);
+        } else {
+          setError(response.message);
+        }
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        if (showLoading) {
+          setLoading(false);
+        }
       }
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [userId, isActive]);
+    },
+    [userId, isActive]
+  );
 
   useEffect(() => {
     fetchData();
@@ -45,7 +52,7 @@ const NetExposure = ({ userId, isActive }) => {
       const timer = setInterval(() => {
         setCounter((prevCounter) => {
           if (prevCounter === 1) {
-            fetchData();
+            fetchData(false);
             return 8;
           }
           return prevCounter - 1;
