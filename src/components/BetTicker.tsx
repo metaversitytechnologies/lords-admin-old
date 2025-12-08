@@ -61,6 +61,11 @@ const BetTicker = () => {
   const [oddsDropdownOpen, setOddsDropdownOpen] = useState(false);
   const [stakeDropdownOpen, setStakeDropdownOpen] = useState(false);
   const [counter, setCounter] = useState(3);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
 
   const oddsDropdownRef = useRef(null);
   const stakeDropdownRef = useRef(null);
@@ -77,37 +82,40 @@ const BetTicker = () => {
 
   const [appliedFilters, setAppliedFilters] = useState(filters);
 
-  const fetchData = useCallback(async (showLoading = true) => {
-    if (showLoading) {
-      setLoading(true);
-    }
-    setError(null);
-    try {
-      const payload = {
-        sportName: appliedFilters.sportName.toLowerCase(),
-        minStake: appliedFilters.minStake || null,
-        maxStake: appliedFilters.maxStake || null,
-        minOdds: appliedFilters.minOdds || null,
-        maxOdds: appliedFilters.maxOdds || null,
-        userId: appliedFilters.userId || null
-      };
-      const response = await getBetTicker(payload);
-      if (response.status) {
-        setBets(response.data);
-      } else {
-        throw new Error(response.message || "Failed to fetch data");
-      }
-    } catch (err) {
-      setError(err.message);
+  const fetchData = useCallback(
+    async (showLoading = true) => {
       if (showLoading) {
-        setBets([]);
+        setLoading(true);
       }
-    } finally {
-      if (showLoading) {
-        setLoading(false);
+      setError(null);
+      try {
+        const payload = {
+          sportName: appliedFilters.sportName.toLowerCase(),
+          minStake: appliedFilters.minStake || null,
+          maxStake: appliedFilters.maxStake || null,
+          minOdds: appliedFilters.minOdds || null,
+          maxOdds: appliedFilters.maxOdds || null,
+          userId: appliedFilters.userId || null
+        };
+        const response = await getBetTicker(payload);
+        if (response.status) {
+          setBets(response.data);
+        } else {
+          throw new Error(response.message || "Failed to fetch data");
+        }
+      } catch (err) {
+        setError(err.message);
+        if (showLoading) {
+          setBets([]);
+        }
+      } finally {
+        if (showLoading) {
+          setLoading(false);
+        }
       }
-    }
-  }, [appliedFilters]);
+    },
+    [appliedFilters]
+  );
 
   useEffect(() => {
     fetchData();
@@ -329,7 +337,14 @@ const BetTicker = () => {
                 </div>
               </div>
             </form>
-            <div>
+            <div className="table-responsive expandable-table">
+              <span className="table-control" onClick={toggleExpand}>
+                <i
+                  className={`fas ${
+                    isExpanded ? "fa-arrow-left" : "fa-arrow-right"
+                  }`}
+                ></i>
+              </span>
               <table className="table table-striped">
                 <thead>
                   <tr>
@@ -338,11 +353,23 @@ const BetTicker = () => {
                     <th>Market</th>
                     <th>Selection</th>
                     <th>Odds req</th>
-                    <th>Ave. Matched</th>
+                    <th
+                      className={`${
+                        !isExpanded ? "hidden-field" : "field-show"
+                      }`}
+                    >
+                      Ave. Matched
+                    </th>
                     <th>Matched</th>
                     <th>Currency</th>
                     <th>Profit/liability</th>
-                    <th>Last Update</th>
+                    <th
+                      className={`${
+                        !isExpanded ? "hidden-field" : "field-show"
+                      }`}
+                    >
+                      Last Update
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -372,7 +399,11 @@ const BetTicker = () => {
                           {bet.selectionName}
                         </td>
                         <td className="text-left">{bet.odds.toFixed(2)}</td>
-                        <td className="text-left">
+                        <td
+                          className={`text-left ${
+                            !isExpanded ? "hidden-field" : "field-show"
+                          }`}
+                        >
                           {bet.avgMatched.toFixed(2)}
                         </td>
                         <td className="text-left">{bet.matched.toFixed(2)}</td>
@@ -384,7 +415,13 @@ const BetTicker = () => {
                             </span>
                           </b>
                         </td>
-                        <td className="text-left">{bet.lastUpdated}</td>
+                        <td
+                          className={`text-left ${
+                            !isExpanded ? "hidden-field" : "field-show"
+                          }`}
+                        >
+                          {bet.lastUpdated}
+                        </td>
                       </tr>
                     ))
                   ) : (
