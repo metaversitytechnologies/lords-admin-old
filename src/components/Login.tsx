@@ -83,7 +83,17 @@ const Login: React.FC = () => {
 
   return (
     <div>
-      <div className="login-form">
+      <div
+        className="login-form"
+        style={{
+          backdropFilter: "blur(12px)",
+          transform: "translateZ(0)",
+          boxShadow:
+            "rgba(0,0,0,0.5) 0px 20px 60px, rgba(234,179,8,0.2) 0px 0px 0px 1px",
+          background:
+            "linear-gradient(to bottom right, rgba(156,27,49,0.95), rgba(184,38,74,0.95), rgba(156,27,49,0.95))"
+        }}
+      >
         <section>
           <div className="text-center logo">
             <img

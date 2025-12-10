@@ -739,10 +739,11 @@ table.b-table > tfoot > tr > th.sorting::before {
 }
 .recaptchaTerms {
   font-size: 0.75rem;
+  color: white;
 }
 
 .recaptchaTerms a {
-  color: #4a7a8b;
+  color: var(--accent-color);
 }
 .winnerCards {
   right: 5px;
@@ -1231,4 +1232,8 @@ footer .bottom-footer {
 
 .react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker-year-header {
   color: #fff !important;
+}
+
+.status-list {
+  color: #fff;
 }

@@ -331,7 +331,9 @@ h1 {
     margin: auto;
     width: 400px;
     min-height: 250px;
-    background-color: rgba(0, 0, 0, 0.4);
+    background: rgba(146, 28, 56, 0.4);
+    border: 1px solid rgba(252, 196, 25, 0.5);
+    border-radius: var(--radius-xl);
 }
 
 .form-group {
@@ -346,6 +348,11 @@ h1 {
     float: none;
     font-weight: normal;
     display: block;
+    color: white;
+}
+
+.best-viewed-label {
+    color: white;
 }
 
 .login-form .form-control {
@@ -373,12 +380,8 @@ h1 {
 
 .btn-primary {
     border: 0;
-    border-radius: 0;
 }
 
-.btn-secondary {
-    border-radius: 0;
-}
 
 .btn-large {
     min-height: 40px;
@@ -399,9 +402,13 @@ h1 {
 .btn-cancel {
     background-color: #b71601;
     color: #ffffff;
-    border-bottom-color: #841001;
-    border-right-color: #841001;
-    border-radius: 0;
+}
+.btn-cancel:hover {
+    color: #ffffff;
+}
+
+.counter {
+    color: #999999;
 }
 
 .login-form .btn-login {
@@ -838,8 +845,9 @@ footer {
 .table thead tr th,
 .table tbody tr td,
 .table tbody tr th {
-    color: #fff;
-    border: 0;
+    color: white;
+    border-bottom: 1px solid #dddddd;
+    background-color: var(--primary-color);
 }
 
 /*.table tbody tr:hover {
@@ -847,11 +855,11 @@ footer {
     color: #fff;
 }*/
 .table a {
-    color: #2ce5dd;
+    color: var(--accent-color);
 }
 
 .table-striped tbody tr:nth-of-type(2n + 1) {
-    background: rgba(245, 245, 245, 0.1);
+    background: rgba(245, 245, 245, 0.1) !important;
 }
 
 .table-balance>tbody>tr>th {
@@ -972,7 +980,7 @@ footer {
 .table-control {
     width: 44px;
     height: calc(100% - 50px);
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #ececec;
     position: absolute;
     top: 50px;
     right: 0;
@@ -1102,16 +1110,16 @@ footer {
     width: 100%;
 }
 
-.nav-tabs .nav-item.show .nav-link,
+/* .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active {
     border-color: transparent;
-}
+} */
 
 .nav-tabs .nav-link {
     padding: 10px 20px;
     color: #eee;
     border: 0;
-    background-color: #666;
+    background-color: #c44e6c;
     border-radius: 0;
 }
 
@@ -1266,7 +1274,7 @@ footer {
 
 .additional-filters .dropdown .dropdown-button {
     position: relative;
-    background-color: #fff;
+    background-color: #ececec;
     padding: 6px 10px;
     cursor: pointer;
     user-select: none;
@@ -3258,9 +3266,9 @@ body.modal-contents {
     width: 100%;
 }
 
-.btn-danger {
+/* .btn-danger {
     border-radius: 0 !important;
-}
+} */
 
 .viewsodamodal .modal-header~.modal-body {
     max-height: unset;

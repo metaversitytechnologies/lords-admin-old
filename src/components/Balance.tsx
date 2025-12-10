@@ -52,52 +52,64 @@ const Balance: React.FC = () => {
   }
 
   return (
-    <div className="balance">
-      <div className="status">
-        <dt className="status-list">
-          <dt>Balance Down:</dt>{" "}
-          <dd
-            className={`positive ${
+    <div className="balance-bar">
+      <div className="balance-scroll-container">
+        {/* Balance Down */}
+        <div className="balance-pill">
+          <span className="label">Balance Down:</span>
+          <span
+            className={`value ${
               balance && balance.balanceDown <= 0 ? "negative" : "positive"
             }`}
           >
-            {" "}
             {balance ? balance.balanceDown.toFixed(2) : "..."}
-          </dd>
-          <dt>Balance Up:</dt>{" "}
-          <dd
-            className={`positive ${
+          </span>
+        </div>
+
+        {/* Balance Up */}
+        <div className="balance-pill">
+          <span className="label">Balance Up:</span>
+          <span
+            className={`value ${
               balance && balance.balanceUp <= 0 ? "negative" : "positive"
             }`}
           >
             {balance ? balance.balanceUp.toFixed(2) : "..."}
-          </dd>
-          <dt>Net Exposure:</dt>{" "}
-          <dd
-            className={`positive ${
+          </span>
+        </div>
+
+        {/* Net Exposure */}
+        <div className="balance-pill">
+          <span className="label">Net Exposure:</span>
+          <span
+            className={`value ${
               balance && balance.netExposure <= 0 ? "negative" : "positive"
             }`}
           >
             {balance ? balance.netExposure.toFixed(2) : "..."}
-          </dd>{" "}
-          <dt>Available Credit:</dt>{" "}
-          <dd>{balance ? balance.availableCredit.toFixed(2) : "..."}</dd>
-        </dt>
+          </span>
+        </div>
 
-        <div
-          className="d-inline-block float-right"
-          style={{ marginTop: "-5px" }}
-        >
-          <button
-            className="btn btn-secondary d-inline-block"
-            onClick={handleRefresh}
-            disabled={loading}
-          >
-            {loading ? "Refreshing..." : "Refresh"}
-          </button>
+        {/* Available Credit */}
+        <div className="balance-pill">
+          <span className="label">Available Credit:</span>
+          <span className="value">
+            {balance ? balance.availableCredit.toFixed(2) : "..."}
+          </span>
         </div>
       </div>
-      {error && <div style={{ color: "red", marginTop: "10px" }}>{error}</div>}
+
+      <div className="refresh-container">
+        <button
+          className="btn btn-secondary btn-sm"
+          onClick={handleRefresh}
+          disabled={loading}
+          style={{ borderRadius: "20px" }}
+        >
+          {loading ? "..." : <i className="fas fa-sync-alt"></i>}
+        </button>
+      </div>
+      {error && <div className="error-msg">{error}</div>}
     </div>
   );
 };

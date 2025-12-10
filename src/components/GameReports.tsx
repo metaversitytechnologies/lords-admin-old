@@ -116,7 +116,7 @@ const GameReports = () => {
 
   return (
     <div>
-      <div className="listing-grid w-100 float-left m-t-0">
+      <div className="w-100 float-left m-t-0">
         <form className="m-b-10" onSubmit={handleFormSubmit}>
           <div className="header">
             <h1>Game Report</h1>
@@ -255,7 +255,7 @@ const GameReports = () => {
                           <div>
                             <a
                               href="#"
-                              className="underline text-info"
+                              className="underline"
                               onClick={(e) => {
                                 e.preventDefault();
                                 handleOpenModal(row.marketId);

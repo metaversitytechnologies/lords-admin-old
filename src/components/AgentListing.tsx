@@ -62,7 +62,7 @@ const AgentListing: React.FC = () => {
         <h1>Agent Listing</h1>
         <div className="d-inline-block m-t-10">
           <label>Search By User Name</label>
-          <div className="search-box-container d-inline-block p-l-0">
+          <div className="search-box-container d-inline-block p-l-10">
             <SearchUser
               value={searchTerm}
               onChange={setSearchTerm}

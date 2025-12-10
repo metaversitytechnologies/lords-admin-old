@@ -312,7 +312,7 @@ const BetTicker = () => {
                     />
                   </div>
                 </div>
-                <button type="submit" className="btn btn-secondary m-l-5">
+                <button type="submit" className="btn btn-primary m-l-5">
                   Apply
                 </button>
                 <button

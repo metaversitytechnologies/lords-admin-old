@@ -281,12 +281,12 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                 </div>
                 <div className="col-md-2 m-t-5 text-right p-l-0 p-r-15">
                   <label className="p-l-5 d-block">&nbsp;</label>
-                  <button type="submit" className="btn btn-primary">
+                  <button type="submit" className="btn btn-primary m-r-10">
                     Search
                   </button>
                   <button
                     type="button"
-                    className="btn btn-danger"
+                    className="btn btn-cancel"
                     onClick={handleReset}
                   >
                     Reset
