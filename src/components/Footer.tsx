@@ -1,15 +1,8 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
 
 const Footer: React.FC = () => {
-  const location = useLocation();
-
   return (
-    <footer
-      className={`${
-        location.pathname === "/login" ? "login-footer" : "footer"
-      } footer-color customfooter`}
-    >
+    <footer className="footer text-center p-t-10 p-b-10">
       <p className="m-b-0 upper-footer">
         <a href="/responsiblegambling" className="theme1font">
           Responsible Gambling
