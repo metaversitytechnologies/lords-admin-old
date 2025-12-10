@@ -23,12 +23,14 @@ interface IpDetailsModalProps {
   show: boolean;
   handleClose: () => void;
   ipDetails: IpDetails | null;
+  loading: boolean;
 }
 
 const IpDetailsModal: React.FC<IpDetailsModalProps> = ({
   show,
   handleClose,
-  ipDetails
+  ipDetails,
+  loading
 }) => {
   return (
     <ReusableModal
@@ -37,7 +39,9 @@ const IpDetailsModal: React.FC<IpDetailsModalProps> = ({
       handleClose={handleClose}
       title="IP Details"
     >
-      {ipDetails ? (
+      {loading ? (
+        <p>Loading IP details...</p>
+      ) : ipDetails ? (
         ipDetails.status === "fail" ? (
           <table className="table table-bordered">
             <thead>
@@ -85,7 +89,7 @@ const IpDetailsModal: React.FC<IpDetailsModalProps> = ({
           </table>
         )
       ) : (
-        <p>Loading IP details...</p>
+        <p>No IP details to display.</p>
       )}
     </ReusableModal>
   );

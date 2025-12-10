@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getUnsettledByMatchId } from "../api/auth";
 import { getBetListByMarketId } from "../api/bet";
 import SearchUser from "./SearchUser";
+import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
 
 interface ViewMoreBetsModalProps {
   matchId?: string;
@@ -15,6 +16,10 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
   const [activeTab, setActiveTab] = useState("matched");
   const [bets, setBets] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showIpModal, setShowIpModal] = useState(false);
+  const [selectedIp, setSelectedIp] = useState<string | null>(null);
+  const [ipDetails, setIpDetails] = useState<IpDetails | null>(null);
+  const [ipLoading, setIpLoading] = useState(false);
 
   // states for filters
   const [filterUname, setFilterUname] = useState("");
@@ -96,6 +101,33 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
     setFilterToAmt("");
     setFilterBetType("");
     fetchBets(); // Refetch with no filters
+  };
+
+  const handleShowIpModal = async (ip: string) => {
+    if (!ip) return;
+    setSelectedIp(ip);
+    setShowIpModal(true);
+    setIpLoading(true);
+    try {
+      const response = await fetch(`http://ip-api.com/json/${ip}`);
+      const data: IpDetails = await response.json();
+      setIpDetails(data);
+    } catch (error) {
+      console.error("Error fetching IP details:", error);
+      setIpDetails({
+        status: "fail",
+        query: ip,
+        message: "Failed to fetch details"
+      });
+    } finally {
+      setIpLoading(false);
+    }
+  };
+
+  const handleCloseIpModal = () => {
+    setShowIpModal(false);
+    setSelectedIp(null);
+    setIpDetails(null);
   };
 
   const renderTableContent = (colSpan: number, content: React.ReactNode) => {
@@ -313,6 +345,10 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                               href="#"
                               target="_self"
                               className=""
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleShowIpModal(bet.userIp);
+                              }}
                             >
                               <i className="fa fa-eye m-l-5 curser-point float-right"></i>
                             </a>
@@ -372,7 +408,21 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                         <td>{bet.amount}</td>
                         <td>{bet.currency}</td>
                         <td>{bet.placeTime}</td>
-                        <td>{bet.userIp}</td>
+                        <td>
+                          {bet.userIp}
+                          <a
+                            title="IP Details"
+                            href="#"
+                            target="_self"
+                            className=""
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleShowIpModal(bet.userIp);
+                            }}
+                          >
+                            <i className="fa fa-eye m-l-5 curser-point float-right"></i>
+                          </a>
+                        </td>
                         <td>
                           <a
                             href="javascript:void(0)"
@@ -430,7 +480,21 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                         <td>{bet.currency}</td>
                         <td>{bet.placeTime}</td>
                         <td>{bet.matchedTime}</td>
-                        <td>{bet.userIp}</td>
+                        <td>
+                          {bet.userIp}
+                          <a
+                            title="IP Details"
+                            href="#"
+                            target="_self"
+                            className=""
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleShowIpModal(bet.userIp);
+                            }}
+                          >
+                            <i className="fa fa-eye m-l-5 curser-point float-right"></i>
+                          </a>
+                        </td>
                         <td>
                           <a
                             href="javascript:void(0)"
@@ -452,6 +516,12 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
           </div>
         </div>
       </div>
+      <IpDetailsModal
+        show={showIpModal}
+        handleClose={handleCloseIpModal}
+        ipDetails={ipDetails}
+        loading={ipLoading}
+      />
     </div>
   );
 };
