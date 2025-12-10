@@ -73,66 +73,94 @@ const BestList = () => {
   const [toDate, setToDate] = useState<Date | null>(today);
   const [activeTab, setActiveTab] = useState("Current");
   const [activeRadio, setActiveRadio] = useState("Matched");
-  const [search, setSearch] = useState("");
+  const [userSearch, setUserSearch] = useState("");
+  const [tableSearch, setTableSearch] = useState("");
   const [oddsFrom, setOddsFrom] = useState("");
   const [oddsTo, setOddsTo] = useState("");
   const [stakeFrom, setStakeFrom] = useState("");
   const [stakeTo, setStakeTo] = useState("");
-  const isInitialMount = useRef(true);
 
-  const fetchMyBetReport = async () => {
+
+  const requestCounter = useRef(0);
+  const fetchMyBetReport = async (customState: any = {}) => {
+    const currentRequest = ++requestCounter.current;
     try {
       setLoading(true);
 
-      const currentBet = activeTab === "Current";
-      const matchedDeletedBet = activeRadio.toUpperCase();
+      const state = {
+        sportId,
+        userSearch,
+        activeTab,
+        activeRadio,
+        noOfRecords,
+        index,
+        fromDate,
+        toDate,
+        oddsFrom,
+        oddsTo,
+        stakeFrom,
+        stakeTo,
+        ...customState,
+      };
+
+      const currentBet = state.activeTab === "Current";
+      const matchedDeletedBet = state.activeRadio.toUpperCase();
       const sportLabel =
-        eventOptions.find((e) => e.value === sportId)?.label || "All";
+        eventOptions.find((e) => e.value === state.sportId)?.label || "All";
 
       const payload = {
         sportName: sportLabel,
-        userId: search,
+        userId: state.userSearch,
         currentBet: currentBet,
         matchedDeletedBet: matchedDeletedBet,
-        noOfRecords: noOfRecords,
-        index: index,
-        fromDate: !currentBet ? fromDate?.toISOString().split("T")[0] : "",
-        toDate: !currentBet ? toDate?.toISOString().split("T")[0] : "",
-        oddsFrom: oddsFrom,
-        oddsTo: oddsTo,
-        stakeFrom: stakeFrom,
-        stakeTo: stakeTo,
+        noOfRecords: state.noOfRecords,
+        index: state.index,
+        fromDate: !currentBet ? state.fromDate?.toISOString().split("T")[0] : "",
+        toDate: !currentBet ? state.toDate?.toISOString().split("T")[0] : "",
+        oddsFrom: state.oddsFrom,
+        oddsTo: state.oddsTo,
+        stakeFrom: state.stakeFrom,
+        stakeTo: state.stakeTo,
       };
       const response = await getMyBetReport(payload);
-      if (response.status) {
-        setBetList(response.data.betList);
-      } else {
-        setError(response.message);
+      if (currentRequest === requestCounter.current) {
+        if (response.status) {
+          const betData = response.data?.betList || response.data;
+          setBetList(Array.isArray(betData) ? betData : []);
+          setError(null);
+        } else {
+          setError(response.message);
+          setBetList([]);
+        }
       }
     } catch (err) {
-      setError(err.message);
+      if (currentRequest === requestCounter.current) {
+        setError(err.message);
+        setBetList([]);
+      }
     } finally {
-      setLoading(false);
+      if (currentRequest === requestCounter.current) {
+        setLoading(false);
+      }
     }
   };
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      fetchMyBetReport();
-    }
-  }, []);
+    fetchMyBetReport();
+  }, [activeTab, activeRadio]);
 
   const handleApply = () => {
     fetchMyBetReport();
   };
 
   const handleCancel = () => {
-    setSportId("0");
-    setSearch("");
     const today = new Date();
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(today.getDate() - 7);
+
+    setSportId("0");
+    setUserSearch("");
+    setTableSearch("");
     setFromDate(oneWeekAgo);
     setToDate(today);
     setIndex(0);
@@ -140,6 +168,18 @@ const BestList = () => {
     setOddsTo("");
     setStakeFrom("");
     setStakeTo("");
+
+    fetchMyBetReport({
+      sportId: "0",
+      userSearch: "",
+      fromDate: oneWeekAgo,
+      toDate: today,
+      index: 0,
+      oddsFrom: "",
+      oddsTo: "",
+      stakeFrom: "",
+      stakeTo: "",
+    });
   };
 
   const entriesOptions = [10, 20, 50, 100];
@@ -244,7 +284,7 @@ const BestList = () => {
                 <div className="d-inline-block v-t m-l-10">
                   <div className="search-box-container d-inline-block p-l-0 p-r-5">
                     <label className="p-l-5 d-block">Search by user</label>{" "}
-                    <SearchUser value={search} onChange={setSearch} />
+                    <SearchUser value={userSearch} onChange={setUserSearch} />
                   </div>
                 </div>
               </div>
@@ -301,9 +341,7 @@ const BestList = () => {
                   className={`nav-item ${activeTab === tab ? "active" : ""}`}
                   onClick={() => {
                     setActiveTab(tab);
-                    if (tab === "Current" && activeRadio === "Deleted") {
-                      setActiveRadio("Matched");
-                    }
+                    setActiveRadio("Matched");
                   }}
                 >
                   <a
@@ -416,8 +454,8 @@ const BestList = () => {
                             type="text"
                             placeholder="Type to Search"
                             className="form-control form-control-sm"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            value={tableSearch}
+                            onChange={(e) => setTableSearch(e.target.value)}
                           />
                         </label>
                       </div>
@@ -565,118 +603,138 @@ const BestList = () => {
                             {error}
                           </td>
                         </tr>
+                      ) : betList?.filter(
+                        (bet) =>
+                          !tableSearch ||
+                          JSON.stringify(bet)
+                            .toLowerCase()
+                            .includes(tableSearch.toLowerCase())
+                      ).length > 0 ? (
+                        betList
+                          ?.filter(
+                            (bet) =>
+                              !tableSearch ||
+                              JSON.stringify(bet)
+                                .toLowerCase()
+                                .includes(tableSearch.toLowerCase())
+                          )
+                          .map((bet, index) => (
+                            <tr key={index} role="row">
+                              <td
+                                aria-colindex="1"
+                                data-label="Place Date"
+                                role="cell"
+                                className="text-center"
+                              >
+                                <div>{bet.lastUpdated}</div>
+                              </td>
+                              <td
+                                aria-colindex="2"
+                                data-label="Description"
+                                role="cell"
+                                className="text-left"
+                              >
+                                <div>{bet.selectionName}</div>
+                              </td>
+                              <td
+                                aria-colindex="3"
+                                data-label="User name"
+                                role="cell"
+                                className="text-left"
+                              >
+                                <div>{bet.userId}</div>
+                              </td>
+                              <td
+                                aria-colindex="4"
+                                data-label="Bet Type"
+                                role="cell"
+                                className="text-left"
+                              >
+                                <div>{bet.back ? "BACK" : "LAY"}</div>
+                              </td>
+                              <td
+                                aria-colindex="5"
+                                data-label="User Rate"
+                                role="cell"
+                                className="text-right"
+                              >
+                                <div>{bet.odds.toFixed(2)}</div>
+                              </td>
+                              <td
+                                aria-colindex="6"
+                                data-label="Win/Loss"
+                                role="cell"
+                                className="text-center"
+                              >
+                                <div>
+                                  <span
+                                    className={
+                                      bet.profitLiability > 0
+                                        ? "text-success"
+                                        : "text-danger"
+                                    }
+                                  >
+                                    {bet.profitLiability > 0
+                                      ? "WIN"
+                                      : bet.profitLiability < 0
+                                      ? "LOSS"
+                                      : "TIE"}
+                                  </span>{" "}
+                                </div>
+                              </td>
+                              <td
+                                aria-colindex="7"
+                                data-label="IP"
+                                role="cell"
+                                className="text-left"
+                              >
+                                <div>
+                                  N/A
+                                  <a
+                                    title="IP Details"
+                                    href="#"
+                                    target="_self"
+                                    className=""
+                                  >
+                                    <i className="fa fa-eye m-l-5 curser-point float-right"></i>
+                                  </a>
+                                </div>
+                              </td>
+                              <td
+                                aria-colindex="8"
+                                data-label="Browser Details"
+                                role="cell"
+                                className="text-right"
+                              >
+                                <div>
+                                  <a
+                                    href="#"
+                                    onClick={(e) => e.preventDefault()}
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="N/A"
+                                    className="text-success"
+                                  >
+                                    Detail
+                                  </a>
+                                </div>
+                              </td>
+                              <td
+                                aria-colindex="9"
+                                data-label="Amount"
+                                role="cell"
+                                className="text-right"
+                              >
+                                <div>{bet.matched.toFixed(2)}</div>
+                              </td>
+                            </tr>
+                          ))
                       ) : (
-                        betList?.map((bet, index) => (
-                          <tr key={index} role="row">
-                            <td
-                              aria-colindex="1"
-                              data-label="Place Date"
-                              role="cell"
-                              className="text-center"
-                            >
-                              <div>{bet.lastUpdated}</div>
-                            </td>
-                            <td
-                              aria-colindex="2"
-                              data-label="Description"
-                              role="cell"
-                              className="text-left"
-                            >
-                              <div>{bet.selectionName}</div>
-                            </td>
-                            <td
-                              aria-colindex="3"
-                              data-label="User name"
-                              role="cell"
-                              className="text-left"
-                            >
-                              <div>{bet.userId}</div>
-                            </td>
-                            <td
-                              aria-colindex="4"
-                              data-label="Bet Type"
-                              role="cell"
-                              className="text-left"
-                            >
-                              <div>{bet.back ? "BACK" : "LAY"}</div>
-                            </td>
-                            <td
-                              aria-colindex="5"
-                              data-label="User Rate"
-                              role="cell"
-                              className="text-right"
-                            >
-                              <div>{bet.odds.toFixed(2)}</div>
-                            </td>
-                            <td
-                              aria-colindex="6"
-                              data-label="Win/Loss"
-                              role="cell"
-                              className="text-center"
-                            >
-                              <div>
-                                <span
-                                  className={
-                                    bet.profitLiability > 0
-                                      ? "text-success"
-                                      : "text-danger"
-                                  }
-                                >
-                                  {bet.profitLiability > 0
-                                    ? "WIN"
-                                    : bet.profitLiability < 0
-                                    ? "LOSS"
-                                    : "TIE"}
-                                </span>{" "}
-                              </div>
-                            </td>
-                            <td
-                              aria-colindex="7"
-                              data-label="IP"
-                              role="cell"
-                              className="text-left"
-                            >
-                              <div>
-                                N/A
-                                <a
-                                  title="IP Details"
-                                  href="#"
-                                  target="_self"
-                                  className=""
-                                >
-                                  <i className="fa fa-eye m-l-5 curser-point float-right"></i>
-                                </a>
-                              </div>
-                            </td>
-                            <td
-                              aria-colindex="8"
-                              data-label="Browser Details"
-                              role="cell"
-                              className="text-right"
-                            >
-                              <div>
-                                <a
-                                  href="#"
-                                  onClick={(e) => e.preventDefault()}
-                                  data-toggle="tooltip"
-                                  data-placement="top"
-                                  title="N/A"
-                                  className="text-success"
-                                >
-                                  Detail
-                                </a>
-                              </div>
-                            </td>
-                            <td
-                              aria-colindex="9"
-                              data-label="Amount"
-                              role="cell"
-                              className="text-right"
-                            >
-                              <div>{bet.matched.toFixed(2)}</div>
-                            </td>
-                          </tr>
-                        ))
+                        <tr>
+                          <td colSpan={9} className="text-center">
+                            No records found
+                          </td>
+                        </tr>
                       )}
                     </tbody>
                   </table>
