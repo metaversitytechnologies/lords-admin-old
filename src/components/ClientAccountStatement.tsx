@@ -74,31 +74,19 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
         </div>
 
         <div>
-          <div
-            style={{ width: "270px" }}
-            className="form-group v-t m-r-20 d-inline-block"
-          >
+          <div className="form-group col-md-2 v-t d-inline-block p-r-5">
             <label>From:</label>
-            <ReusableDatePicker
-              selected={fromDate}
-              onChange={setFromDate}
-            />
+            <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
           </div>
 
-          <div
-            style={{ width: "270px" }}
-            className="form-group v-t m-r-20 d-inline-block"
-          >
+          <div className="form-group col-md-2 v-t d-inline-block p-l-0 p-r-5">
             <label>To:</label>
-            <ReusableDatePicker
-              selected={toDate}
-              onChange={setToDate}
-            />
+            <ReusableDatePicker selected={toDate} onChange={setToDate} />
           </div>
 
           {!childId && (
-            <div className="select-report d-inline-block col-md-2 form-group v-t report-search p-l-0 p-r-5">
-              <label className="p-l-5">Search by user</label>
+            <div className="d-inline-block col-md-2 v-t p-l-0 p-r-5">
+              <label>Search by user</label>
               <div className="search-box-container">
                 <SearchUser
                   value={userId}
@@ -109,13 +97,9 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
             </div>
           )}
 
-          <div className="form-group m-r-20 d-inline-block">
+          <div className="form-group d-inline-block">
             <label className="d-block">&nbsp;</label>
-            <button
-              className="btn btn-primary"
-              style={{ height: "35px" }}
-              onClick={handleSearch}
-            >
+            <button className="btn btn-primary" onClick={handleSearch}>
               <i className="fa fa-search m-r-5"></i>Search
             </button>
           </div>

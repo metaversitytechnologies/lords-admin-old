@@ -101,7 +101,7 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
             <div className="header">
               <form onSubmit={handleSubmit}>
                 {/* Balance Type */}
-                <div className="select-report d-inline-block form-group v-t p-l-0 p-r-5">
+                <div className="d-inline-block form-group v-t p-l-0 p-r-5">
                   <label className="p-l-5">Balance Type</label>
                   <select
                     className="form-control"
@@ -119,7 +119,7 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
                 </div>
 
                 {/* Search User */}
-                <div className="select-report d-inline-block v-t report-search p-l-0 p-r-5">
+                <div className="d-inline-block v-t report-search p-l-0 p-r-5">
                   <label className="p-l-5">Search by user</label>
                   <div className="search-box-container">
                     <SearchUser
@@ -131,7 +131,7 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
                 </div>
 
                 {/* Date Inputs */}
-                <div className="datepicker-wrapper d-inline-block col-md-2 form-group p-l-0 p-r-5">
+                <div className="d-inline-block col-md-2 form-group p-l-0 p-r-5">
                   <label className="p-l-5">From</label>
                   <ReusableDatePicker
                     selected={fromDate}
@@ -139,19 +139,16 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
                   />
                 </div>
 
-                <div className="datepicker-wrapper d-inline-block col-md-2 form-group p-l-0 p-r-5">
-                  <label className="p-l-5">To</label>
-                  <ReusableDatePicker
-                    selected={toDate}
-                    onChange={setToDate}
-                  />
+                <div className="d-inline-block col-md-2 form-group p-l-0 p-r-5">
+                  <label>To</label>
+                  <ReusableDatePicker selected={toDate} onChange={setToDate} />
                 </div>
 
                 <div className="m-b-10 d-inline-block v-t">
                   <label className="d-block">&nbsp;</label>
                   <button
                     type="submit"
-                    className="btn btn-secondary m-l-5"
+                    className="btn btn-secondary"
                     disabled={loading}
                   >
                     <i className="fa fa-search m-r-5"></i>

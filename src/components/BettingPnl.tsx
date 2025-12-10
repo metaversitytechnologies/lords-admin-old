@@ -60,22 +60,16 @@ const BettingPnl = ({ userId }) => {
         <div className="header">
           <div className="datepicker-wrapper d-inline-block col-md-2 form-group v-t p-l-0 p-r-5">
             <label className="p-l-5">From</label>
-            <ReusableDatePicker
-              selected={fromDate}
-              onChange={setFromDate}
-            />
+            <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
           </div>
           <div className="datepicker-wrapper form-group d-inline-block col-md-2 v-t p-l-0 p-r-5">
             <label className="p-l-5 d-block">To</label>
-            <ReusableDatePicker
-              selected={toDate}
-              onChange={setToDate}
-            />
+            <ReusableDatePicker selectesd={toDate} onChange={setToDate} />
           </div>
-          <div className="d-inline-block v-t p-l-0 p-r-5">
+          <div className="d-inline-block v-t p-l-0">
             <label className="p-l-5 d-block">&nbsp;</label>
             <button
-              className="btn btn-secondary m-l-10"
+              className="btn btn-secondary"
               onClick={fetchBettingPnl}
               disabled={loading}
             >

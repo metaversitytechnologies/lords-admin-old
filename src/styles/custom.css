@@ -1225,3 +1225,10 @@ footer .bottom-footer {
 .new-casino.race .last-result-container .last-result img {
   height: 28px;
 }
+.react-datepicker__header {
+  background-color: #333d79ff !important;
+}
+
+.react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker-year-header {
+  color: #fff !important;
+}

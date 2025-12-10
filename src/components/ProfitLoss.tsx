@@ -122,25 +122,13 @@ const ProfitLoss: React.FC = () => {
                 <option value="all">All</option>
               </select>
             </div>
-            <div
-              style={{ width: "240px" }}
-              className="form-group v-t m-l-10 d-inline-block"
-            >
-              <label>From:</label>
-              <ReusableDatePicker
-                selected={fromDate}
-                onChange={setFromDate}
-              />
+            <div className="form-group v-t m-l-10 d-inline-block">
+              <label className="d-block">From:</label>
+              <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
             </div>
-            <div
-              style={{ width: "240px" }}
-              className="form-group v-t d-inline-block"
-            >
+            <div className="form-group v-t m-l-10 d-inline-block">
               <label className="d-block">To</label>
-              <ReusableDatePicker
-                selected={toDate}
-                onChange={setToDate}
-              />
+              <ReusableDatePicker selected={toDate} onChange={setToDate} />
             </div>
             <div className="m-l-5 m-b-10 d-inline-block v-t">
               <label className="d-block">&nbsp;</label>

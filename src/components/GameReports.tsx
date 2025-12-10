@@ -121,7 +121,7 @@ const GameReports = () => {
           <div className="header">
             <h1>Game Report</h1>
           </div>
-          <div className="select-report d-inline-block col-md-2 form-group v-t p-l-0 p-r-5">
+          <div className="select-report d-inline-block form-group v-t p-l-0 p-r-5">
             <label className="p-l-5">Event Name</label>
             <select
               className="form-control"
@@ -136,21 +136,15 @@ const GameReports = () => {
               ))}
             </select>
           </div>
-          <div className="datepicker-wrapper d-inline-block col-md-2 form-group v-t p-l-0 p-r-5 m-b-15">
+          <div className="d-inline-block form-group v-t p-l-0 p-r-5 m-b-15">
             <label className="p-l-5 d-block">From</label>
-            <ReusableDatePicker
-              selected={fromDate}
-              onChange={setFromDate}
-            />
+            <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
           </div>
-          <div className="datepicker-wrapper form-group d-inline-block col-md-2 v-t p-l-0 p-r-5">
+          <div className="form-group d-inline-block v-t p-l-0 p-r-5">
             <label className="p-l-5 d-block">To</label>
-            <ReusableDatePicker
-              selected={toDate}
-              onChange={setToDate}
-            />
+            <ReusableDatePicker selected={toDate} onChange={setToDate} />
           </div>
-          <div className="select-report d-inline-block col-md-2 form-group v-t report-search p-l-0 p-r-5">
+          <div className="select-report d-inline-block form-group v-t report-search p-l-0 p-r-5">
             <label className="p-l-5">Search by user</label>
             <div className="search-box-container">
               <SearchUser

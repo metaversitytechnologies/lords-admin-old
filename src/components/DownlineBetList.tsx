@@ -73,7 +73,7 @@ const DownlineBetList = ({ userId }) => {
             <section>
               <div>
                 <div className="bet-list">
-                  <div className="additional-filters d-flex m-t-10">
+                  <div className="d-flex m-t-10">
                     <div className="d-inline-block p-r-10 form-group v-t p-l-0 ">
                       <ReusableDatePicker
                         selected={fromDate}
@@ -89,7 +89,7 @@ const DownlineBetList = ({ userId }) => {
                     <div>
                       <button
                         type="button"
-                        className="btn btn-secondary m-l-5"
+                        className="btn btn-secondary"
                         onClick={handleApply}
                       >
                         Apply
