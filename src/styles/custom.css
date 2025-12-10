@@ -90,7 +90,7 @@ form {
   margin: 2px 0 0;
   font-size: 14px;
   text-align: left;
-  background-color: #008577;
+  background-color: var(--primary-color);
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
@@ -171,7 +171,7 @@ form {
   margin-top: 15px;
 }
 .back-to-home .btn {
-  background-color: #3b5160;
+  background-color: var(--secondary-color);
   color: #fff;
 }
 .down {
@@ -590,7 +590,7 @@ table.b-table > tfoot > tr > th.sorting::before {
   display: inline-block;
 }
 .popuphead thead tr {
-  background-color: #339d92;
+  background-color: var(--primary-color);
   color: #fff;
 }
 .btn-excel {
@@ -1226,7 +1226,7 @@ footer .bottom-footer {
   height: 28px;
 }
 .react-datepicker__header {
-  background-color: #333d79ff !important;
+  background-color: var(--primary-color) !important;
 }
 
 .react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker-year-header {

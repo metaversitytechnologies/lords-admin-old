@@ -1,149 +1,220 @@
+:root {
+    --primary-color: #9E1B32;       /* Burgundy */
+    --primary-dark: #7d1c2a;        /* Darker Burgundy for hovers/actives */
+    --accent-color: #FFD700;        /* Gold */
+    --accent-text: #000000;         /* Text color on gold bg */
+    --text-light: #FFFFFF;
+    --text-dark: #333333;
+    --body-bg: #F4F6F9;
+    --header-bg: #9E1B32;
+    --sidebar-bg: #9E1B32;
+    --border-color: #7d1c2a;
+}
 
 body{
-    background-color: #333d79ff;
+    background-color: var(--body-bg);
     overflow-y: auto;
 }
 .btn-primary,.btn-primary:hover
 {
-    background-color: #333d79ff;
-    color: #FFFFFF;
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border-color: var(--primary-dark);
 }
 .mx-current-year {
-    color: #fff !important;
+    color: var(--text-light) !important;
 }
 .btn-secondary,.btn-secondary:hover
 {
-    background-color: #11374a;
-    color: #FFFFFF;
+    background-color: var(--primary-dark);
+    color: var(--text-light);
     border-color: transparent;
 }
 .btn-update,.btn-update:hover
 {
     background-color: #0f8422;
-    color: #FFFFFF;
+    color: var(--text-light);
     border-bottom-color: #0a5616;
     border-right-color: #0a5616;
 }
 .table.p-t-listing thead {
-    background-color: #333d79ff;
+    background-color: var(--primary-color);
+    color: var(--text-light);
 }
 .table.p-t-listing tr td
 {
-    border-right: 1px solid #333d79ff;
+    border-right: 1px solid var(--border-color);
 }
 body .body>.content>.mid-pane .header .search-wrap input:focus
 {
-    border: 2px solid #333d79ff;
+    border: 2px solid var(--primary-color);
     background: #ffffff;
     color: #444444;
 }
 .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active
 {
-    background-color: #333d79ff;
-    color: #fff;
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border-color: var(--primary-color);
 }
 .modal-header,
 .modal-header~.modal-body {
-    background: #333d79ff;
+    background: var(--primary-color);
+    color: var(--text-light);
 }
 .modal-content .apl-section-inner
 {
-    background: #333d79ff;
+    background: var(--primary-color);
 }
 .button-picker
 {
-    background: #333d79ff;
+    background: var(--primary-color);
 }
 .filters-toggle
 {
-    background: #333d79ff;
+    background: var(--primary-color);
 }
 .net-exposure .table tr.title td {
-    background: #0e577b;
+    background: var(--primary-dark);
+    color: var(--text-light);
 }
 .net-exposure .cell-market-title
 {
-    background: #333d79ff;
+    background: var(--primary-color);
+    color: var(--text-light);
 }
 .net-exposure .cell-market-bets {
-    background: #333d79ff;
+    background: var(--primary-color);
+    color: var(--text-light);
 }
 .cell-market-downline {
-    background: #333d79ff;
+    background: var(--primary-color);
+    color: var(--text-light);
 }
 .casino-box .table {
-    background-color: #333d79ff;
+    background-color: var(--primary-color);
 }
 .casino-box .player-name {
-    background-color: #333d79ff;
+    background-color: var(--primary-color);
+    color: var(--text-light);
 }
 .last-result-title,
 .market-title
 {
-    background-color: #333d79ff;
+    background-color: var(--primary-color);
+    color: var(--text-light);
 }
 .winner-label
 {
-    background-color: #333d79ff;
+    background-color: var(--primary-color);
+    color: var(--text-light);
 }
 .hands-pattern-container td button
 {
-    color: #fff;
-    background-image: linear-gradient(rgba(0, 136, 204, 0.4), rgba(21, 75, 102, 0.8));
+    color: var(--text-light);
+    background-image: linear-gradient(rgba(158, 27, 50, 0.4), rgba(125, 28, 42, 0.8));
 }
 .main-market .table-header .country-name,
 .main-market .table-row .country-name {
     width: 40%;
-    background-color: #333d79ff;
+    background-color: var(--primary-color);
+    color: var(--text-light);
 }
 .loadind-icon
 {
-    border-color: #333d79ff #333d79ff #333d79ff transparent;
+    border-color: var(--primary-color) var(--primary-color) var(--primary-color) transparent;
 }
 .error-page
 {
-    background-image: linear-gradient(#333d79ff, #fff);
+    background-image: linear-gradient(var(--primary-color), #fff);
 }
 .mx-calendar-header {
-    background: #333d79ff !important;
+    background: var(--primary-color) !important;
 }
 .mx-icon-last-month,
 .mx-icon-next-month
 {
-    border-bottom: 2px solid #333d79ff !important;
-    border-right: 2px solid #333d79ff !important;
-    background-color: #333d79ff !important;
-    color: #000 !important;
+    border-bottom: 2px solid var(--primary-color) !important;
+    border-right: 2px solid var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    color: var(--text-light) !important;
 }
 .prev-wrapper table tr th:first-child,
 .prev-wrapper table tr th:nth-child(2),
 .prev-wrapper table tr th:nth-child(3) {
-    background-color: #333d79ff;
+    background-color: var(--primary-color);
+    color: var(--text-light);
 }
 
 .live-tv-icon {
-    background-color: #333d79ff;
+    background-color: var(--primary-color);
+    color: var(--text-light);
 }
 .matched-data .table-control {
-    background-color: #333d79ff;
+    background-color: var(--primary-color);
+    color: var(--text-light);
     
 }
 .page-item.active .page-link {
-    background-color: #333d79ff;
-    border-color: #333d79ff;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--text-light);
 }
 
 .page-link {
     background-color: rgba(0, 0, 0, 0.3);
-    border-color: #333d79ff;
-    color: #fff;
+    border-color: var(--primary-color);
+    color: var(--text-light);
 }
 .pair-block
 {
-    border-left: 5px  solid #333d79ff;
+    border-left: 5px  solid var(--primary-color);
 }
 .flip-clock-wrapper ul li a div div.inn{
-    background-color : #333d79ff !important;
-    color: #fff !important;
+    background-color : var(--primary-color) !important;
+    color: var(--text-light) !important;
+}
+
+/* Layout Overrides for Burgundy Theme */
+header.header {
+    background-color: var(--header-bg) !important;
+    border-bottom: 2px solid var(--accent-color);
+}
+.content, .content > .left-pane-wrapper > .left-pane,
+nav.menu, .balance, footer {
+    background-color: var(--sidebar-bg) !important;
+}
+.content {
+    background-color: var(--body-bg) !important;
+}
+.content > .mid-pane {
+    background-color: var(--body-bg);
+}
+
+nav.menu > ul > li > a {
+    color: var(--text-light);
+    border-bottom: 1px solid var(--primary-dark);
+}
+nav.menu > ul > li > a:hover {
+    background: var(--primary-dark);
+    color: var(--accent-color);
+}
+nav.menu > ul > li.rootMenu.active > a {
+    background: var(--primary-dark);
+    color: var(--accent-color);
+}
+
+/* Sidebar Toggle/Accents */
+.sidebar-arrow-left, .sidebar-arrow-right {
+    color: var(--accent-color);
+}
+
+/* Ensure text color is readable on body if it's light */
+body {
+    color: var(--text-dark);
+}
+/* Revert text color for dark containers */
+header.header, nav.menu, footer, .btn-primary, .btn-secondary, .table thead {
+    color: var(--text-light);
 }
