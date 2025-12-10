@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { createUser } from "../api/auth";
+import { createUser, getBalance } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import FlashMessage from "./FlashMessage";
 
@@ -19,6 +19,10 @@ type FormValues = {
 };
 
 const NewAgent: React.FC = () => {
+  const [creditLimits, setCreditLimits] = useState({
+    min: 0,
+    max: 0
+  });
   const navigate = useNavigate();
   const {
     register,
@@ -46,8 +50,24 @@ const NewAgent: React.FC = () => {
       const user = JSON.parse(userData);
       setUserLevel(user.userType);
     }
+    fetchBalance();
   }, []);
 
+  const fetchBalance = async () => {
+    try {
+      const response = await getBalance();
+      if (response.status && response.data) {
+        setCreditLimits({
+          min: 0,
+          max: response.data?.availableCredit.toFixed(2)
+        });
+      } else {
+        console.error(response.message || "Failed to fetch balance");
+      }
+    } catch (err: any) {
+      console.error(err.message || "An error occurred");
+    }
+  };
   const password = watch("password");
   const selectedUserLevel = watch("userLevel");
 
@@ -302,9 +322,9 @@ const NewAgent: React.FC = () => {
                 />
                 <span className="text-danger error-account"></span>
                 <span className="float-right cref-height">
-                  &gt;=0
+                  &gt;= {creditLimits.min}
                   <br />
-                  &lt;= 42.00
+                  &lt;= {creditLimits.max}
                 </span>
               </span>
             </div>
