@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { getBetTicker } from "../api/auth";
 import SearchUser from "./SearchUser";
+import Pagination from "./Pagination";
 
 const events = [
   "All",
@@ -62,6 +63,9 @@ const BetTicker = () => {
   const [stakeDropdownOpen, setStakeDropdownOpen] = useState(false);
   const [counter, setCounter] = useState(3);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -122,17 +126,19 @@ const BetTicker = () => {
   }, [fetchData]);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCounter((prevCounter) => {
-        if (prevCounter === 1) {
-          fetchData(false);
-          return 3;
-        }
-        return prevCounter - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [fetchData]);
+    if (currentPage === 1 && searchTerm === "") {
+      const timer = setInterval(() => {
+        setCounter((prevCounter) => {
+          if (prevCounter === 1) {
+            fetchData(false);
+            return 3;
+          }
+          return prevCounter - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [fetchData, currentPage, searchTerm]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -345,6 +351,53 @@ const BetTicker = () => {
                   }`}
                 ></i>
               </span>
+              <div className="row col-page">
+                <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
+                  <div className="row dataTables_length">
+                    <div className="p-l-m col">
+                      <label>
+                        Show
+                        <select
+                          style={{ width: "60px" }}
+                          className="form-control"
+                          value={itemsPerPage}
+                          onChange={(e) => {
+                            setItemsPerPage(Number(e.target.value));
+                            setCurrentPage(1);
+                          }}
+                        >
+                          <option value="10">10</option>
+                          <option value="20">20</option>
+                          <option value="50">50</option>
+                          <option value="100">100</option>
+                        </select>
+                        entries
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-sm-12 col-md-6">
+                  <div className="dataTables_filter">
+                    <div className="row">
+                      <div className="f-l-m col">
+                        <label>
+                          Search:
+                          <input
+                            type="text"
+                            placeholder="Type to Search"
+                            className="form-control form-control-sm"
+                            value={searchTerm}
+                            onChange={(e) => {
+                              setSearchTerm(e.target.value);
+                              setCurrentPage(1);
+                            }}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <table className="table table-striped">
                 <thead>
                   <tr>
@@ -375,64 +428,97 @@ const BetTicker = () => {
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan="10" className="text-center">
+                      <td colSpan={10} className="text-center">
                         Loading...
                       </td>
                     </tr>
                   ) : error ? (
                     <tr>
-                      <td colSpan="10" className="text-center">
+                      <td colSpan={10} className="text-center">
                         {error}
                       </td>
                     </tr>
                   ) : bets.length > 0 ? (
-                    bets.map((bet, index) => (
-                      <tr key={index}>
-                        <td className="text-left">{bet.userId}</td>
-                        <td className="text-left">{bet.matchName || "N/A"}</td>
-                        <td className="text-left">{bet.marketName}</td>
-                        <td
-                          className={`text-left text-dark ${
-                            bet.back ? "back" : "lay"
-                          }`}
-                        >
-                          {bet.selectionName}
-                        </td>
-                        <td className="text-left">{bet.odds.toFixed(2)}</td>
-                        <td
-                          className={`text-left ${
-                            !isExpanded ? "hidden-field" : "field-show"
-                          }`}
-                        >
-                          {bet.avgMatched.toFixed(2)}
-                        </td>
-                        <td className="text-left">{bet.matched.toFixed(2)}</td>
-                        <td className="text-left">{bet.currency}</td>
-                        <td className="text-left">
-                          <b>
-                            <span style={getPnlStyle(bet.profitLiability)}>
-                              {bet.profitLiability.toFixed(2)}
-                            </span>
-                          </b>
-                        </td>
-                        <td
-                          className={`text-left ${
-                            !isExpanded ? "hidden-field" : "field-show"
-                          }`}
-                        >
-                          {bet.lastUpdated}
-                        </td>
-                      </tr>
-                    ))
+                    bets
+                      .filter(
+                        (bet) =>
+                          !searchTerm ||
+                          Object.values(bet).some((val) =>
+                            String(val)
+                              .toLowerCase()
+                              .includes(searchTerm.toLowerCase())
+                          )
+                      )
+                      .slice(
+                        (currentPage - 1) * itemsPerPage,
+                        currentPage * itemsPerPage
+                      )
+                      .map((bet, index) => (
+                        <tr key={index}>
+                          <td className="text-left">{bet.userId}</td>
+                          <td className="text-left">
+                            {bet.matchName || "N/A"}
+                          </td>
+                          <td className="text-left">{bet.marketName}</td>
+                          <td
+                            className={`text-left text-dark ${
+                              bet.back ? "back" : "lay"
+                            }`}
+                          >
+                            {bet.selectionName}
+                          </td>
+                          <td className="text-left">{bet.odds.toFixed(2)}</td>
+                          <td
+                            className={`text-left ${
+                              !isExpanded ? "hidden-field" : "field-show"
+                            }`}
+                          >
+                            {bet.avgMatched.toFixed(2)}
+                          </td>
+                          <td className="text-left">
+                            {bet.matched.toFixed(2)}
+                          </td>
+                          <td className="text-left">{bet.currency}</td>
+                          <td className="text-left">
+                            <b>
+                              <span style={getPnlStyle(bet.profitLiability)}>
+                                {bet.profitLiability.toFixed(2)}
+                              </span>
+                            </b>
+                          </td>
+                          <td
+                            className={`text-left ${
+                              !isExpanded ? "hidden-field" : "field-show"
+                            }`}
+                          >
+                            {bet.lastUpdated}
+                          </td>
+                        </tr>
+                      ))
                   ) : (
                     <tr>
-                      <td colSpan="10" className="text-center">
+                      <td colSpan={10} className="text-center">
                         no records found
                       </td>
                     </tr>
                   )}
                 </tbody>
               </table>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(
+                  bets.filter(
+                    (bet) =>
+                      !searchTerm ||
+                      Object.values(bet).some((val) =>
+                        String(val)
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      )
+                  ).length / itemsPerPage
+                )}
+                onPageChange={setCurrentPage}
+              />
             </div>
           </div>
         </div>

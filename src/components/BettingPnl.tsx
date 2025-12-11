@@ -2,12 +2,16 @@ import { useState, useEffect } from "react";
 import { getBettingPnl } from "../api/auth";
 import MarketPnlBreakdown from "./MarketPnlBreakdown";
 import ReusableDatePicker from "./DatePicker";
+import Pagination from "./Pagination";
 
 const BettingPnl = ({ userId }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedMarket, setSelectedMarket] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const today = new Date();
   const oneWeekAgo = new Date();
@@ -24,8 +28,8 @@ const BettingPnl = ({ userId }) => {
         userId,
         fromDate: fromDate?.toISOString().split("T")[0],
         toDate: toDate?.toISOString().split("T")[0],
-        noOfRecords: 10,
-        index: 0
+        noOfRecords: 99999,
+        index: 0,
       };
       const response = await getBettingPnl(payload);
       if (response.data) {
@@ -100,6 +104,53 @@ const BettingPnl = ({ userId }) => {
         />
       ) : (
         <div>
+          <div className="row col-page">
+            <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
+              <div className="row dataTables_length">
+                <div className="p-l-m col">
+                  <label>
+                    Show
+                    <select
+                      style={{ width: "60px" }}
+                      className="form-control"
+                      value={itemsPerPage}
+                      onChange={(e) => {
+                        setItemsPerPage(Number(e.target.value));
+                        setCurrentPage(1);
+                      }}
+                    >
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                    entries
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="col-sm-12 col-md-6">
+              <div className="dataTables_filter">
+                <div className="row">
+                  <div className="f-l-m col">
+                    <label>
+                      Search:
+                      <input
+                        type="text"
+                        placeholder="Type to Search"
+                        className="form-control form-control-sm"
+                        value={searchTerm}
+                        onChange={(e) => {
+                          setSearchTerm(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <table className="table table-striped">
             <thead>
               <tr>
@@ -111,41 +162,53 @@ const BettingPnl = ({ userId }) => {
             </thead>
             <tbody>
               {data.length > 0 ? (
-                data.map((item, index) => (
-                  <tr key={index}>
-                    <td>
-                      <a
-                        href="javascript:void(0)"
-                        onClick={() => handleMarketClick(item)}
-                      >
-                        {item.marketName}
-                      </a>
-                    </td>
-                    <td>
-                      <span>
-                        {item.startTime
-                          ? new Date(item.startTime).toLocaleString()
-                          : "-"}
-                      </span>
-                    </td>
-                    <td>
-                      <span>
-                        {item.settledTime
-                          ? new Date(item.settledTime).toLocaleString()
-                          : "-"}
-                      </span>
-                    </td>
-                    <td className="text-right">
-                      <span
-                        className={item.netWin >= 0 ? "positive" : "negative"}
-                      >
-                        {typeof item.netWin === "number"
-                          ? item.netWin.toFixed(2)
-                          : "0.00"}
-                      </span>
-                    </td>
-                  </tr>
-                ))
+                data
+                  .filter((item) =>
+                    item.marketName
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                  )
+                  .slice(
+                    (currentPage - 1) * itemsPerPage,
+                    currentPage * itemsPerPage
+                  )
+                  .map((item, index) => (
+                    <tr key={index}>
+                      <td>
+                        <a
+                          href="javascript:void(0)"
+                          onClick={() => handleMarketClick(item)}
+                        >
+                          {item.marketName}
+                        </a>
+                      </td>
+                      <td>
+                        <span>
+                          {item.startTime
+                            ? new Date(item.startTime).toLocaleString()
+                            : "-"}
+                        </span>
+                      </td>
+                      <td>
+                        <span>
+                          {item.settledTime
+                            ? new Date(item.settledTime).toLocaleString()
+                            : "-"}
+                        </span>
+                      </td>
+                      <td className="text-right">
+                        <span
+                          className={
+                            item.netWin >= 0 ? "positive" : "negative"
+                          }
+                        >
+                          {typeof item.netWin === "number"
+                            ? item.netWin.toFixed(2)
+                            : "0.00"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
               ) : (
                 <tr>
                   <td colSpan="4" className="text-center">
@@ -155,6 +218,17 @@ const BettingPnl = ({ userId }) => {
               )}
             </tbody>
           </table>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(
+              data.filter((item) =>
+                item.marketName
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              ).length / itemsPerPage
+            )}
+            onPageChange={setCurrentPage}
+          />
         </div>
       )}
     </div>

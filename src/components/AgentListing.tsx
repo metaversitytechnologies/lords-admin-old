@@ -5,6 +5,7 @@ import { getChildListLord } from "../api/auth";
 import SearchUser from "./SearchUser";
 import { useAuth } from "../context/AuthContext";
 import { CSVLink } from "react-csv";
+import Pagination from "./Pagination";
 
 const AgentListing: React.FC = () => {
   const { userid } = useParams<{ userid: string }>();
@@ -15,6 +16,9 @@ const AgentListing: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [generalSearchTerm, setGeneralSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const { user } = useAuth();
 
@@ -27,8 +31,8 @@ const AgentListing: React.FC = () => {
       const payload = {
         userId: userid || user.userId,
         index: 0,
-        noOfRecords: 20,
-        username: searchTerm
+        noOfRecords: 99999,
+        username: searchTerm,
       };
       const response = await getChildListLord(payload);
       setAgents(response.data || []);
@@ -108,6 +112,53 @@ const AgentListing: React.FC = () => {
             className={`fas ${isExpanded ? "fa-arrow-left" : "fa-arrow-right"}`}
           ></i>
         </span>
+        <div className="row col-page">
+          <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
+            <div className="row dataTables_length">
+              <div className="p-l-m col">
+                <label>
+                  Show
+                  <select
+                    style={{ width: "60px" }}
+                    className="form-control"
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                  entries
+                </label>
+              </div>
+            </div>
+          </div>
+          <div className="col-sm-12 col-md-6">
+            <div className="dataTables_filter">
+              <div className="row">
+                <div className="f-l-m col">
+                  <label>
+                    Search:
+                    <input
+                      type="text"
+                      placeholder="Type to Search"
+                      className="form-control form-control-sm"
+                      value={generalSearchTerm}
+                      onChange={(e) => {
+                        setGeneralSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <table className="table table-striped agent-listing">
           <thead>
             <tr>
@@ -155,113 +206,142 @@ const AgentListing: React.FC = () => {
                 </td>
               </tr>
             ) : (
-              agents.map((agent) => (
-                <tr key={agent.userId}>
-                  <td className="text-left">
-                    <span>
-                      <a
-                        href="#"
-                        title="Create"
-                        data-placement="top"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (userid) return;
-                          openUpdateModal(agent);
-                        }}
-                        style={{
-                          cursor: userid ? "default" : "pointer",
-                          textDecoration: "none"
-                        }}
-                      >
-                        {agent.userId}
-                      </a>
-                    </span>
-                  </td>
-                  <td className="text-left">
-                    <span>{agent.accountType}</span>
-                  </td>
-                  <td className="text-center">
-                    <span>
-                      {agent.accountType?.toLowerCase() === "user" ? (
-                        <span
-                          className="text"
-                          style={{ opacity: 0.5, cursor: "not-allowed" }}
-                        >
-                          <i className="fas fa-sitemap"></i>
-                        </span>
-                      ) : (
-                        <Link
-                          to={`/agentlisting/${agent.userId}`}
-                          className="text"
+              agents
+                .filter(
+                  (agent) =>
+                    !generalSearchTerm ||
+                    Object.values(agent).some((val) =>
+                      String(val)
+                        .toLowerCase()
+                        .includes(generalSearchTerm.toLowerCase())
+                    )
+                )
+                .slice(
+                  (currentPage - 1) * itemsPerPage,
+                  currentPage * itemsPerPage
+                )
+                .map((agent) => (
+                  <tr key={agent.userId}>
+                    <td className="text-left">
+                      <span>
+                        <a
+                          href="#"
+                          title="Create"
                           data-placement="top"
-                          style={{ pointerEvents: "visible" }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (userid) return;
+                            openUpdateModal(agent);
+                          }}
+                          style={{
+                            cursor: userid ? "default" : "pointer",
+                            textDecoration: "none",
+                          }}
                         >
-                          <i className="fas fa-sitemap"></i>
-                        </Link>
-                      )}
-                    </span>
-                  </td>
-                  <td className="text-center">
-                    <span>
-                      <a
-                        href="javascript:void(0)"
+                          {agent.userId}
+                        </a>
+                      </span>
+                    </td>
+                    <td className="text-left">
+                      <span>{agent.accountType}</span>
+                    </td>
+                    <td className="text-center">
+                      <span>
+                        {agent.accountType?.toLowerCase() === "user" ? (
+                          <span
+                            className="text"
+                            style={{ opacity: 0.5, cursor: "not-allowed" }}
+                          >
+                            <i className="fas fa-sitemap"></i>
+                          </span>
+                        ) : (
+                          <Link
+                            to={`/agentlisting/${agent.userId}`}
+                            className="text"
+                            data-placement="top"
+                            style={{ pointerEvents: "visible" }}
+                          >
+                            <i className="fas fa-sitemap"></i>
+                          </Link>
+                        )}
+                      </span>
+                    </td>
+                    <td className="text-center">
+                      <span>
+                        <a
+                          href="javascript:void(0)"
+                          data-placement="top"
+                          onClick={() => false}
+                          data-original-title="Betting Unlocked"
+                          className="text text-dark username"
+                        >
+                          <i
+                            className={`fas ${
+                              agent.bettingStatus ? "fa-unlock" : "fa-lock"
+                            } positive unlock-icon`}
+                          ></i>
+                        </a>
+                      </span>
+                    </td>
+                    <td className="text-center">
+                      <span>{agent.userActive ? "ACTIVE" : "INACTIVE"}</span>
+                    </td>
+                    <td className="text-center">
+                      <Link
+                        to={`/downlinereports/${agent.userId}`}
+                        className="text"
                         data-placement="top"
-                        onClick={() => false}
-                        data-original-title="Betting Unlocked"
-                        className="text text-dark username"
+                        style={{ pointerEvents: "visible" }}
                       >
-                        <i
-                          className={`fas ${
-                            agent.bettingStatus ? "fa-unlock" : "fa-lock"
-                          } positive unlock-icon`}
-                        ></i>
-                      </a>
-                    </span>
-                  </td>
-                  <td className="text-center">
-                    <span>{agent.userActive ? "ACTIVE" : "INACTIVE"}</span>
-                  </td>
-                  <td className="text-center">
-                    <Link
-                      to={`/downlinereports/${agent.userId}`}
-                      className="text"
-                      data-placement="top"
-                      style={{ pointerEvents: "visible" }}
+                        <i className="fas fa-eye"></i>
+                      </Link>
+                    </td>
+                    <td className="text-right positive negative">
+                      <span>{agent.netExposure}</span>
+                    </td>
+                    <td className="text-right positive">
+                      <span className="positive">{agent.gt}</span>
+                    </td>
+                    <td className="text-right">
+                      <span>{agent.creditLimit}</span>
+                    </td>
+                    <td className="text-right">
+                      <span>{agent.availabeCredit}</span>
+                    </td>
+                    <td
+                      className={`text-right ${
+                        !isExpanded ? "hidden-field" : "field-show"
+                      }`}
                     >
-                      <i className="fas fa-eye"></i>
-                    </Link>
-                  </td>
-                  <td className="text-right positive negative">
-                    <span>{agent.netExposure}</span>
-                  </td>
-                  <td className="text-right positive">
-                    <span className="positive">{agent.gt}</span>
-                  </td>
-                  <td className="text-right">
-                    <span>{agent.creditLimit}</span>
-                  </td>
-                  <td className="text-right">
-                    <span>{agent.availabeCredit}</span>
-                  </td>
-                  <td
-                    className={`text-right ${
-                      !isExpanded ? "hidden-field" : "field-show"
-                    }`}
-                  >
-                    {agent.createdAt}
-                  </td>
-                  <td
-                    className={`text-right ${
-                      !isExpanded ? "hidden-field" : "field-show"
-                    }`}
-                  >
-                    {agent.lastLogin}
-                  </td>
-                </tr>
-              ))
+                      {agent.createdAt}
+                    </td>
+                    <td
+                      className={`text-right ${
+                        !isExpanded ? "hidden-field" : "field-show"
+                      }`}
+                    >
+                      {agent.lastLogin}
+                    </td>
+                  </tr>
+                ))
             )}
           </tbody>
         </table>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(
+            agents.filter(
+              (agent) =>
+                !generalSearchTerm ||
+                Object.values(agent).some((val) =>
+                  String(val)
+                    .toLowerCase()
+                    .includes(generalSearchTerm.toLowerCase())
+                )
+            ).length / itemsPerPage
+          )}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       <UpdateUser

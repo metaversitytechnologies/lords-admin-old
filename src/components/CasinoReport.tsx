@@ -1,11 +1,15 @@
 import { useState } from "react";
 import CasinoResultModal from "./CasinoResultModal";
 import ReusableDatePicker from "./DatePicker";
+import Pagination from "./Pagination";
 
 export default function CasinoReport() {
   const [show, setShow] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [fromDate, setFromDate] = useState<Date | null>(new Date());
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const handleClose = () => {
     setShow(false);
@@ -110,7 +114,15 @@ export default function CasinoReport() {
                 <div className="p-l-m col">
                   <label>
                     Show
-                    <select style={{ width: "60px" }} className="form-control">
+                    <select
+                      style={{ width: "60px" }}
+                      className="form-control"
+                      value={itemsPerPage}
+                      onChange={(e) => {
+                        setItemsPerPage(Number(e.target.value));
+                        setCurrentPage(1);
+                      }}
+                    >
                       <option value="10">10</option>
                       <option value="20">20</option>
                       <option value="50">50</option>
@@ -132,6 +144,8 @@ export default function CasinoReport() {
                         type="text"
                         placeholder="Type to Search"
                         className="form-control form-control-sm"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </label>
                   </div>
@@ -153,22 +167,53 @@ export default function CasinoReport() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((item) => (
-                    <tr key={item.roundId}>
-                      <td className="text-left">
-                        <a
-                          href="#"
-                          onClick={() => handleShow(item)}
-                          className="underline theme2font"
-                        >
-                          {item.roundId}
-                        </a>
-                      </td>
-                      <td className="text-left">{item.winner}</td>
-                    </tr>
-                  ))}
+                  {data
+                    .filter(
+                      (item) =>
+                        item.roundId
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        item.winner
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                    )
+                    .slice(
+                      (currentPage - 1) * itemsPerPage,
+                      currentPage * itemsPerPage
+                    )
+                    .map((item) => (
+                      <tr key={item.roundId}>
+                        <td className="text-left">
+                          <a
+                            href="#"
+                            onClick={() => handleShow(item)}
+                            className="underline theme2font"
+                          >
+                            {item.roundId}
+                          </a>
+                        </td>
+                        <td className="text-left">{item.winner}</td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+          <div className="row">
+            <div className="my-1 p-m-l col">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(
+                  data.filter(
+                    (item) =>
+                      item.roundId
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                      item.winner.toLowerCase().includes(searchTerm.toLowerCase())
+                  ).length / itemsPerPage
+                )}
+                onPageChange={setCurrentPage}
+              />
             </div>
           </div>
         </div>

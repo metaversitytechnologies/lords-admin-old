@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { getBetDetailUseridwiseLord } from "../api/auth";
 import ReusableDatePicker from "./DatePicker";
+import Pagination from "./Pagination";
 
 const DownlineBetList = ({ userId }) => {
   const [activeTab, setActiveTab] = useState("current");
   const [betType, setBetType] = useState("matched");
-  const [entriesPerPage, setEntriesPerPage] = useState("10");
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [betData, setBetData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -16,12 +17,9 @@ const DownlineBetList = ({ userId }) => {
 
   const [fromDate, setFromDate] = useState<Date | null>(oneWeekAgo);
   const [toDate, setToDate] = useState<Date | null>(today);
-  const [pagination, setPagination] = useState({
-    totalPages: 1,
-    currentPage: 1
-  });
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchData = async (page = 1) => {
+  const fetchData = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -31,18 +29,14 @@ const DownlineBetList = ({ userId }) => {
         currentBet: activeTab === "current",
         fromDate: fromDate?.toISOString().split("T")[0],
         toDate: toDate?.toISOString().split("T")[0],
-        index: page - 1,
-        noOfRecords: parseInt(entriesPerPage)
+        index: 0,
+        noOfRecords: 99999,
       };
       const response = await getBetDetailUseridwiseLord(payload);
       if (response.status === false) {
         throw new Error(response.message || "Failed to fetch data");
       }
       setBetData(response.data.betList || []);
-      setPagination({
-        totalPages: response.data.totalPages || 1,
-        currentPage: response.data.currentPage || 1
-      });
     } catch (error) {
       setError(error.message);
       setBetData([]);
@@ -52,16 +46,16 @@ const DownlineBetList = ({ userId }) => {
   };
 
   useEffect(() => {
-    fetchData(1);
-  }, [activeTab, betType, entriesPerPage, userId]);
+    fetchData();
+  }, [activeTab, betType, userId]);
 
   const handleApply = () => {
-    fetchData(1);
+    fetchData();
   };
 
   const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= pagination.totalPages) {
-      fetchData(newPage);
+    if (newPage >= 1) {
+      setCurrentPage(newPage);
     }
   };
 
@@ -200,10 +194,15 @@ const DownlineBetList = ({ userId }) => {
                                   Show{" "}
                                   <select
                                     id="entries-select"
-                                    value={entriesPerPage}
-                                    onChange={(e) =>
-                                      setEntriesPerPage(e.target.value)
-                                    }
+                                    className="form-control"
+                                    style={{ width: "60px" }}
+                                    value={itemsPerPage}
+                                    onChange={(e) => {
+                                      setItemsPerPage(
+                                        Number(e.target.value)
+                                      );
+                                      setCurrentPage(1);
+                                    }}
                                   >
                                     <option value="10">10</option>
                                     <option value="25">25</option>
@@ -226,9 +225,10 @@ const DownlineBetList = ({ userId }) => {
                                       placeholder="Type to Search"
                                       className="form-control form-control-sm"
                                       value={searchTerm}
-                                      onChange={(e) =>
-                                        setSearchTerm(e.target.value)
-                                      }
+                                      onChange={(e) => {
+                                        setSearchTerm(e.target.value);
+                                        setCurrentPage(1);
+                                      }}
                                     />
                                   </label>
                                 </div>
@@ -314,6 +314,10 @@ const DownlineBetList = ({ userId }) => {
                                         return bet;
                                       }
                                     })
+                                    .slice(
+                                      (currentPage - 1) * itemsPerPage,
+                                      currentPage * itemsPerPage
+                                    )
                                     .map((bet, index) => (
                                       <tr role="row" key={index}>
                                         <td
@@ -401,70 +405,32 @@ const DownlineBetList = ({ userId }) => {
                         </div>
 
                         {/* Pagination */}
-                        <div className="row">
-                          <div className="my-1 p-m-l col">
-                            <ul
-                              role="menubar"
-                              className="pagination my-0 b-pagination justify-content-end"
-                            >
-                              <li
-                                role="presentation"
-                                className={`page-item ${
-                                  pagination.currentPage === 1 ? "disabled" : ""
-                                }`}
-                              >
-                                <button
-                                  onClick={() =>
-                                    handlePageChange(pagination.currentPage - 1)
-                                  }
-                                  className="page-link"
-                                >
-                                  «
-                                </button>
-                              </li>
-                              {[...Array(pagination.totalPages).keys()].map(
-                                (num) => (
-                                  <li
-                                    key={num + 1}
-                                    role="presentation"
-                                    className={`page-item ${
-                                      pagination.currentPage === num + 1
-                                        ? "active"
-                                        : ""
-                                    }`}
-                                  >
-                                    <button
-                                      onClick={() => handlePageChange(num + 1)}
-                                      role="menuitemradio"
-                                      type="button"
-                                      className="page-link"
-                                    >
-                                      {num + 1}
-                                    </button>
-                                  </li>
-                                )
-                              )}
-                              <li
-                                role="presentation"
-                                className={`page-item ${
-                                  pagination.currentPage ===
-                                  pagination.totalPages
-                                    ? "disabled"
-                                    : ""
-                                }`}
-                              >
-                                <button
-                                  onClick={() =>
-                                    handlePageChange(pagination.currentPage + 1)
-                                  }
-                                  className="page-link"
-                                >
-                                  »
-                                </button>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
+                        <Pagination
+                          currentPage={currentPage}
+                          totalPages={Math.ceil(
+                            betData.filter((bet) => {
+                              if (searchTerm === "") {
+                                return bet;
+                              } else if (
+                                bet.matchName
+                                  .toLowerCase()
+                                  .includes(searchTerm.toLowerCase()) ||
+                                bet.marketname
+                                  .toLowerCase()
+                                  .includes(searchTerm.toLowerCase()) ||
+                                bet.selectionname
+                                  .toLowerCase()
+                                  .includes(searchTerm.toLowerCase()) ||
+                                bet.userid
+                                  .toLowerCase()
+                                  .includes(searchTerm.toLowerCase())
+                              ) {
+                                return bet;
+                              }
+                            }).length / itemsPerPage
+                          )}
+                          onPageChange={handlePageChange}
+                        />
                       </div>
                     </div>
                   </div>

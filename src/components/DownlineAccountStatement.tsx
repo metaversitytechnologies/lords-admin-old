@@ -4,6 +4,7 @@ import SearchUser from "./SearchUser";
 import { getAccountStatement } from "../api/reports";
 import { useAuth } from "../context/AuthContext";
 import ReusableDatePicker from "./DatePicker";
+import Pagination from "./Pagination";
 
 interface Statement {
   date: string;
@@ -37,6 +38,9 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
   const [balanceType, setBalanceType] = useState("all");
   const [statementData, setStatementData] = useState<Statement[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // 🔥 FINAL USER-ID PRIORITY LOGIC
   const finalUserId = searchedUserId.trim() !== "" ? searchedUserId : childId;
@@ -52,9 +56,9 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
         userId: finalUserId,
         fromDate: fromDate?.toISOString().split("T")[0],
         toDate: toDate?.toISOString().split("T")[0],
-        noOfRecords: 50,
+        noOfRecords: 99999,
         index: 0,
-        balanceType: balanceType === "all" ? "ALL" : balanceType.toUpperCase()
+        balanceType: balanceType === "all" ? "ALL" : balanceType.toUpperCase(),
       };
 
       const res = await getAccountStatement(payload);
@@ -194,6 +198,53 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
               </div>
 
               <div className="tab-content">
+                <div className="row col-page">
+                  <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
+                    <div className="row dataTables_length">
+                      <div className="p-l-m col">
+                        <label>
+                          Show
+                          <select
+                            style={{ width: "60px" }}
+                            className="form-control"
+                            value={itemsPerPage}
+                            onChange={(e) => {
+                              setItemsPerPage(Number(e.target.value));
+                              setCurrentPage(1);
+                            }}
+                          >
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                          </select>
+                          entries
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-sm-12 col-md-6">
+                    <div className="dataTables_filter">
+                      <div className="row">
+                        <div className="f-l-m col">
+                          <label>
+                            Search:
+                            <input
+                              type="text"
+                              placeholder="Type to Search"
+                              className="form-control form-control-sm"
+                              value={searchTerm}
+                              onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setCurrentPage(1);
+                              }}
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 {/* P&L Tab */}
                 <div
                   className={`tab-pane ${activeTab === "pnl" ? "active" : ""}`}
@@ -233,26 +284,40 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
                       </thead>
                       <tbody>
                         {statementData.length > 0 ? (
-                          statementData.map((row, i) => (
-                            <tr key={i}>
-                              <td className="text-center">{row.date}</td>
-                              <td className="">{row.description}</td>
-                              <td className="text-left">
-                                {row.ip}
-                                {row.ip && (
-                                  <a
-                                    href="#"
-                                    onClick={() => handleIpDetails(row.ip)}
-                                  >
-                                    <i className="fa fa-eye m-l-5 float-right"></i>
-                                  </a>
-                                )}
-                              </td>
-                              <td className="">{row.fromTo}</td>
-                              <td className="text-right">{row.amount}</td>
-                              <td className="text-right">{row.closing}</td>
-                            </tr>
-                          ))
+                          statementData
+                            .filter(
+                              (row) =>
+                                !searchTerm ||
+                                Object.values(row).some((val) =>
+                                  String(val)
+                                    .toLowerCase()
+                                    .includes(searchTerm.toLowerCase())
+                                )
+                            )
+                            .slice(
+                              (currentPage - 1) * itemsPerPage,
+                              currentPage * itemsPerPage
+                            )
+                            .map((row, i) => (
+                              <tr key={i}>
+                                <td className="text-center">{row.date}</td>
+                                <td className="">{row.description}</td>
+                                <td className="text-left">
+                                  {row.ip}
+                                  {row.ip && (
+                                    <a
+                                      href="#"
+                                      onClick={() => handleIpDetails(row.ip)}
+                                    >
+                                      <i className="fa fa-eye m-l-5 float-right"></i>
+                                    </a>
+                                  )}
+                                </td>
+                                <td className="">{row.fromTo}</td>
+                                <td className="text-right">{row.amount}</td>
+                                <td className="text-right">{row.closing}</td>
+                              </tr>
+                            ))
                         ) : (
                           <tr>
                             <td colSpan={6} className="text-center">
@@ -262,6 +327,21 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
                         )}
                       </tbody>
                     </table>
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={Math.ceil(
+                        statementData.filter(
+                          (row) =>
+                            !searchTerm ||
+                            Object.values(row).some((val) =>
+                              String(val)
+                                .toLowerCase()
+                                .includes(searchTerm.toLowerCase())
+                            )
+                        ).length / itemsPerPage
+                      )}
+                      onPageChange={setCurrentPage}
+                    />
                   </div>
                 </div>
 
@@ -283,15 +363,29 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
                     </thead>
                     <tbody>
                       {statementData.length > 0 ? (
-                        statementData.map((row, i) => (
-                          <tr key={i}>
-                            <td className="text-left">{row.date}</td>
-                            <td className="text-left">{row.userName}</td>
-                            <td className="text-left">{row.masterName}</td>
-                            <td className="text-left">{row.remark}</td>
-                            <td className="text-right">{row.stake}</td>
-                          </tr>
-                        ))
+                        statementData
+                          .filter(
+                            (row) =>
+                              !searchTerm ||
+                              Object.values(row).some((val) =>
+                                String(val)
+                                  .toLowerCase()
+                                  .includes(searchTerm.toLowerCase())
+                              )
+                          )
+                          .slice(
+                            (currentPage - 1) * itemsPerPage,
+                            currentPage * itemsPerPage
+                          )
+                          .map((row, i) => (
+                            <tr key={i}>
+                              <td className="text-left">{row.date}</td>
+                              <td className="text-left">{row.userName}</td>
+                              <td className="text-left">{row.masterName}</td>
+                              <td className="text-left">{row.remark}</td>
+                              <td className="text-right">{row.stake}</td>
+                            </tr>
+                          ))
                       ) : (
                         <tr>
                           <td colSpan={5} className="text-center">
@@ -301,6 +395,21 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
                       )}
                     </tbody>
                   </table>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={Math.ceil(
+                      statementData.filter(
+                        (row) =>
+                          !searchTerm ||
+                          Object.values(row).some((val) =>
+                            String(val)
+                              .toLowerCase()
+                              .includes(searchTerm.toLowerCase())
+                          )
+                      ).length / itemsPerPage
+                    )}
+                    onPageChange={setCurrentPage}
+                  />
                 </div>
               </div>
             </div>
