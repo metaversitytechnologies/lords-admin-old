@@ -5,6 +5,7 @@ import SearchUser from "./SearchUser";
 import { getGameReportLord } from "../api/reports";
 import ReusableDatePicker from "./DatePicker";
 import { CSVLink } from "react-csv";
+import Pagination from "./Pagination";
 
 interface Report {
   date: string;
@@ -29,6 +30,11 @@ const GameReports = () => {
   const [reportData, setReportData] = useState<Report[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Pagination & Search States
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleOpenModal = (matchId: string) => {
     setSelectedMatchId(matchId);
@@ -103,6 +109,8 @@ const GameReports = () => {
       console.error(err);
     } finally {
       setLoading(false);
+      // Reset to page 1 when new data is loaded
+      setCurrentPage(1); 
     }
   };
 
@@ -183,7 +191,15 @@ const GameReports = () => {
                 <div className="p-l-m col">
                   <label htmlFor="input-small">
                     Show
-                    <select style={{ width: "60px" }} className="form-control">
+                    <select
+                      style={{ width: "60px" }}
+                      className="form-control"
+                      value={itemsPerPage}
+                      onChange={(e) => {
+                        setItemsPerPage(Number(e.target.value));
+                        setCurrentPage(1);
+                      }}
+                    >
                       <option value="10">10</option>
                       <option value="20">20</option>
                       <option value="50">50</option>
@@ -204,6 +220,11 @@ const GameReports = () => {
                         type="text"
                         placeholder="Type to Search"
                         className="form-control form-control-sm"
+                        value={searchTerm}
+                        onChange={(e) => {
+                          setSearchTerm(e.target.value);
+                          setCurrentPage(1);
+                        }}
                       />
                     </label>
                   </div>
@@ -237,14 +258,40 @@ const GameReports = () => {
                   </tr>
                 </thead>
                 <tbody role="rowgroup">
-                  {loading ? (
-                    <tr>
-                      <td colSpan={5} className="text-center">
-                        Loading...
-                      </td>
-                    </tr>
-                  ) : reportData.length > 0 ? (
-                    reportData.map((row, index) => (
+
+                  {(() => {
+                    const filteredData = reportData.filter((item) =>
+                       searchTerm === "" ||
+                       item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                       item.date.includes(searchTerm)
+                    );
+
+                    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+                    const indexOfLastItem = currentPage * itemsPerPage;
+                    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+                    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+
+                    if (loading) {
+                      return (
+                        <tr>
+                          <td colSpan={5} className="text-center">
+                            Loading...
+                          </td>
+                        </tr>
+                      );
+                    }
+
+                    if (currentItems.length === 0) {
+                      return (
+                        <tr>
+                          <td colSpan={5} className="text-center">
+                            No data available
+                          </td>
+                        </tr>
+                      );
+                    }
+
+                    return currentItems.map((row, index) => (
                       <tr role="row" key={index}>
                         <td
                           aria-colindex="1"
@@ -298,38 +345,25 @@ const GameReports = () => {
                         </td>
                       </tr>
                     ))
-                  ) : (
-                    <tr>
-                      <td colSpan={5} className="text-center">
-                        No data available
-                      </td>
-                    </tr>
-                  )}
+;
+                  })()}
                 </tbody>
               </table>
             </div>
           </div>
           <div className="row">
             <div className="my-1 p-m-l col">
-              <ul className="pagination my-0 b-pagination justify-content-end">
-                <li className="page-item disabled">
-                  <span className="page-link">«</span>
-                </li>
-                <li className="page-item disabled">
-                  <span className="page-link">‹</span>
-                </li>
-                <li className="page-item active">
-                  <button type="button" className="page-link">
-                    1
-                  </button>
-                </li>
-                <li className="page-item disabled">
-                  <span className="page-link">›</span>
-                </li>
-                <li className="page-item disabled">
-                  <span className="page-link">»</span>
-                </li>
-              </ul>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(
+                  reportData.filter((item) =>
+                    searchTerm === "" ||
+                    item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    item.date.includes(searchTerm)
+                  ).length / itemsPerPage
+                )}
+                onPageChange={setCurrentPage}
+              />
             </div>
           </div>
         </div>

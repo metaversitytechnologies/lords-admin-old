@@ -7,6 +7,7 @@ import ReusableDatePicker from "./DatePicker";
 import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
 import { getIpAddressDetailLord } from "../api/user";
 import { CSVLink } from "react-csv";
+import Pagination from "./Pagination";
 
 const eventOptions = [
   { value: "0", label: "All" },
@@ -67,7 +68,8 @@ const BestList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sportId, setSportId] = useState("0");
-  const [noOfRecords, setNoOfRecords] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   const [index, setIndex] = useState(0);
   const today = new Date();
   const oneWeekAgo = new Date();
@@ -99,7 +101,7 @@ const BestList = () => {
         userSearch,
         activeTab,
         activeRadio,
-        noOfRecords,
+        itemsPerPage,
         index,
         fromDate,
         toDate,
@@ -107,7 +109,7 @@ const BestList = () => {
         oddsTo,
         stakeFrom,
         stakeTo,
-        ...customState
+        ...customState,
       };
 
       const currentBet = state.activeTab === "Current";
@@ -120,8 +122,8 @@ const BestList = () => {
         userId: state.userSearch,
         currentBet: currentBet,
         matchedDeletedBet: matchedDeletedBet,
-        noOfRecords: state.noOfRecords,
-        index: state.index,
+        noOfRecords: 99999,
+        index: 0,
         fromDate: !currentBet
           ? state.fromDate?.toISOString().split("T")[0]
           : "",
@@ -129,7 +131,7 @@ const BestList = () => {
         oddsFrom: state.oddsFrom,
         oddsTo: state.oddsTo,
         stakeFrom: state.stakeFrom,
-        stakeTo: state.stakeTo
+        stakeTo: state.stakeTo,
       };
       const response = await getMyBetReport(payload);
       if (currentRequest === requestCounter.current) {
@@ -235,12 +237,14 @@ const BestList = () => {
             <h1>Bet List</h1>{" "}
             <span className="button-options d-inline-block">
               <div id="export_1764346502742" className="">
-                <CSVLink 
-                    data={betList} 
-                    filename={`bet-list-${new Date().toISOString().split('T')[0]}.csv`}
-                    className="btn btn-secondary m-l-5"
+                <CSVLink
+                  data={betList}
+                  filename={`bet-list-${
+                    new Date().toISOString().split("T")[0]
+                  }.csv`}
+                  className="btn btn-secondary m-l-5"
                 >
-                    Download CSV
+                  Download CSV
                 </CSVLink>
               </div>
             </span>
@@ -474,12 +478,13 @@ const BestList = () => {
                         <label htmlFor="input-small">
                           Show
                           <select
-                            className="form-control custom-select custom-select-sm"
-                            id="__BVID__61"
-                            value={noOfRecords}
-                            onChange={(e) =>
-                              setNoOfRecords(parseInt(e.target.value))
-                            }
+                            style={{ width: "60px" }}
+                            className="form-control"
+                            value={itemsPerPage}
+                            onChange={(e) => {
+                              setItemsPerPage(Number(e.target.value));
+                              setCurrentPage(1);
+                            }}
                           >
                             {entriesOptions.map((value) => (
                               <option key={value} value={value}>
@@ -503,7 +508,10 @@ const BestList = () => {
                               placeholder="Type to Search"
                               className="form-control form-control-sm"
                               value={tableSearch}
-                              onChange={(e) => setTableSearch(e.target.value)}
+                              onChange={(e) => {
+                                setTableSearch(e.target.value);
+                                setCurrentPage(1);
+                              }}
                             />
                           </label>
                         </div>
@@ -639,34 +647,49 @@ const BestList = () => {
                         </tr>
                       </thead>
                       <tbody role="rowgroup">
-                        {loading ? (
-                          <tr>
-                            <td colSpan={9} className="text-center">
-                              Loading...
-                            </td>
-                          </tr>
-                        ) : error ? (
-                          <tr>
-                            <td colSpan={9} className="text-center">
-                              {error}
-                            </td>
-                          </tr>
-                        ) : betList?.filter(
-                            (bet) =>
-                              !tableSearch ||
-                              JSON.stringify(bet)
-                                .toLowerCase()
-                                .includes(tableSearch.toLowerCase())
-                          ).length > 0 ? (
-                          betList
-                            ?.filter(
+                        {(() => {
+                          const filteredBets =
+                            betList?.filter(
                               (bet) =>
                                 !tableSearch ||
                                 JSON.stringify(bet)
                                   .toLowerCase()
                                   .includes(tableSearch.toLowerCase())
-                            )
-                            .map((bet, index) => (
+                            ) || [];
+
+                          const totalPages = Math.ceil(
+                            filteredBets.length / itemsPerPage
+                          );
+                          const indexOfLastItem = currentPage * itemsPerPage;
+                          const indexOfFirstItem =
+                            indexOfLastItem - itemsPerPage;
+                          const currentBets = filteredBets.slice(
+                            indexOfFirstItem,
+                            indexOfLastItem
+                          );
+
+                          if (loading) {
+                            return (
+                              <tr>
+                                <td colSpan={9} className="text-center">
+                                  Loading...
+                                </td>
+                              </tr>
+                            );
+                          }
+
+                          if (error) {
+                            return (
+                              <tr>
+                                <td colSpan={9} className="text-center">
+                                  {error}
+                                </td>
+                              </tr>
+                            );
+                          }
+
+                          if (currentBets.length > 0) {
+                            return currentBets.map((bet, index) => (
                               <tr key={index} role="row">
                                 <td
                                   aria-colindex="1"
@@ -780,18 +803,40 @@ const BestList = () => {
                                   <div>{bet.matched.toFixed(2)}</div>
                                 </td>
                               </tr>
-                            ))
-                        ) : (
-                          <tr>
-                            <td colSpan={9} className="text-center">
-                              No records found
-                            </td>
-                          </tr>
-                        )}
+                            ));
+                          } else {
+                            return (
+                              <tr>
+                                <td colSpan={9} className="text-center">
+                                  No records found
+                                </td>
+                              </tr>
+                            );
+                          }
+                        })()}
                       </tbody>
                     </table>
                   </div>
                 </div>{" "}
+              </div>
+            </div>
+            <div className="row">
+              <div className="my-1 p-m-l col">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(
+                    (
+                      betList?.filter(
+                        (bet) =>
+                          !tableSearch ||
+                          JSON.stringify(bet)
+                            .toLowerCase()
+                            .includes(tableSearch.toLowerCase())
+                      ) || []
+                    ).length / itemsPerPage
+                  )}
+                  onPageChange={setCurrentPage}
+                />
               </div>
             </div>
           </div>
