@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getUnsettledByMatchId } from "../api/auth";
+import { getIpAddressDetailLord } from "../api/user";
 import { getBetListByMarketId } from "../api/bet";
 import SearchUser from "./SearchUser";
 import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
@@ -109,9 +110,16 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
     setShowIpModal(true);
     setIpLoading(true);
     try {
-      const response = await fetch(`http://ip-api.com/json/${ip}`);
-      const data: IpDetails = await response.json();
-      setIpDetails(data);
+      const response = await getIpAddressDetailLord({ ipAddress: ip });
+      if (response?.data) {
+        setIpDetails(response.data);
+      } else {
+         setIpDetails({
+            status: "fail",
+            query: ip,
+            message: "No details found"
+         });
+      }
     } catch (error) {
       console.error("Error fetching IP details:", error);
       setIpDetails({

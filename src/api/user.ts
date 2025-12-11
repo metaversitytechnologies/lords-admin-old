@@ -24,3 +24,7 @@ export const getTransferStatementLord = (payload: { userId: string }) => {
 export const bankDepositWithdraw = (payload: BankDepositWithdrawPayload) => {
   return apiRequest("/dwc/bank-deposit-withdraw", "POST", payload);
 };
+
+export const getIpAddressDetailLord = (payload: { ipAddress: string }) => {
+  return apiRequest("/lord/get-ipaddress-detail-lord", "POST", payload);
+};

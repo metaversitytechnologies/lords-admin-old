@@ -52,18 +52,22 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
     []
   );
 
-  // Initial load only
-  useEffect(() => {
-    const initialId = childId || user?.userId;
-    if (initialId) {
-      fetchData(initialId, fromDate?.toISOString().split("T")[0], toDate?.toISOString().split("T")[0]);
-    }
-  }, [childId, user]);
+  // // Initial load only
+  // useEffect(() => {
+  //   const initialId = childId || user?.userId;
+  //   if (initialId) {
+  //     fetchData(initialId, fromDate?.toISOString().split("T")[0], toDate?.toISOString().split("T")[0]);
+  //   }
+  // }, [childId, user]);
 
   // Search button click
   const handleSearch = () => {
     const finalId = userId || childId || user?.userId;
-    fetchData(finalId, fromDate?.toISOString().split("T")[0], toDate?.toISOString().split("T")[0]);
+    fetchData(
+      finalId,
+      fromDate?.toISOString().split("T")[0],
+      toDate?.toISOString().split("T")[0]
+    );
   };
 
   return (

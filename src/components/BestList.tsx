@@ -3,7 +3,9 @@ import { getMyBetReport } from "../api/bet";
 import { useAuth } from "../context/AuthContext";
 import SearchUser from "./SearchUser";
 import ReusableDatePicker from "./DatePicker";
+
 import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
+import { getIpAddressDetailLord } from "../api/user";
 
 const eventOptions = [
   { value: "0", label: "All" },
@@ -194,13 +196,23 @@ const BestList = () => {
     setLoadingIpDetails(true);
 
     try {
-      const response = await fetch(`http://ip-api.com/json/${ip}`);
-      const data = await response.json();
-      setIpDetails(data);
+      const response = await getIpAddressDetailLord({ ipAddress: ip });
+      if (response?.data) {
+         setIpDetails(response.data);
+      } else {
+        // Handle cases where data might be missing or in a different format if needed, 
+        // effectively falling back to a "not found" state or displaying what's available.
+        setIpDetails({
+            status: "fail",
+            message: "No details found",
+            query: ip
+        });
+      }
+
     } catch (error) {
       setIpDetails({
         status: "fail",
-        message: "reserved range",
+        message: "Failed to fetch details",
         query: ip
       });
     } finally {
