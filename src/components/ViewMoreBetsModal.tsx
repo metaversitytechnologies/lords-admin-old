@@ -4,6 +4,7 @@ import { getIpAddressDetailLord } from "../api/user";
 import { getBetListByMarketId } from "../api/bet";
 import SearchUser from "./SearchUser";
 import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
+import { CSVLink } from "react-csv";
 
 interface ViewMoreBetsModalProps {
   matchId?: string;
@@ -164,7 +165,13 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
     <div className="modal-content account-modal">
       <div className="col-md-12 m-t-5 text-right p-l-0 p-r-15">
         <div className="d-inline-block m-l-5">
-          <span className="btn btn-secondary m-l-5">Download CSV</span>
+           <CSVLink 
+                data={bets} 
+                filename={`bets-${activeTab}-${new Date().toISOString().split('T')[0]}.csv`}
+                className="btn btn-secondary m-l-5"
+            >
+                Download CSV
+            </CSVLink>
         </div>
       </div>
       <div className="tabs">

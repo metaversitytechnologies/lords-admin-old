@@ -4,6 +4,7 @@ import SearchUser from "./SearchUser";
 import { getAccountStatement } from "../api/reports";
 import { useAuth } from "../context/AuthContext";
 import ReusableDatePicker from "./DatePicker";
+import { CSVLink } from "react-csv";
 
 interface Statement {
   date: string;
@@ -99,7 +100,13 @@ const AccountStatement: React.FC = () => {
           <div className="header">
             <h1>Account Statement</h1>
             <div className="button-options d-inline-block">
-              <span className="btn btn-secondary m-l-5">Download CSV</span>
+              <CSVLink
+                data={statementData}
+                filename="account-statement.csv"
+                className="btn btn-secondary m-l-5"
+              >
+                Download CSV
+              </CSVLink>
             </div>
           </div>
 

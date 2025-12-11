@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getTransferStatementLord } from "../api/user";
+import { CSVLink } from "react-csv";
 
 interface IStatementRecord {
   time: string;
@@ -52,7 +53,13 @@ const TransferStatement = ({ childId }) => {
         <h1>Transfer Statement</h1>
         <div className="button-options">
           <div id="export_1762852017985">
-            <span className="btn btn-secondary m-l-5">Download CSV</span>
+            <CSVLink
+              data={statementData}
+              filename="transfer-statement.csv"
+              className="btn btn-secondary m-l-5"
+            >
+              Download CSV
+            </CSVLink>
           </div>
         </div>
       </div>

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { getBettingPnlDetail } from "../api/auth";
+import { CSVLink } from "react-csv";
 
 const MarketPnlBreakdown = ({ market, onBack, userId, fromDate, toDate }) => {
-  const [bets, setBets] = useState([]);
+  const [bets, setBets] = useState<any[]>([]);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -53,8 +54,14 @@ const MarketPnlBreakdown = ({ market, onBack, userId, fromDate, toDate }) => {
             <span>{market.marketName}</span>
           </li>
           <li className="d-inline-block float-right">
-            <div id="export_1764091084670" className="disabled">
-              <span className="btn btn-secondary m-l-5">Download CSV</span>
+            <div id="export_1764091084670" className="">
+              <CSVLink
+                data={bets}
+                filename={`market-pnl-${market.marketName}.csv`}
+                className="btn btn-secondary m-l-5"
+              >
+                Download CSV
+              </CSVLink>
             </div>
           </li>
         </ul>

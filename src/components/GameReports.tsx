@@ -4,6 +4,7 @@ import ViewMoreBetsModal from "./ViewMoreBetsModal";
 import SearchUser from "./SearchUser";
 import { getGameReportLord } from "../api/reports";
 import ReusableDatePicker from "./DatePicker";
+import { CSVLink } from "react-csv";
 
 interface Report {
   date: string;
@@ -164,7 +165,13 @@ const GameReports = () => {
               {loading ? "Loading..." : "Load"}
             </button>
             <div className="d-inline-block m-l-5">
-              <span className="btn btn-secondary m-l-5">Download CSV</span>
+              <CSVLink
+                data={reportData}
+                filename="game-report.csv"
+                className="btn btn-secondary m-l-5"
+              >
+                Download CSV
+              </CSVLink>
             </div>
           </div>
         </form>

@@ -4,6 +4,7 @@ import UpdateUser from "./UpdateUser";
 import { getChildListLord } from "../api/auth";
 import SearchUser from "./SearchUser";
 import { useAuth } from "../context/AuthContext";
+import { CSVLink } from "react-csv";
 
 const AgentListing: React.FC = () => {
   const { userid } = useParams<{ userid: string }>();
@@ -82,7 +83,13 @@ const AgentListing: React.FC = () => {
         </div>
         <div className="button-options">
           <div id="export_1763382226360" className="">
-            <span className="btn btn-secondary m-l-5">Download CSV</span>
+            <CSVLink
+              data={agents}
+              filename="agent-listing.csv"
+              className="btn btn-secondary m-l-5"
+            >
+              Download CSV
+            </CSVLink>
           </div>
         </div>
       </div>

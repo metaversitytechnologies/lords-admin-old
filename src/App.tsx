@@ -19,9 +19,7 @@ import FlashMessage from "./components/FlashMessage";
 function App() {
   const { logout, flash, setFlash } = useAuth();
   const location = useLocation();
-  const showFooter =
-    !location.pathname.startsWith("/change-password-success") &&
-    location.pathname !== "/login";
+  const showFooter = !location.pathname.startsWith("/change-password-success");
   useEffect(() => {
     const handleLogout = (event: Event) => {
       const customEvent = event as CustomEvent;

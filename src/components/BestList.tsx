@@ -6,6 +6,7 @@ import ReusableDatePicker from "./DatePicker";
 
 import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
 import { getIpAddressDetailLord } from "../api/user";
+import { CSVLink } from "react-csv";
 
 const eventOptions = [
   { value: "0", label: "All" },
@@ -234,7 +235,13 @@ const BestList = () => {
             <h1>Bet List</h1>{" "}
             <span className="button-options d-inline-block">
               <div id="export_1764346502742" className="">
-                <span className="btn btn-secondary m-l-5">Download CSV</span>
+                <CSVLink 
+                    data={betList} 
+                    filename={`bet-list-${new Date().toISOString().split('T')[0]}.csv`}
+                    className="btn btn-secondary m-l-5"
+                >
+                    Download CSV
+                </CSVLink>
               </div>
             </span>
           </div>{" "}
