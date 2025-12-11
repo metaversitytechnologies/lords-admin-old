@@ -74,7 +74,7 @@ const MarketLayout = () => {
 
   return (
     <div>
-      <div className="listing-grid w-100 float-left ">
+      <div className="w-100 float-left ">
         <div>
           <div className="market-container">
             <div className="left-market">

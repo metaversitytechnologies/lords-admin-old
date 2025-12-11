@@ -4,11 +4,11 @@ const Footer: React.FC = () => {
   return (
     <footer className="footer text-center p-t-10 p-b-10">
       <p className="m-b-0 upper-footer">
-        <a href="/responsiblegambling" className="theme1font">
+        <a className="footer-link" href="/responsiblegambling">
           Responsible Gambling
         </a>{" "}
         |{" "}
-        <a href="#" className="theme1font" role="button">
+        <a href="#" className="footer-link" role="button">
           <b>Prohibited Territories</b>
         </a>{" "}
         |{" "}
@@ -61,7 +61,9 @@ const Footer: React.FC = () => {
       </p>
 
       <p className="m-b-0 lower-footer bottom-footer">
-        <a href="javascript:void(0)">Rules &amp; Regulations</a>{" "}
+        <a className="footer-link" href="javascript:void(0)">
+          Rules &amp; Regulations
+        </a>{" "}
         <span>© 2016-2020</span> Powered By
       </p>
     </footer>

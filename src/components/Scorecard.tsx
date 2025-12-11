@@ -40,7 +40,9 @@ const Scorecard: React.FC<ScoreboardProps> = ({ scoreboard = {} }) => {
               />
             </span>
             <div className="float-right">
-              <h6 className="m-b-0">{sb.teamA.short}</h6>
+              <h6 className="m-b-0">
+                <span className="text-white">{sb.teamA.short}</span>
+              </h6>
               <div className="score">
                 <p className="m-b-0">
                   <span>{sb.teamA.score}</span>
@@ -83,7 +85,7 @@ const Scorecard: React.FC<ScoreboardProps> = ({ scoreboard = {} }) => {
         <div className="scorecard-right active-innings">
           <div className="team-block">
             <div className="float-left">
-              <h6 className="m-b-0">{sb.teamB.short}</h6>
+              <h6 className="m-b-0 text-white">{sb.teamB.short}</h6>
               <div className="score">
                 <p className="m-b-0">
                   <span>{sb.teamB.score}</span>

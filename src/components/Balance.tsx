@@ -104,7 +104,7 @@ const Balance: React.FC = () => {
           className="btn btn-secondary btn-sm"
           onClick={handleRefresh}
           disabled={loading}
-          style={{ borderRadius: "20px" }}
+          style={{ borderRadius: "5px" }}
         >
           {loading ? "..." : <i className="fas fa-sync-alt"></i>}
         </button>
