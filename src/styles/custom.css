@@ -953,6 +953,11 @@ ul.breadcrumb li {
   display: inline-block;
   width: auto;
 }
+
+.activity-title {
+    color: white !important;
+    background-color: var(--primary-color) !important;
+}
 .dropdown-item {
   padding: 4px 10px;
 }
@@ -1073,13 +1078,12 @@ ul.breadcrumb li {
 }
 .breadcrumb-item + .breadcrumb-item::before {
   content: ">";
-  color: #fff;
 }
 .breadcrumb li a {
-  color: #1bddd4;
+  color: var(--accent-color);
 }
 .breadcrumb-item.active {
-  color: #fff;
+  color: var(--primary-color);
 }
 
 .card32eu-container .suspended::after {
@@ -1236,4 +1240,17 @@ footer .bottom-footer {
 
 .status-list {
   color: #fff;
+}
+
+/* IpDetailsModal specific overrides */
+.ip-details-modal-content {
+  color: #fff !important;
+}
+.ip-details-modal-content .table {
+  color: #fff !important;
+}
+.ip-details-modal-content .table td,
+.ip-details-modal-content .table th {
+  color: #fff !important;
+  background-color: transparent !important; /* Ensure background doesn't interfere */
 }

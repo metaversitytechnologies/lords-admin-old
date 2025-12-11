@@ -185,7 +185,7 @@ const BetTicker = () => {
   };
 
   return (
-    <section className="apl-section">
+    <section>
       <div>
         <div>
           <div className="header">

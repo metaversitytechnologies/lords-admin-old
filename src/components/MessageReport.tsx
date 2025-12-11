@@ -6,7 +6,7 @@ const MessageReport: React.FC = () => {
   const [toDate, setToDate] = useState<Date | null>(new Date());
   return (
     <>
-      <div className="listing-grid w-100 float-left m-t-0">
+      <div className="w-100 float-left m-t-0">
         <form className="m-b-10">
           <div className="header">
             <h1>Message Report</h1>
@@ -35,7 +35,7 @@ const MessageReport: React.FC = () => {
                 <div className="p-l-m col">
                   <label htmlFor="input-small">
                     Show
-                    <select className="form-control custom-select custom-select-sm">
+                    <select style={{ width: "60px" }} className="form-control">
                       <option value="10">10</option>
                       <option value="20">20</option>
                       <option value="50">50</option>

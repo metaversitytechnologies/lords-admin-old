@@ -26,8 +26,7 @@ const ChangePasswordSuccess: React.FC = () => {
           </span>
         </h1>
         <h1>
-          Your transaction password is{" "}
-          <span className="text-info token-box">{id}</span>.
+          Your transaction password is <span className="token-box">{id}</span>.
         </h1>
         <h2>
           Please remember this transaction password, from now on all transcation
@@ -42,8 +41,7 @@ const ChangePasswordSuccess: React.FC = () => {
             </span>
           </h1>
           <h1>
-            आपका लेनदेन पासवर्ड{" "}
-            <span className="text-info token-box">{id}</span> है।
+            आपका लेनदेन पासवर्ड <span className="token-box">{id}</span> है।
           </h1>
           <h2>
             कृपया इस लेन-देन के पासवर्ड को याद रखें, अब से वेबसाइट के सभी

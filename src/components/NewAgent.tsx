@@ -140,7 +140,7 @@ const NewAgent: React.FC = () => {
   };
 
   return (
-    <div className="apl-section">
+    <div className="apl-section new-agent">
       {(error || success) && (
         <FlashMessage
           message={error || success}

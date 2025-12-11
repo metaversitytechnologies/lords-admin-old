@@ -227,13 +227,11 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
               <div className="row">
                 <div className="form-group m-t-5 m-b-5 col-md-2 p-r-5">
                   <label className="p-l-5">Search by user</label>
-                  <div className="search-box-container">
-                    <SearchUser
-                      value={filterUname}
-                      onChange={setFilterUname}
-                      placeholder="Enter Atleast 3 character"
-                    />
-                  </div>
+                  <SearchUser
+                    value={filterUname}
+                    onChange={setFilterUname}
+                    placeholder="Enter Atleast 3 character"
+                  />
                 </div>
                 <div className="form-group m-t-5 m-b-5 col-md-2 p-l-0 p-r-5">
                   <label className="p-l-5">IP Address</label>
@@ -248,23 +246,25 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                 </div>
                 <div className="form-group m-t-5 m-b-5 col-md-4 ip-address p-l-0 p-r-5">
                   <label className="p-l-5 d-block">Amount</label>
-                  <input
-                    type="text"
-                    name="fromamt"
-                    placeholder="From Amount"
-                    className="form-control d-inline-block"
-                    value={filterFromAmt}
-                    onChange={(e) => setFilterFromAmt(e.target.value)}
-                  />
-                  <span>-</span>
-                  <input
-                    type="text"
-                    name="toamt"
-                    placeholder="To Amount"
-                    className="form-control d-inline-block"
-                    value={filterToAmt}
-                    onChange={(e) => setFilterToAmt(e.target.value)}
-                  />
+                  <div className=" d-flex ">
+                    <input
+                      type="text"
+                      name="fromamt"
+                      placeholder="From Amount"
+                      className="form-control d-inline-block"
+                      value={filterFromAmt}
+                      onChange={(e) => setFilterFromAmt(e.target.value)}
+                    />
+                    <span>-</span>
+                    <input
+                      type="text"
+                      name="toamt"
+                      placeholder="To Amount"
+                      className="form-control d-inline-block"
+                      value={filterToAmt}
+                      onChange={(e) => setFilterToAmt(e.target.value)}
+                    />
+                  </div>
                 </div>
                 <div className="form-group m-t-5 m-b-5 col-md-2 type p-l-0 p-r-5">
                   <label className="p-l-5">Type</label>

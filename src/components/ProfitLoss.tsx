@@ -88,7 +88,7 @@ const ProfitLoss: React.FC = () => {
   };
 
   return (
-    <section className="apl-section">
+    <section>
       <div>
         <div className="header">
           <h1>P&L Report by Market</h1>
@@ -195,6 +195,7 @@ const ProfitLoss: React.FC = () => {
                                 <span>{market.marketName} |</span>
                                 <a
                                   href="#"
+                                  className="m-l-5"
                                   onClick={(e) => {
                                     e.preventDefault();
                                     handleViewBets(market);

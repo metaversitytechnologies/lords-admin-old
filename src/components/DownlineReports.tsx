@@ -88,7 +88,7 @@ const DownlineReports = () => {
       <div className="activity-report">
         <div className="main-panel">
           <div className="left-panel">
-            <table className="table m-t-30">
+            <table className="table m-t-30 activity-table">
               <tbody>
                 <tr>
                   <td className="text-right">Win</td>
@@ -213,93 +213,84 @@ const DownlineReports = () => {
 
   return (
     <section>
-      <div data-v-5197193a="">
-        <section className="apl-section">
-          <div className="downline-reports">
-            <div className="m-b-10 detail-header">
-              <ul>
-                <li>
-                  <span className="text-white">
-                    <Link to="/agentlisting" className="">
-                      <i className="text-info">Downline Listing </i>
-                    </Link>{" "}
-                    &gt; {id}
-                  </span>
-                </li>
+      <div className="downline-reports">
+        <div className="m-b-10 detail-header">
+          <ul>
+            <li>
+              <span className="text-muted">
+                <Link to="/agentlisting" className="">
+                  <a>Downline Listing </a>
+                </Link>{" "}
+                &gt; {id}
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <div className="m-t-10 tabs">
+          <div className="tabs" id="__BVID__332">
+            <div className="">
+              <ul
+                role="tablist"
+                className="nav nav-tabs"
+                id="__BVID__32__BV_tab_controls_"
+              >
+                {tabs.map((tab, index) => (
+                  <li key={tab.id} role="presentation" className="nav-item">
+                    <a
+                      role="tab"
+                      aria-selected={activeTab === tab.id}
+                      aria-setsize={tabs.length}
+                      aria-posinset={index + 1}
+                      href="#"
+                      target="_self"
+                      className={`nav-link ${
+                        activeTab === tab.id ? "active" : ""
+                      }`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveTab(tab.id);
+                      }}
+                    >
+                      {tab.label}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
 
-            <div className="m-t-10 tabs">
-              <div className="tabs" id="__BVID__332">
-                <div className="">
-                  <ul
-                    role="tablist"
-                    className="nav nav-tabs"
-                    id="__BVID__32__BV_tab_controls_"
-                  >
-                    {tabs.map((tab, index) => (
-                      <li key={tab.id} role="presentation" className="nav-item">
-                        <a
-                          role="tab"
-                          aria-selected={activeTab === tab.id}
-                          aria-setsize={tabs.length}
-                          aria-posinset={index + 1}
-                          href="#"
-                          target="_self"
-                          className={`nav-link ${
-                            activeTab === tab.id ? "active" : ""
-                          }`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setActiveTab(tab.id);
-                          }}
-                        >
-                          {tab.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div
-                  className="tab-content"
-                  id="__BVID__332__BV_tab_container_"
-                >
-                  {/* Activity Tab */}
-                  <div
-                    role="tabpanel"
-                    aria-hidden={activeTab !== "activity"}
-                    className={`tab-pane ${
-                      activeTab === "activity" ? "active" : ""
-                    }`}
-                    style={{
-                      display: activeTab === "activity" ? "block" : "none"
-                    }}
-                  >
-                    {renderActivityTab()}
-                  </div>
-
-                  {/* Other Tabs */}
-                  {tabs.slice(1).map((tab) => (
-                    <div
-                      key={tab.id}
-                      role="tabpanel"
-                      aria-hidden={activeTab !== tab.id}
-                      className={`tab-pane ${
-                        activeTab === tab.id ? "active" : ""
-                      }`}
-                      style={{
-                        display: activeTab === tab.id ? "block" : "none"
-                      }}
-                    >
-                      {activeTab === tab.id && tab.component}
-                    </div>
-                  ))}
-                </div>
+            <div className="tab-content" id="__BVID__332__BV_tab_container_">
+              {/* Activity Tab */}
+              <div
+                role="tabpanel"
+                aria-hidden={activeTab !== "activity"}
+                className={`tab-pane ${
+                  activeTab === "activity" ? "active" : ""
+                }`}
+                style={{
+                  display: activeTab === "activity" ? "block" : "none"
+                }}
+              >
+                {renderActivityTab()}
               </div>
+
+              {/* Other Tabs */}
+              {tabs.slice(1).map((tab) => (
+                <div
+                  key={tab.id}
+                  role="tabpanel"
+                  aria-hidden={activeTab !== tab.id}
+                  className={`tab-pane ${activeTab === tab.id ? "active" : ""}`}
+                  style={{
+                    display: activeTab === tab.id ? "block" : "none"
+                  }}
+                >
+                  {activeTab === tab.id && tab.component}
+                </div>
+              ))}
             </div>
           </div>
-        </section>
+        </div>
       </div>
     </section>
   );

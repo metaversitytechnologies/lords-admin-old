@@ -176,7 +176,7 @@ const GameReports = () => {
                 <div className="p-l-m col">
                   <label htmlFor="input-small">
                     Show
-                    <select className="form-control custom-select custom-select-sm">
+                    <select style={{ width: "60px" }} className="form-control">
                       <option value="10">10</option>
                       <option value="20">20</option>
                       <option value="50">50</option>

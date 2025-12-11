@@ -115,7 +115,7 @@ const UpdatePwUserForm: React.FC<UpdatePwUserFormProps> = ({
             </h5>
           </div>
         </div>
-        <div className="listing-grid p-0 col-md-12 m-b-10">
+        <div className="p-0 col-md-12 m-b-10">
           <div className="form-group col-md-3 p-0 v-t m-b-30">
             <label>Full Name</label>
             <input
@@ -131,7 +131,7 @@ const UpdatePwUserForm: React.FC<UpdatePwUserFormProps> = ({
             <div className="row">
               <div className="col-md-12 p-l-0 m-b-10">
                 <div className="game-title">
-                  <h5 className="d-inline-block m-b-0">Privileges</h5>
+                  <label className="d-inline-block m-b-0">Privileges</label>
                 </div>
                 <input
                   type="hidden"
@@ -183,8 +183,8 @@ const UpdatePwUserForm: React.FC<UpdatePwUserFormProps> = ({
         <div className="col-md-12">
           <div className="text-right">
             <div className="text-right">
-              <div className="d-inline-block p-l-0 p-r-5 m-b-30">
-                <label className="d-inline-block">Master Password</label>
+              <div className="d-inline-flex align-items-center p-l-0 p-r-5 m-b-30">
+                <label className="col-5 m-t-10">Master Password</label>
                 <input
                   placeholder="Master Password"
                   type="password"
@@ -199,13 +199,13 @@ const UpdatePwUserForm: React.FC<UpdatePwUserFormProps> = ({
                       message: "Master Password must be 6 characters long"
                     }
                   })}
-                  className="form-control input-master-password"
+                  className="form-control input-master-password m-l-5 m-t-5"
                 />
                 {errors.masterPassword && (
                   <p className="text-danger">{errors.masterPassword.message}</p>
                 )}
               </div>
-              <button type="submit" className="btn btn-secondary btn-bs v-t">
+              <button type="submit" className="btn btn-secondary m-l-5">
                 Submit
               </button>
             </div>

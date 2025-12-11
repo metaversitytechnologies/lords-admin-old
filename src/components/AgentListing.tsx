@@ -56,8 +56,13 @@ const AgentListing: React.FC = () => {
     setSelectedAgent(null);
   };
 
+  const totalCreditLimit = agents.reduce((acc, agent) => {
+    const limit = parseFloat(agent.creditLimit) || 0;
+    return acc + limit;
+  }, 0);
+
   return (
-    <section className="apl-section">
+    <section>
       <div className="header">
         <h1>Agent Listing</h1>
         <div className="d-inline-block m-t-10">
@@ -110,7 +115,7 @@ const AgentListing: React.FC = () => {
               <th className="text-right">
                 Credit Limit
                 <br />
-                3950.00
+                {totalCreditLimit.toFixed(2)}
               </th>
               <th className="text-right">Available Credit</th>
               <th
@@ -172,7 +177,7 @@ const AgentListing: React.FC = () => {
                     <span>
                       {agent.accountType?.toLowerCase() === "user" ? (
                         <span
-                          className="text text-info"
+                          className="text"
                           style={{ opacity: 0.5, cursor: "not-allowed" }}
                         >
                           <i className="fas fa-sitemap"></i>
@@ -180,7 +185,7 @@ const AgentListing: React.FC = () => {
                       ) : (
                         <Link
                           to={`/agentlisting/${agent.userId}`}
-                          className="text text-info"
+                          className="text"
                           data-placement="top"
                           style={{ pointerEvents: "visible" }}
                         >
@@ -212,7 +217,7 @@ const AgentListing: React.FC = () => {
                   <td className="text-center">
                     <Link
                       to={`/downlinereports/${agent.userId}`}
-                      className="text text-info"
+                      className="text"
                       data-placement="top"
                       style={{ pointerEvents: "visible" }}
                     >

@@ -17,9 +17,10 @@ body {
     line-height: 20px;
 }
 
+
 a {
     text-decoration: none;
-    color: #fff;
+    color: var(--accent-color);
 }
 
 a:hover {
@@ -391,12 +392,14 @@ h1 {
 }
 
 .btn-link {
-    color: #18c432;
+    color: #ffffff;
     border: none;
 }
 
 .btn-update {
     border-radius: 0;
+    background-color: var(--accent-color) !important;
+    color: #ffffff;
 }
 
 .btn-cancel {
@@ -842,11 +845,9 @@ footer {
     vertical-align: bottom;
 }
 
-.table thead tr th,
-.table tbody tr td,
-.table tbody tr th {
+.table thead tr th {
     color: white;
-    border-bottom: 1px solid #dddddd;
+    border: 0;
     background-color: var(--primary-color);
 }
 
@@ -858,15 +859,14 @@ footer {
     color: var(--accent-color);
 }
 
-.table-striped tbody tr:nth-of-type(2n + 1) {
-    background: rgba(245, 245, 245, 0.1) !important;
-}
+
 
 .table-balance>tbody>tr>th {
     text-align: left;
     vertical-align: middle;
     padding: 4px 10px;
     color: #fff;
+    background-color: var(--primary-color) !important;
     border: 0;
     line-height: 20px;
 }
@@ -875,6 +875,7 @@ footer {
     padding: 0 6px;
     vertical-align: middle;
     color: #fff;
+    background-color: var(--primary-color) !important;
     border: 0;
 }
 
@@ -1017,6 +1018,7 @@ footer {
     padding: 0;
     font-size: 18px;
     line-height: 30px;
+    color: #fff;
 }
 
 .apl-section-inner legend::after {
@@ -1030,6 +1032,7 @@ footer {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: #fff;
 }
 
 .apl-section-inner .character input {
@@ -1072,7 +1075,7 @@ footer {
 }
 
 .custom-radio .custom-control-input:checked~.custom-control-label::after {
-    background: #42ea5e;
+    background: var(--accent-color);
     border-radius: 50%;
     width: 8px;
     height: 8px;
@@ -1099,16 +1102,24 @@ footer {
 
 .tabs .tab-content {
     padding: 10px;
-    background: rgba(0, 0, 0, 0.4);
     float: left;
     width: 100%;
 }
+
+
 
 .nav-tabs {
     border: 0;
     float: left;
     width: 100%;
 }
+
+.activity-table tbody tr td span,
+.activity-table tbody tr td  {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
 
 /* .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active {
@@ -1119,7 +1130,7 @@ footer {
     padding: 10px 20px;
     color: #eee;
     border: 0;
-    background-color: #c44e6c;
+    background-color: var(--primary-color);
     border-radius: 0;
 }
 
@@ -1134,12 +1145,12 @@ footer {
 }
 
 .activity-report .main-panel .left-panel {
-    width: 70px;
+    background-color: var(--primary-color);
 }
 
 .activity-report .main-panel .mid-panel {
     width: 100%;
-    margin-left: 10px;
+    margin-left: 2px;
 }
 
 .table td,
@@ -1403,11 +1414,11 @@ footer {
 }
 
 .cell-market-workstation {
-    background: #333d79ff;
+    background: var(--primary-color);
 }
 
 .net-exposure .icon-group-cell {
-    background: #333d79ff;
+    background: var(--primary-color);
     padding: 0;
     vertical-align: middle;
 }
@@ -2732,10 +2743,15 @@ span.order-time {
     list-style-type: lower-roman;
 }
 
+.token-box {
+    color: var(--accent-color);
+}
+
 .notification textarea {
     width: 100%;
     min-height: 100px;
     border: 3px solid #ddd;
+    background-color: #eee;
 }
 
 .board-result-inner {
@@ -2782,7 +2798,6 @@ span.order-time {
     content: "\f00c";
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
-    color: #fff;
     font-size: 12px;
     left: -18px;
     top: 5px;
@@ -2813,6 +2828,7 @@ span.order-time {
 
 .apl-form-row {
     position: relative;
+    color: #fff;
 }
 
 .error-account {
@@ -2908,6 +2924,7 @@ span.order-time {
 .search-box-container input {
     height: 32px;
     padding: 0 10px;
+    width: 190px;
 }
 
 .dataTables_filter {
@@ -2930,7 +2947,8 @@ span.order-time {
 }
 
 .fancy-tile {
-    background: linear-gradient(to bottom, #333d79ff 84%, rgba(51, 61, 121, 0.56) 100%);
+    background: var(--header-bg);
+    color: white;
 }
 
 ::-webkit-input-placeholder {
@@ -5381,7 +5399,7 @@ img.lrotate {
     font-size: 56px;
     line-height: 1;
     color: #fff;
-    background: #333d79ff;
+    background: var(--primary-color);
     padding: 10px;
     border-radius: 8px;
     display: inline-block;
@@ -5815,5 +5833,7 @@ img.lrotate {
 
     .game-title {
         margin-bottom: 15px;
-    }    
+    }   
+    
+ 
 }

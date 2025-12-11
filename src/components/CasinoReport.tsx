@@ -45,7 +45,7 @@ export default function CasinoReport() {
         <h1>Casino Result Report</h1>
       </div>
 
-      <div className="listing-grid w-100 float-left m-t-0">
+      <div className=" w-100 float-left m-t-0">
         <div className="m-b-10">
           <div className="col-md-2 v-t p-l-0 p-r-5 form-group d-inline-block">
             <label>From</label>
@@ -110,7 +110,7 @@ export default function CasinoReport() {
                 <div className="p-l-m col">
                   <label>
                     Show
-                    <select className="form-control custom-select custom-select-sm">
+                    <select style={{ width: "60px" }} className="form-control">
                       <option value="10">10</option>
                       <option value="20">20</option>
                       <option value="50">50</option>

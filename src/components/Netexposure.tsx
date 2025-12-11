@@ -72,7 +72,7 @@ const NetExposure = ({ userId, isActive }) => {
           <div className="float-right">
             <span className="counter">{counter}</span>
             <button
-              className="btn btn-secondary m-l-10"
+              className="btn btn-secondary m-l-10 m-b-5"
               onClick={() => {
                 fetchData();
                 setCounter(8);
@@ -166,11 +166,10 @@ const NetExposure = ({ userId, isActive }) => {
                                   to={`/gamedetailnew/${item.matchId}`}
                                   className="game-status"
                                 >
-                                  <img
-                                    src="https://d3kb8xz339pq18.cloudfront.net/v12/static/backend/images/icons/exposure.png"
-                                    className="icon"
-                                    alt="exposure icon"
-                                  />
+                                  <i
+                                    style={{ fontSize: 15, marginRight: 20 }}
+                                    className="fas fa-tachometer-alt "
+                                  ></i>
                                 </Link>
                               </li>
                             </ul>
@@ -236,11 +235,13 @@ const NetExposure = ({ userId, isActive }) => {
                                       to={`/gamedetailnew/${item.matchId}`}
                                       className="game-status"
                                     >
-                                      <img
-                                        src="https://d3kb8xz339pq18.cloudfront.net/v12/static/backend/images/icons/exposure.png"
-                                        className="icon"
-                                        alt="exposure icon"
-                                      />
+                                      <i
+                                        style={{
+                                          fontSize: 15,
+                                          marginRight: 20
+                                        }}
+                                        className="fas fa-tachometer-alt "
+                                      ></i>
                                     </Link>
                                   </li>
                                 </ul>

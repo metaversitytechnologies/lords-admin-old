@@ -36,7 +36,9 @@ const BalanceInfo = ({ childId }) => {
     <div className={`${childId ? "" : "balance"}`}>
       {!childId && (
         <div className="header">
-          <h1>Balance Information</h1>
+          <h1>
+            <span>Balance Information</span>
+          </h1>
         </div>
       )}
 

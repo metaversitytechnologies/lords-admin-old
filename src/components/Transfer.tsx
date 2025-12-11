@@ -156,8 +156,8 @@ const Transfer = () => {
   };
 
   return (
-    <div className="apl-section">
-      <div className="listing-grid w-100 float-left bank">
+    <div>
+      <div className="w-100 float-left bank">
         <div className="m-t-10">
           <div className="header">
             <h1>Transfer</h1>

@@ -39,58 +39,60 @@ const IpDetailsModal: React.FC<IpDetailsModalProps> = ({
       handleClose={handleClose}
       title="IP Details"
     >
-      {loading ? (
-        <p>Loading IP details...</p>
-      ) : ipDetails ? (
-        ipDetails.status === "fail" ? (
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Details</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>status</td>
-                <td>{ipDetails.status}</td>
-              </tr>
-              {ipDetails.message && (
+      <div className="ip-details-modal-content">
+        {loading ? (
+          <p>Loading IP details...</p>
+        ) : ipDetails ? (
+          ipDetails.status === "fail" ? (
+            <table className="table table-bordered">
+              <thead>
                 <tr>
-                  <td>message</td>
-                  <td>{ipDetails.message}</td>
+                  <th>Title</th>
+                  <th>Details</th>
                 </tr>
-              )}
-              <tr>
-                <td>query</td>
-                <td>{ipDetails.query}</td>
-              </tr>
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>status</td>
+                  <td>{ipDetails.status}</td>
+                </tr>
+                {ipDetails.message && (
+                  <tr>
+                    <td>message</td>
+                    <td>{ipDetails.message}</td>
+                  </tr>
+                )}
+                <tr>
+                  <td>query</td>
+                  <td>{ipDetails.query}</td>
+                </tr>
+              </tbody>
+            </table>
+          ) : (
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(ipDetails).map(
+                  ([key, value]) =>
+                    value && (
+                      <tr key={key}>
+                        <td>{key}</td>
+                        <td>{value}</td>
+                      </tr>
+                    )
+                )}
+              </tbody>
+            </table>
+          )
         ) : (
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Details</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(ipDetails).map(
-                ([key, value]) =>
-                  value && (
-                    <tr key={key}>
-                      <td>{key}</td>
-                      <td>{value}</td>
-                    </tr>
-                  )
-              )}
-            </tbody>
-          </table>
-        )
-      ) : (
-        <p>No IP details to display.</p>
-      )}
+          <p>No IP details to display.</p>
+        )}
+      </div>
     </ReusableModal>
   );
 };

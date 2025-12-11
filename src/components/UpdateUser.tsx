@@ -458,7 +458,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
                         </button>
                         <button
                           type="submit"
-                          className="btn btn-update scroll-top"
+                          className="btn btn-primary scroll-top"
                         >
                           Save
                         </button>

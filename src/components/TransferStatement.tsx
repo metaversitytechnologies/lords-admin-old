@@ -47,7 +47,7 @@ const TransferStatement = ({ childId }) => {
   };
 
   return (
-    <div className="apl-section">
+    <div>
       <div className="header d-flex justify-content-between align-items-center">
         <h1>Transfer Statement</h1>
         <div className="button-options">

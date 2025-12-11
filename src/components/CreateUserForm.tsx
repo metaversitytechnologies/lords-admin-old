@@ -277,7 +277,7 @@ const CreateUserForm: React.FC = () => {
                   </div>
                   <div>
                     <div className="listing-grid prev-user-chk m-b-5 checkbox-container-wd">
-                      {privileges.map((privilege) => (
+                      {privileges?.map((privilege) => (
                         <div
                           key={privilege.id}
                           className="[ form-group ] checkbox-account d-inline-block m-l-5"
@@ -306,9 +306,10 @@ const CreateUserForm: React.FC = () => {
             <div>
               <div className="text-right">
                 <div className="text-right">
-                  <div className="d-inline-block p-l-0 p-r-5 m-b-30">
-                    <label className="d-inline-block">Master Password</label>
+                  <div className="d-inline-flex align-items-center p-l-0 p-r-5">
+                    <label className="m-t-10">Master Password</label>
                     <input
+                      style={{ width: "200px" }}
                       placeholder="Master Password"
                       type="password"
                       {...register("masterPassword", {
@@ -322,7 +323,7 @@ const CreateUserForm: React.FC = () => {
                           message: "Master Password must be 6 characters"
                         }
                       })}
-                      className="form-control input-master-password"
+                      className="form-control input-master-password m-l-5 m-t-5"
                       aria-required="true"
                       aria-invalid={errors.masterPassword ? "true" : "false"}
                     />
@@ -331,13 +332,13 @@ const CreateUserForm: React.FC = () => {
                         {errors.masterPassword.message as string}
                       </p>
                     )}
+                    <button
+                      type="submit"
+                      className="btn btn-primary m-l-5 m-t-5"
+                    >
+                      Submit
+                    </button>
                   </div>
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-bs v-t p-l-0 p-r-5"
-                  >
-                    Submit
-                  </button>
                 </div>
               </div>
             </div>
@@ -669,7 +670,7 @@ const CreateUserForm: React.FC = () => {
                         </tr>
                       </thead>
                       <tbody role="rowgroup">
-                        {users.map((user, index) => (
+                        {users?.map((user, index) => (
                           <tr key={index} role="row">
                             <td
                               aria-colindex="1"
@@ -718,7 +719,7 @@ const CreateUserForm: React.FC = () => {
                             >
                               <div>{user.fullName}</div>
                             </td>
-                            {privileges.map((privilege, i) => (
+                            {privileges?.map((privilege, i) => (
                               <td
                                 key={privilege.id}
                                 aria-colindex={i + 4}

@@ -93,7 +93,7 @@ const AccountStatement: React.FC = () => {
   };
 
   return (
-    <section className="apl-section">
+    <section>
       <div className="tabs">
         <div>
           <div className="header">
@@ -138,18 +138,12 @@ const AccountStatement: React.FC = () => {
             {/* Date Inputs */}
             <div className="datepicker-wrapper d-inline-block col-md-2 form-group p-l-0 p-r-5">
               <label className="p-l-5">From</label>
-              <ReusableDatePicker
-                selected={fromDate}
-                onChange={setFromDate}
-              />
+              <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
             </div>
 
             <div className="datepicker-wrapper d-inline-block col-md-2 form-group p-l-0 p-r-5">
               <label className="p-l-5">To</label>
-              <ReusableDatePicker
-                selected={toDate}
-                onChange={setToDate}
-              />
+              <ReusableDatePicker selected={toDate} onChange={setToDate} />
             </div>
 
             <div className="d-inline-block p-l-0 p-r-5">

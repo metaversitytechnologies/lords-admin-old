@@ -199,7 +199,6 @@ const DownlineBetList = ({ userId }) => {
                                 <label htmlFor="entries-select">
                                   Show{" "}
                                   <select
-                                    className="form-control custom-select custom-select-sm"
                                     id="entries-select"
                                     value={entriesPerPage}
                                     onChange={(e) =>

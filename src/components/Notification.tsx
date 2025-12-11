@@ -1,12 +1,12 @@
 const Notification = () => {
   return (
-    <div className="apl-section">
+    <div>
       <div className="header">
         <h1>Notifications</h1>
       </div>
 
       <section className="notification">
-        <form>
+        <div>
           <textarea
             name="notification"
             aria-required="true"
@@ -18,7 +18,7 @@ const Notification = () => {
           <button className="btn btn-primary m-t-10 float-right disabled">
             Update
           </button>
-        </form>
+        </div>
       </section>
     </div>
   );
