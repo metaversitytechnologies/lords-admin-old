@@ -385,3 +385,6 @@ nav.menu > ul > li.rootMenu.active > a {
 .bet-list label {
     color: black;
 }
+.nation-name p span {
+    color: white;
+}
