@@ -354,7 +354,7 @@ const BetTicker = () => {
               <div className="row col-page">
                 <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
                   <div className="row dataTables_length">
-                    <div className="p-l-m col">
+                    {/* <div className="p-l-m col">
                       <label>
                         Show
                         <select
@@ -373,7 +373,7 @@ const BetTicker = () => {
                         </select>
                         entries
                       </label>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 <div className="col-sm-12 col-md-6">
@@ -504,7 +504,7 @@ const BetTicker = () => {
                   )}
                 </tbody>
               </table>
-              <Pagination
+              {/* <Pagination
                 currentPage={currentPage}
                 totalPages={Math.ceil(
                   bets.filter(
@@ -518,7 +518,7 @@ const BetTicker = () => {
                   ).length / itemsPerPage
                 )}
                 onPageChange={setCurrentPage}
-              />
+              /> */}
             </div>
           </div>
         </div>

@@ -31,8 +31,8 @@ const AgentListing: React.FC = () => {
       const payload = {
         userId: userid || user.userId,
         index: 0,
-        noOfRecords: 99999,
-        username: searchTerm,
+        noOfRecords: 20,
+        username: searchTerm
       };
       const response = await getChildListLord(payload);
       setAgents(response.data || []);
@@ -114,28 +114,7 @@ const AgentListing: React.FC = () => {
         </span>
         <div className="row col-page">
           <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
-            <div className="row dataTables_length">
-              <div className="p-l-m col">
-                <label>
-                  Show
-                  <select
-                    style={{ width: "60px" }}
-                    className="form-control"
-                    value={itemsPerPage}
-                    onChange={(e) => {
-                      setItemsPerPage(Number(e.target.value));
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                  </select>
-                  entries
-                </label>
-              </div>
-            </div>
+            <div className="row dataTables_length"></div>
           </div>
           <div className="col-sm-12 col-md-6">
             <div className="dataTables_filter">
@@ -235,7 +214,7 @@ const AgentListing: React.FC = () => {
                           }}
                           style={{
                             cursor: userid ? "default" : "pointer",
-                            textDecoration: "none",
+                            textDecoration: "none"
                           }}
                         >
                           {agent.userId}
@@ -327,7 +306,7 @@ const AgentListing: React.FC = () => {
             )}
           </tbody>
         </table>
-        <Pagination
+        {/* <Pagination
           currentPage={currentPage}
           totalPages={Math.ceil(
             agents.filter(
@@ -341,7 +320,7 @@ const AgentListing: React.FC = () => {
             ).length / itemsPerPage
           )}
           onPageChange={setCurrentPage}
-        />
+        /> */}
       </div>
 
       <UpdateUser

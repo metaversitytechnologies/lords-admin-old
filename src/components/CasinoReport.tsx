@@ -111,7 +111,7 @@ export default function CasinoReport() {
           <div className="row col-page">
             <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
               <div className="row dataTables_length">
-                <div className="p-l-m col">
+                {/* <div className="p-l-m col">
                   <label>
                     Show
                     <select
@@ -130,7 +130,7 @@ export default function CasinoReport() {
                     </select>
                     entries
                   </label>
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -209,7 +209,9 @@ export default function CasinoReport() {
                       item.roundId
                         .toLowerCase()
                         .includes(searchTerm.toLowerCase()) ||
-                      item.winner.toLowerCase().includes(searchTerm.toLowerCase())
+                      item.winner
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
                   ).length / itemsPerPage
                 )}
                 onPageChange={setCurrentPage}

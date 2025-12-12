@@ -120,7 +120,7 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
         <div className="row col-page">
           <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
             <div className="row dataTables_length">
-              <div className="p-l-m col">
+              {/* <div className="p-l-m col">
                 <label>
                   Show
                   <select
@@ -139,7 +139,7 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
                   </select>
                   entries
                 </label>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="col-sm-12 col-md-6">
@@ -189,7 +189,9 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
                   (entry) =>
                     !searchTerm ||
                     Object.values(entry).some((val) =>
-                      String(val).toLowerCase().includes(searchTerm.toLowerCase())
+                      String(val)
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
                     )
                 )
                 .slice(
@@ -222,7 +224,7 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
             )}
           </tbody>
         </table>
-        <Pagination
+        {/* <Pagination
           currentPage={currentPage}
           totalPages={Math.ceil(
             (
@@ -236,7 +238,7 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
             ).length / itemsPerPage
           )}
           onPageChange={setCurrentPage}
-        />
+        /> */}
       </div>
     </div>
   );

@@ -83,7 +83,7 @@ const AccountStatement: React.FC = () => {
   const handleIpDetails = async (ip: string) => {
     setIpDetails(null);
     setShowModal(true);
-
+    a;
     try {
       const response = await fetch(`http://ip-api.com/json/${ip}`);
       const data = await response.json();
@@ -207,7 +207,7 @@ const AccountStatement: React.FC = () => {
                 <div className="row col-page">
                   <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
                     <div className="row dataTables_length">
-                      <div className="p-l-m col">
+                      {/* <div className="p-l-m col">
                         <label>
                           Show
                           <select
@@ -226,7 +226,7 @@ const AccountStatement: React.FC = () => {
                           </select>
                           entries
                         </label>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div className="col-sm-12 col-md-6">
@@ -309,7 +309,7 @@ const AccountStatement: React.FC = () => {
                       )}
                     </tbody>
                   </table>
-                  <Pagination
+                  {/* <Pagination
                     currentPage={currentPage}
                     totalPages={Math.ceil(
                       statementData.filter(
@@ -323,7 +323,7 @@ const AccountStatement: React.FC = () => {
                       ).length / itemsPerPage
                     )}
                     onPageChange={setCurrentPage}
-                  />
+                  /> */}
                 </div>
 
                 {/* CREDIT TAB */}
