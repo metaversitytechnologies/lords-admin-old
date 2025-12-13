@@ -22,7 +22,8 @@ const FancyMarket = ({
                 <span>{fancyMarket}</span>
                 <button
                   type="button"
-                  className="btn btn btn-submit bet-lock-btn btn-secondary">
+                  className="btn btn btn-submit bet-lock-btn btn-primary"
+                >
                   Fancy Lock
                 </button>
               </div>
@@ -51,7 +52,8 @@ const FancyMarket = ({
                       className={`bet-table-row ${
                         r?.sb === "S" || r?.sb === "B" ? "suspendedtext" : ""
                       }`}
-                      data-title={r?.sb === "S" ? "SUSPENDED" : "BALL RUNNING"}>
+                      data-title={r?.sb === "S" ? "SUSPENDED" : "BALL RUNNING"}
+                    >
                       <div className="nation-name">
                         <p>
                           <span>{r.na}</span>

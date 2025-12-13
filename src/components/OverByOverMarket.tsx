@@ -24,7 +24,7 @@ const OverByOverMarket = ({
           {market.fancyLock && (
             <button
               type="button"
-              className="btn btn btn-submit bet-lock-btn btn-secondary"
+              className="btn btn btn-submit bet-lock-btn btn-primary"
             >
               Fancy Lock
             </button>
