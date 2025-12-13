@@ -30,7 +30,7 @@ const FancyMarket = ({
     setLadderData([]);
     try {
       const payload = {
-        fancyId: fancyId + "-F2",
+        fancyId: fancyId,
         matchId: matchId,
       };
       const response = await getUserFancyBook(payload);
@@ -76,14 +76,11 @@ const FancyMarket = ({
 
               {filteredFancy?.map((r, i) => {
                 let bet = 0;
+                const currentId = r?.mid || r?.sid;
                 if (fancyPnldata) {
-                  const sid = String(r?.sid);
-                  const sidF2 = `${sid}-F2`;
-                  if (fancyPnldata[sid] !== undefined) {
-                    bet = fancyPnldata[sid];
-                  } else if (fancyPnldata[sidF2] !== undefined) {
-                    bet = fancyPnldata[sidF2];
-                  }
+                   if (fancyPnldata[currentId] !== undefined) {
+                      bet = fancyPnldata[currentId];
+                   }
                 }
                 return (
                   <div className="fancy-tripple" key={i}>
@@ -111,7 +108,7 @@ const FancyMarket = ({
                                   color: "var(--accent-color)",
                                   cursor: "pointer",
                                 }}
-                                onClick={() => handleLadderClick(r.sid)}
+                                onClick={() => handleLadderClick(currentId)}
                               />
                             </span>
                           )}
