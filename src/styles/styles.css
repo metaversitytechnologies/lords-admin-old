@@ -5837,7 +5837,18 @@ img.lrotate {
     .game-title {
         margin-bottom: 15px;
     }   
-    .bet-table-header .nation-name {
-        background-color: var(--primary-color) !important;
-    }
+
+    .market-container .bet-table-header .nation-name {
+    padding-right: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    min-height: 50px;
+    background-color: var(--primary-color);
+    font-weight: bold;
+}
+
+   
 }
