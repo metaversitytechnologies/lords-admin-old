@@ -192,7 +192,18 @@ const UpdateUser: React.FC<UpdateUserProps> = ({
               <div id="HelpScreenModal" className="update-agent">
                 <div>
                   <div>
-                    <form onSubmit={handleSubmit(onSubmit)}>
+                    <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+                      {/* Dummy inputs to prevent autofill */}
+                      <input
+                        type="text"
+                        style={{ display: "none" }}
+                        name="fakeusernameremembered"
+                      />
+                      <input
+                        type="password"
+                        style={{ display: "none" }}
+                        name="fakepasswordremembered"
+                      />
                       <section>
                         <div className="apl-section-inner">
                           <legend>Information</legend>
@@ -220,6 +231,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({
                             <div className="col-4">
                               <label>Password</label>
                               <input
+                                autoComplete="new-password"
                                 placeholder="New Password"
                                 type="password"
                                 {...register("password", {
@@ -250,6 +262,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({
                             <div className="col-4">
                               <label>Repeat Password</label>
                               <input
+                                autoComplete="new-password"
                                 placeholder="Re Type Password"
                                 type="password"
                                 {...register("confirmPassword", {
@@ -429,6 +442,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({
                             <div className="d-inline-block">
                               <div className="apl-form-row">
                                 <input
+                                  autoComplete="new-password"
                                   placeholder=" Master Password"
                                   type="password"
                                   {...register("lupassword", {

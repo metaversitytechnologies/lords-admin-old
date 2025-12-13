@@ -52,6 +52,8 @@ const MatchedUnmatched: React.FC<MatchedUnmatchedProps> = ({ matchId }) => {
 
     if (matchId) {
       fetchBets();
+      const interval = setInterval(fetchBets, 1000);
+      return () => clearInterval(interval);
     }
   }, [matchId, activeTab]);
 

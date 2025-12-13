@@ -154,7 +154,20 @@ const NewAgent: React.FC = () => {
           }}
         />
       )}
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+        {/* Dummy inputs to prevent autofill */}
+        <input
+          type="text"
+          name="fake-username"
+          autoComplete="username"
+          style={{ display: "none" }}
+        />
+        <input
+          type="password"
+          name="fake-password"
+          autoComplete="current-password"
+          style={{ display: "none" }}
+        />
         <section className="d-inline-block v-t">
           <div className="apl-section-inner">
             <legend className="p-b-10">Information</legend>
@@ -165,6 +178,7 @@ const NewAgent: React.FC = () => {
                   <input
                     placeholder="Login Id"
                     type="text"
+                    autoComplete="off"
                     maxLength={15}
                     {...register("userId", {
                       required: "The LoginId field is required"
@@ -183,6 +197,7 @@ const NewAgent: React.FC = () => {
                 <label>Password</label>
                 <span>
                   <input
+                    autoComplete="new-password"
                     placeholder="Password"
                     type="password"
                     {...register("password", {
@@ -215,6 +230,7 @@ const NewAgent: React.FC = () => {
                 <label>Repeat Password</label>
                 <span>
                   <input
+                    autoComplete="new-password"
                     placeholder="Confirm Password"
                     type="password"
                     {...register("confirmPassword", {
@@ -415,6 +431,7 @@ const NewAgent: React.FC = () => {
           <div className="apl-form-row master-pass m-b-30">
             <label>Master Password</label>
             <input
+              autoComplete="new-password"
               placeholder="Master Password"
               type="password"
               {...register("lupassword", {
