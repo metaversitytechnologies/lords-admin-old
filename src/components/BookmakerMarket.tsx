@@ -48,13 +48,13 @@ const BookmakerMarket = ({ bookmakerData, pnlData }: BookmakerMarketProps) => {
                   <div className="d-flex justify-content-end align-content-center">
                     <button
                       type="button"
-                      className="btn btn btn-submit bet-lock-btn btn-primary m-r-5"
+                      className="btn btn bet-lock-btn btn-primary m-r-5"
                     >
                       Bet Lock
                     </button>
                     <button
                       type="button"
-                      className="btn btn btn-submit bet-lock-btn m-r-10 btn-primary"
+                      className="btn btn bet-lock-btn m-r-10 btn-primary"
                     >
                       Book
                     </button>
