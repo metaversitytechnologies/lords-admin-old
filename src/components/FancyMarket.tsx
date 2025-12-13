@@ -77,11 +77,11 @@ const FancyMarket = ({
               {filteredFancy?.map((r, i) => {
                 let bet = 0;
                 if (fancyPnldata) {
-                  const sid = r?.sid;
+                  const sid = String(r?.sid);
                   const sidF2 = `${sid}-F2`;
-                  if (Object.keys(fancyPnldata).includes(sid)) {
+                  if (fancyPnldata[sid] !== undefined) {
                     bet = fancyPnldata[sid];
-                  } else if (Object.keys(fancyPnldata).includes(sidF2)) {
+                  } else if (fancyPnldata[sidF2] !== undefined) {
                     bet = fancyPnldata[sidF2];
                   }
                 }
@@ -102,14 +102,19 @@ const FancyMarket = ({
                             {" "}
                             {bet}
                           </span>
-                          <span className="float-right">
-                            <Ladder
-                              className="float-right mt-1 cursor-pointer"
-                              size={20}
-                              style={{ color: "var(--accent-color)", cursor: "pointer" }}
-                              onClick={() => handleLadderClick(r.sid)}
-                            />
-                          </span>
+                          {bet !== 0 && (
+                            <span className="float-right">
+                              <Ladder
+                                className="float-right mt-1 cursor-pointer"
+                                size={20}
+                                style={{
+                                  color: "var(--accent-color)",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => handleLadderClick(r.sid)}
+                              />
+                            </span>
+                          )}
                         </p>
                       </div>
                       <div className="bl-box lay ">
