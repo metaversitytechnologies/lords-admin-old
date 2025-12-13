@@ -140,7 +140,7 @@ const NewAgent: React.FC = () => {
   };
 
   return (
-    <div className="apl-section new-agent">
+    <div className="new-agent">
       {(error || success) && (
         <FlashMessage
           message={error || success}
@@ -441,7 +441,7 @@ const NewAgent: React.FC = () => {
           >
             Cancel
           </button>
-          <button type="submit" className="btn btn-primary m-l-5">
+          <button type="submit" className="btn btn-submit m-l-5">
             Create
           </button>
         </div>

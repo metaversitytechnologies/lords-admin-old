@@ -1241,8 +1241,7 @@ footer .bottom-footer {
 .status-list {
   color: #fff;
 }
-
-/* IpDetailsModal specific overrides */
+/* 
 .ip-details-modal-content {
   color: #fff !important;
 }
@@ -1252,5 +1251,5 @@ footer .bottom-footer {
 .ip-details-modal-content .table td,
 .ip-details-modal-content .table th {
   color: #fff !important;
-  background-color: transparent !important; /* Ensure background doesn't interfere */
-}
+  background-color: transparent !important;
+} */

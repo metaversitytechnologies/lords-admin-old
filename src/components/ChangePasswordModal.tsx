@@ -148,7 +148,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
           </div>
           <div className="row form-group m-b-5">
             <div className="col-md-12 text-right">
-              <button type="submit" className="btn btn-primary btn-bs">
+              <button type="submit" className="btn btn-submit btn-bs">
                 Change Password
               </button>
             </div>

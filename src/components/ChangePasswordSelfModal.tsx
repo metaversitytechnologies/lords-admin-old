@@ -179,7 +179,7 @@ const ChangePasswordSelfModal: React.FC<ChangePasswordSelfModalProps> = ({
                             </button>
                             <button
                               type="submit"
-                              className="btn btn-primary m-l-5"
+                              className="btn btn-submit m-l-5"
                             >
                               Submit
                             </button>

@@ -1008,23 +1008,22 @@ footer {
     background: rgba(255, 255, 255, 0.07);
     padding: 20px;
     float: left;
-    margin: 0 20px 20px 0;
     position: relative;
 }
 
 .apl-section-inner legend {
     width: 100%;
     border: 0;
-    padding: 0;
+    padding: 7px 20px;
     font-size: 18px;
+    color: white;
+    background-color: var(--primary-color);
     line-height: 30px;
-    color: #fff;
 }
 
 .apl-section-inner legend::after {
     content: "";
     display: block;
-    border-bottom: 1px solid #dddddd;
     width: 100%;
 }
 
@@ -1032,7 +1031,7 @@ footer {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
-    color: #fff;
+    color: #625959;
 }
 
 .apl-section-inner .character input {
@@ -1211,9 +1210,7 @@ footer {
 }
 
 .modal-content .apl-section-inner {
-    padding: 20px;
     width: 100%;
-    margin: 0 0 20px;
 }
 
 .modal-content legend::after {
@@ -2828,7 +2825,8 @@ span.order-time {
 
 .apl-form-row {
     position: relative;
-    color: #fff;
+    color: #000;
+    padding: 0 20px ;
 }
 
 .error-account {

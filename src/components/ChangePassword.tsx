@@ -110,13 +110,11 @@ const ChangePassword = () => {
                             required: "New password is required",
                             minLength: {
                               value: 8,
-                              message:
-                                "Password must be at least 8 characters"
+                              message: "Password must be at least 8 characters"
                             },
                             maxLength: {
                               value: 12,
-                              message:
-                                "Password must be at most 12 characters"
+                              message: "Password must be at most 12 characters"
                             },
                             pattern: {
                               value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
@@ -152,12 +150,10 @@ const ChangePassword = () => {
                       <div className="form-group">
                         <button
                           type="submit"
-                          className="btn btn-secondary btn-block"
+                          className="btn btn-submit btn-block"
                           disabled={loading}
                         >
-                          {loading
-                            ? "Changing Password..."
-                            : "Change Password"}
+                          {loading ? "Changing Password..." : "Change Password"}
                         </button>
                       </div>
                     </div>
