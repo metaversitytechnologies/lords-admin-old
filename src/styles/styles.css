@@ -2084,7 +2084,7 @@ footer {
     align-items: center;
     position: relative;
     min-height: 50px;
-    background-color: black;
+    background-color: white;
     font-weight: bold;
 }
 
@@ -5837,6 +5837,7 @@ img.lrotate {
     .game-title {
         margin-bottom: 15px;
     }   
-    
- 
+    .bet-table-header .nation-name {
+        background-color: var(--primary-color) !important;
+    }
 }
