@@ -46,18 +46,20 @@ const MatchOddsMarket = ({ oddsData, pnlData, filterName, showOnly }: MatchOddsM
           <div className="bet-table" key={rIdx}>
             <div className="bet-table-header">
               <span>{row.ty}</span>
-              <button
-                type="button"
-                className="btn btn btn-submit bet-lock-btn btn-primary"
-              >
-                Bet Lock
-              </button>
-              <button
-                type="button"
-                className="btn btn btn-submit bet-lock-btn m-r-10 btn-primary"
-              >
-                Book
-              </button>
+              <div className="d-flex justify-content-end align-content-center">
+                <button
+                  type="button"
+                  className="btn btn btn-submit bet-lock-btn btn-primary"
+                >
+                  Bet Lock
+                </button>
+                <button
+                  type="button"
+                  className="btn btn btn-submit bet-lock-btn m-r-10 btn-primary"
+                >
+                  Book
+                </button>
+              </div>
             </div>
 
             <div className="bet-table-body" data-title="OPEN">
