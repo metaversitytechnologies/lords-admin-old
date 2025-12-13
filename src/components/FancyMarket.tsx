@@ -1,3 +1,5 @@
+import { Ladder } from "react-bootstrap-icons";
+
 interface FancyMarketProps {
   fancyData: Fancy2[] | undefined;
   fancyPnldata: any;
@@ -62,10 +64,10 @@ const FancyMarket = ({
                             {bet}
                           </span>
                           <span className="float-right">
-                            <img
-                              src="https://d3kb8xz339pq18.cloudfront.net/v12/static/images/icons/ladder.png"
-                              className="float-right ladder-icon mt-1"
-                              alt="ladder"
+                            <Ladder
+                              className="float-right mt-1"
+                              size={20}
+                              style={{ color: "var(--primary-accent)" }}
                             />
                           </span>
                         </p>

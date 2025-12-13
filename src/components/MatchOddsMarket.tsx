@@ -49,7 +49,7 @@ const MatchOddsMarket = ({ oddsData, pnlData, filterName, showOnly }: MatchOddsM
               <div className="d-flex justify-content-end align-content-center">
                 <button
                   type="button"
-                  className="btn btn btn-submit bet-lock-btn btn-primary"
+                  className="btn btn btn-submit bet-lock-btn btn-primary m-r-5"
                 >
                   Bet Lock
                 </button>
