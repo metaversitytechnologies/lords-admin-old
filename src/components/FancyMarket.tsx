@@ -76,8 +76,10 @@ const FancyMarket = ({
 
               {filteredFancy?.map((r, i) => {
                 let bet = 0;
-                const currentId = r?.mid || r?.sid;
-                if (fancyPnldata) {
+                // Use mid (which includes -F2) or fallback to sid
+                const currentId = r?.mid ? String(r.mid).trim() : (r?.sid ? String(r.sid).trim() : "");
+
+                if (fancyPnldata && currentId) {
                    if (fancyPnldata[currentId] !== undefined) {
                       bet = fancyPnldata[currentId];
                    }
