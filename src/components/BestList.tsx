@@ -105,7 +105,6 @@ const BestList = () => {
 
       const currentBet = state.activeTab === "Current";
       const matchedDeletedBet = state.activeRadio.toUpperCase();
-      const matchedDeletedBet = state.activeRadio.toUpperCase();
       const sportLabel = state.sportId === "0" ? "All" : state.sportId;
 
       const payload = {
