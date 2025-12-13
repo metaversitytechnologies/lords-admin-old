@@ -32,21 +32,19 @@ const TiedMatchMarket = ({
   <div className="market-2 mt-2">
     <div className="bet-table">
       <div className="bet-table-header">
-        <div className="nation-name">
-          <span>{market.title}</span>
-          <button
-            type="button"
-            className="btn btn btn-submit bet-lock-btn btn-secondary"
-          >
-            Bet Lock
-          </button>
-          <button
-            type="button"
-            className="btn btn btn-submit bet-lock-btn m-r-10 btn-secondary"
-          >
-            Book
-          </button>
-        </div>
+        <span>{market.title}</span>
+        <button
+          type="button"
+          className="btn btn btn-submit bet-lock-btn btn-secondary"
+        >
+          Bet Lock
+        </button>
+        <button
+          type="button"
+          className="btn btn btn-submit bet-lock-btn m-r-10 btn-secondary"
+        >
+          Book
+        </button>
       </div>
 
       <div className="bet-table-body" data-title="SUSPENDED">

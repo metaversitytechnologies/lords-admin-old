@@ -44,21 +44,19 @@ const BookmakerMarket = ({ bookmakerData, pnlData }: BookmakerMarketProps) => {
             <div className="market-4 mt-2">
               <div className="bet-table">
                 <div className="bet-table-header">
-                  <div className="nation-name">
-                    <span>{providerType}</span>
-                    <button
-                      type="button"
-                      className="btn btn btn-submit bet-lock-btn btn-primary"
-                    >
-                      Bet Lock
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn btn-submit bet-lock-btn m-r-10 btn-primary"
-                    >
-                      Book
-                    </button>
-                  </div>
+                  <span>{providerType}</span>
+                  <button
+                    type="button"
+                    className="btn btn btn-submit bet-lock-btn btn-primary"
+                  >
+                    Bet Lock
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn btn-submit bet-lock-btn m-r-10 btn-primary"
+                  >
+                    Book
+                  </button>
                 </div>
 
                 <div className="bet-table-body" data-title="SUSPENDED">

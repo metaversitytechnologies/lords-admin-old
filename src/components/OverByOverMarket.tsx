@@ -19,17 +19,15 @@ const OverByOverMarket = ({
   <div className="market-6 mt-2">
     <div className="bet-table">
       <div className="bet-table-header">
-        <div className="nation-name">
-          <span>{market.title}</span>
-          {market.fancyLock && (
-            <button
-              type="button"
-              className="btn btn btn-submit bet-lock-btn btn-primary"
-            >
-              Fancy Lock
-            </button>
-          )}
-        </div>
+        <span>{market.title}</span>
+        {market.fancyLock && (
+          <button
+            type="button"
+            className="btn btn btn-submit bet-lock-btn btn-primary"
+          >
+            Fancy Lock
+          </button>
+        )}
       </div>
 
       <div className="bet-table-body" data-title="OPEN">
