@@ -41,7 +41,6 @@ const MarketLayout = () => {
   const fetchFancyPnl = async () => {
     try {
       const response = await getFancyPnl({ matchId: id });
-      console.log("Odds Data Response:", response);
       setFancyPnl(response?.data);
     } catch (err: any) {
       console.error("Error fetching odds data:", err);
@@ -50,7 +49,6 @@ const MarketLayout = () => {
   const fetchBetList = async () => {
     try {
       const response = await getBetList({ matchId: id });
-      console.log("Odds Data Response:", response);
       setBetListData(response?.data);
     } catch (err: any) {
       console.error("Error fetching odds data:", err);

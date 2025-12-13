@@ -14,7 +14,7 @@ const FancyMarket = ({
   fancyData,
   fancyPnldata,
   fancyMarket,
-  matchId,
+  matchId
 }: FancyMarketProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [ladderData, setLadderData] = useState<any[]>([]);
@@ -31,7 +31,7 @@ const FancyMarket = ({
     try {
       const payload = {
         fancyId: fancyId,
-        matchId: matchId,
+        matchId: matchId
       };
       const response = await getUserFancyBook(payload);
       if (response.status) {
@@ -77,12 +77,16 @@ const FancyMarket = ({
               {filteredFancy?.map((r, i) => {
                 let bet = 0;
                 // Use mid (which includes -F2) or fallback to sid
-                const currentId = r?.mid ? String(r.mid).trim() : (r?.sid ? String(r.sid).trim() : "");
+                const currentId = r?.mid
+                  ? String(r.mid).trim()
+                  : r?.sid
+                  ? String(r.sid).trim()
+                  : "";
 
                 if (fancyPnldata && currentId) {
-                   if (fancyPnldata[currentId] !== undefined) {
-                      bet = fancyPnldata[currentId];
-                   }
+                  if (fancyPnldata[currentId] !== undefined) {
+                    bet = fancyPnldata[currentId];
+                  }
                 }
                 return (
                   <div className="fancy-tripple" key={i}>
@@ -108,7 +112,7 @@ const FancyMarket = ({
                                 size={20}
                                 style={{
                                   color: "var(--accent-color)",
-                                  cursor: "pointer",
+                                  cursor: "pointer"
                                 }}
                                 onClick={() => handleLadderClick(currentId)}
                               />
@@ -138,11 +142,11 @@ const FancyMarket = ({
       <ReusableModal
         show={isModalOpen}
         handleClose={closeModal}
-        title="Ladder"
+        title="Fancy Book"
         size="lg"
       >
         <div className="table-responsive">
-          <table className="table table-bordered">
+          <table className="table table-bordered table-striped">
             <thead>
               <tr>
                 <th className="text-center">Run</th>
