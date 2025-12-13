@@ -1,19 +1,54 @@
+import { useState } from "react";
 import { Ladder } from "react-bootstrap-icons";
+import ReusableModal from "./ReusableModal";
+import { getUserFancyBook } from "../api/bet";
 
 interface FancyMarketProps {
   fancyData: Fancy2[] | undefined;
   fancyPnldata: any;
   fancyMarket: string;
+  matchId: string;
 }
 
 const FancyMarket = ({
   fancyData,
   fancyPnldata,
   fancyMarket,
+  matchId,
 }: FancyMarketProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [ladderData, setLadderData] = useState<any[]>([]);
+  const [loadingLadder, setLoadingLadder] = useState(false);
+
   const filteredFancy = fancyData?.filter(
     (row: any) => row.s === true && row.go === false
   );
+
+  const handleLadderClick = async (fancyId: string) => {
+    setIsModalOpen(true);
+    setLoadingLadder(true);
+    setLadderData([]);
+    try {
+      const payload = {
+        fancyId: fancyId + "-F2",
+        matchId: matchId,
+      };
+      const response = await getUserFancyBook(payload);
+      if (response.status) {
+        setLadderData(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching ladder data:", error);
+    } finally {
+      setLoadingLadder(false);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setLadderData([]);
+  };
+
   return (
     <>
       {filteredFancy && filteredFancy?.length > 0 && (
@@ -42,8 +77,12 @@ const FancyMarket = ({
               {filteredFancy?.map((r, i) => {
                 let bet = 0;
                 if (fancyPnldata) {
-                  if (Object?.keys(fancyPnldata)?.includes(r?.sid)) {
-                    bet = fancyPnldata[r?.sid];
+                  const sid = r?.sid;
+                  const sidF2 = `${sid}-F2`;
+                  if (Object.keys(fancyPnldata).includes(sid)) {
+                    bet = fancyPnldata[sid];
+                  } else if (Object.keys(fancyPnldata).includes(sidF2)) {
+                    bet = fancyPnldata[sidF2];
                   }
                 }
                 return (
@@ -65,9 +104,10 @@ const FancyMarket = ({
                           </span>
                           <span className="float-right">
                             <Ladder
-                              className="float-right mt-1"
+                              className="float-right mt-1 cursor-pointer"
                               size={20}
-                              style={{ color: "var(--primary-accent)" }}
+                              style={{ color: "var(--accent-color)", cursor: "pointer" }}
+                              onClick={() => handleLadderClick(r.sid)}
                             />
                           </span>
                         </p>
@@ -90,6 +130,52 @@ const FancyMarket = ({
           </div>
         </div>
       )}
+
+      <ReusableModal
+        show={isModalOpen}
+        handleClose={closeModal}
+        title="Ladder"
+        size="lg"
+      >
+        <div className="table-responsive">
+          <table className="table table-bordered">
+            <thead>
+              <tr>
+                <th className="text-center">Run</th>
+                <th className="text-center">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loadingLadder ? (
+                <tr>
+                  <td colSpan={2} className="text-center">
+                    Loading...
+                  </td>
+                </tr>
+              ) : ladderData.length > 0 ? (
+                ladderData.map((item, index) => (
+                  <tr key={index}>
+                    <td className="text-center">{item.odds}</td>
+                    <td
+                      className={`text-center ${
+                        item.pnl >= 0 ? "text-success" : "text-danger"
+                      }`}
+                    >
+                      {item.pnl}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={2} className="text-center">
+                    No data available
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </ReusableModal>
     </>
   );
 };

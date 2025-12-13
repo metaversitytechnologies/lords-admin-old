@@ -125,7 +125,7 @@ const AgentListing: React.FC = () => {
                     <input
                       type="text"
                       placeholder="Type to Search"
-                      className="form-control form-control-sm"
+                      className="form-control form-control-sm m-r-5"
                       value={generalSearchTerm}
                       onChange={(e) => {
                         setGeneralSearchTerm(e.target.value);

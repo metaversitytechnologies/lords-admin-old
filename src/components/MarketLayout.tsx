@@ -65,6 +65,7 @@ const MarketLayout = () => {
 
     const interval = setInterval(() => {
       fetchOdds();
+      fetchFancyPnl();
     }, 1000); // 1 second
 
     return () => clearInterval(interval); // cleanup
@@ -111,6 +112,7 @@ const MarketLayout = () => {
                         fancyData={oddsData?.[fancyMarket]}
                         fancyPnldata={fancyPnl}
                         fancyMarket={fancyMarket}
+                        matchId={id ?? ""}
                       />
                     );
                   return <></>;

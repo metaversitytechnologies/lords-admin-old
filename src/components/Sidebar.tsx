@@ -70,7 +70,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse }: SidebarProps) => {
                 return (
                   <li
                     key={menu.title}
-                    className={menu.title === "Admin Users" ? "" : rootClass}
+                    className={rootClass}
                   >
                     <Link
                       to="#"
