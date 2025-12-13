@@ -23,5 +23,5 @@ export const getBetListByMarketId = async (payload: object) => {
 };
 
 export const getUserFancyBook = async (payload: object) => {
-  return apiRequest("/enduser/user-fancy-book", "POST", payload);
+  return apiRequest("/bets/fancy-book", "POST", payload);
 };
