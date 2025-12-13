@@ -431,6 +431,7 @@ const NewAgent: React.FC = () => {
           <div className="apl-form-row master-pass m-b-30">
             <label>Master Password</label>
             <input
+              className="m-l-5"
               autoComplete="new-password"
               placeholder="Master Password"
               type="password"

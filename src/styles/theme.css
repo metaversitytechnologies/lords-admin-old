@@ -209,8 +209,8 @@ body .body>.content>.mid-pane .header .search-wrap input:focus
 
 /* Layout Overrides for Burgundy Theme */
 header.header {
-    background: #BA3F5D;
-background: radial-gradient(circle, rgba(186, 63, 93, 1) 0%,rgba(158, 28, 52, 1) 100%);
+    background: var(--sidebar-bg);
+/* background: radial-gradient(circle, rgba(186, 63, 93, 1) 0%,rgba(158, 28, 52, 1) 100%); */
     border-bottom: 2px solid var(--accent-color);
 }
 .content, .content > .left-pane-wrapper > .left-pane,
@@ -327,7 +327,7 @@ nav.menu > ul > li.rootMenu.active > a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--header-bg); /* Match Header */
+    background-color: var(--primary-color); /* Match Header */
     padding: 10px 15px;
     overflow-x: auto;
     border-bottom: 2px solid var(--accent-color);
@@ -343,46 +343,51 @@ nav.menu > ul > li.rootMenu.active > a {
 .balance-pill {
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 7px; 
-    padding: 6px 16px;
-    color: white;
+    justify-content: center;
+    background: var(--primary-dark);
+    border: 1px solid var(--accent-color);
+    border-radius: 2px;
+    padding: 5px 20px;
+    color: var(--text-light);
     font-size: 13px;
+    font-weight: bold;
     white-space: nowrap;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transform: skewX(-20deg);
+    margin: 0 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-
+.balance-pill > * {
+    transform: skewX(20deg);
+}
 
 .balance-pill .indicator-dot {
-    width: 10px;
-    height: 10px;
-    background-color: #ff4d4d; /* Red/Orange Indicator */
+    width: 8px;
+    height: 8px;
+    background-color: #ff4d4d;
     border-radius: 50%;
-    margin-right: 10px;
-    box-shadow: 0 0 6px rgba(255, 77, 77, 0.6);
+    margin-right: 8px;
 }
 
 .balance-pill .label {
-    font-weight: 600;
-    margin-right: 8px;
-    opacity: 0.95;
+    font-weight: 700;
+    margin-right: 5px;
     text-transform: uppercase;
+    font-style: italic;
+    color: var(--accent-color);
     font-size: 12px;
 }
 
 .balance-pill .value {
     font-weight: 700;
-    color: var(--accent-color); /* Gold value */
+    color: var(--text-light);
 }
 
 .balance-pill .value.positive {
-    color: #4cd137; /* Green for positive */
+    color: var(--text-light);
 }
 .balance-pill .value.negative {
-    color: var(--primary-color) !important; /* Red for negative */
+    color: var(--text-light);
 }
 .modal-title {
     color: white !important;

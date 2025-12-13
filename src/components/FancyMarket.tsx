@@ -23,7 +23,7 @@ const FancyMarket = ({
               <span>{fancyMarket}</span>
               <button
                 type="button"
-                className="btn btn btn-submit bet-lock-btn btn-primary"
+                className="btn btn bet-lock-btn btn-primary"
               >
                 Fancy Lock
               </button>

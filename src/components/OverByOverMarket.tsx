@@ -21,10 +21,7 @@ const OverByOverMarket = ({
       <div className="bet-table-header">
         <span>{market.title}</span>
         {market.fancyLock && (
-          <button
-            type="button"
-            className="btn btn btn-submit bet-lock-btn btn-primary"
-          >
+          <button type="button" className="btn btn bet-lock-btn btn-primary">
             Fancy Lock
           </button>
         )}

@@ -83,12 +83,12 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
 
         <div>
           <div className="form-group col-md-2 v-t d-inline-block p-r-5">
-            <label>From:</label>
+            <label className="d-block">From:</label>
             <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
           </div>
 
           <div className="form-group col-md-2 v-t d-inline-block p-l-0 p-r-5">
-            <label>To:</label>
+            <label className="d-block">To:</label>
             <ReusableDatePicker selected={toDate} onChange={setToDate} />
           </div>
 
