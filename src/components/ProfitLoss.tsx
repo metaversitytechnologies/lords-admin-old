@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getPnlReportByMarketId } from "../api/bet";
+import { getSportListLord, getMarketListSportWiseLord } from "../api/reports";
 import MarketBets from "./MarketBets"; // Import MarketBets
 import ReusableDatePicker from "./DatePicker";
 
@@ -34,6 +35,47 @@ const ProfitLoss: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [grandTotal, setGrandTotal] = useState(0);
   const [selectedMarket, setSelectedMarket] = useState<Market | null>(null); // State for selected market
+  const [sports, setSports] = useState<any[]>([]);
+  const [markets, setMarkets] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchSports();
+  }, []);
+
+  const fetchSports = async () => {
+    try {
+      const response = await getSportListLord();
+      if (response.status) {
+        setSports(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching sports:", error);
+    }
+  };
+
+  const fetchMarkets = async (sportId: string) => {
+    if (!sportId || sportId === "0") {
+      setMarkets([]);
+      return;
+    }
+    try {
+      const payload = { sportId: sportId === "All" ? "0" : sportId };
+
+      const response = await getMarketListSportWiseLord(payload);
+      if (response.status) {
+        setMarkets(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching markets:", error);
+    }
+  };
+
+  const handleSportChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const sportName = e.target.value;
+    setEventName(sportName);
+    setMarketName("all"); // Reset market selection
+    fetchMarkets(sportName);
+  };
 
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -99,17 +141,18 @@ const ProfitLoss: React.FC = () => {
             data-vv-scope="myBets"
             className="m-b-10"
           >
-            <div className="dropdown long-width d-inline-block v-t">
+            <div className="pnl dropdown long-width d-inline-block v-t">
               <label className="d-block">Event</label>
               <select
                 className="dropdown-toggle dropdown-button"
                 value={eventName}
-                onChange={(e) => setEventName(e.target.value)}
+                onChange={handleSportChange}
               >
-                <option value="0">All</option>
-                <option value="1">Football</option>
-                <option value="2">Tennis</option>
-                <option value="4">Cricket</option>
+                {sports.map((sport: any, index: number) => (
+                  <option key={index} value={sport.name}>
+                    {sport.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="dropdown long-width m-l-10 d-inline-block v-t">
@@ -119,7 +162,11 @@ const ProfitLoss: React.FC = () => {
                 value={marketName}
                 onChange={(e) => setMarketName(e.target.value)}
               >
-                <option value="all">All</option>
+                {markets.map((market: any, index: number) => (
+                  <option key={index} value={market.name}>
+                    {market.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="form-group v-t m-l-10 d-inline-block">

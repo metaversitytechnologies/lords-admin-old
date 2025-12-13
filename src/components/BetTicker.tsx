@@ -1,64 +1,16 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { getBetTicker } from "../api/auth";
+import { getSportListLord, getMarketListSportWiseLord } from "../api/reports";
 import SearchUser from "./SearchUser";
 import Pagination from "./Pagination";
-
-const events = [
-  "All",
-  "Football",
-  "Tennis",
-  "Cricket",
-  "Boxing",
-  "Motor Sport",
-  "Teen Patti Oneday",
-  "Teen Patti Test",
-  "Teen Patti 20",
-  "Poker 20",
-  "Poker Oneday",
-  "Andar Bahar",
-  "Worli",
-  "3 Card Judgement",
-  "Poker 9",
-  "32 Card A",
-  "Lottery",
-  "Open Teenpatti",
-  "Instant Worli",
-  "Lucky 7",
-  "20-20 Dragon Tiger",
-  "Bollywood Table",
-  "Amar Akbar Anthony",
-  "1Day Dragon Tiger",
-  "32 Card B",
-  "Casino War",
-  "20-20 Dragon Tiger Lion",
-  "Casino Meter",
-  "20-20 Cricket Match",
-  "Lucky 7 - B",
-  "Baccarat",
-  "Andar Bahar 2",
-  "Baccarat2",
-  "20-20 Dragon Tiger 2",
-  "Muflis Teenpatti",
-  "Kabaddi",
-  "Sic Bo",
-  "Teenpatti Joker",
-  "Lucky 15",
-  "Dus ka Dum",
-  "29Card Baccarat",
-  "Race to 17",
-  "20-20 Teenpatti C",
-  "Table Tennis",
-  "Badminton",
-  "Darts",
-  "Basketball",
-  "Election",
-  "Mixed Martial Arts"
-];
 
 const BetTicker = () => {
   const [bets, setBets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sports, setSports] = useState<any[]>([]);
+  const [markets, setMarkets] = useState<any[]>([]);
+  const [marketId, setMarketId] = useState("all");
   const [oddsDropdownOpen, setOddsDropdownOpen] = useState(false);
   const [stakeDropdownOpen, setStakeDropdownOpen] = useState(false);
   const [counter, setCounter] = useState(3);
@@ -123,7 +75,36 @@ const BetTicker = () => {
 
   useEffect(() => {
     fetchData();
+    fetchSports();
   }, [fetchData]);
+
+  const fetchSports = async () => {
+    try {
+      const response = await getSportListLord();
+      if (response.status) {
+        setSports(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching sports:", error);
+    }
+  };
+
+  const fetchMarkets = async (sportName: string) => {
+    if (!sportName || sportName === "All") {
+      setMarkets([]);
+      return;
+    }
+    // Assuming sportName (e.g., "Cricket") is what the API expects as 'sportId'
+    // based on previous context.
+    try {
+      const response = await getMarketListSportWiseLord({ sportId: sportName });
+      if (response.status) {
+        setMarkets(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching markets:", error);
+    }
+  };
 
   useEffect(() => {
     if (currentPage === 1 && searchTerm === "") {
@@ -209,20 +190,31 @@ const BetTicker = () => {
                     name="event"
                     className="dropdown-toggle dropdown-button"
                     value={filters.sportName}
-                    onChange={(e) =>
-                      handleFilterChange("sportName", e.target.value)
-                    }
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      handleFilterChange("sportName", val);
+                      fetchMarkets(val);
+                      setMarketId("all");
+                    }}
                   >
-                    {events.map((event) => (
-                      <option key={event} value={event}>
-                        {event}
+                    {sports.map((sport: any, index: number) => (
+                      <option key={index} value={sport.name}>
+                        {sport.name}
                       </option>
                     ))}
                   </select>
                 </div>
                 <div className="dropdown long-width m-l-10 d-inline-block v-t">
-                  <select className="dropdown-toggle dropdown-button title">
-                    <option value="all">All</option>
+                  <select
+                    className="dropdown-toggle dropdown-button title"
+                    value={marketId}
+                    onChange={(e) => setMarketId(e.target.value)}
+                  >
+                    {markets.map((market: any, index: number) => (
+                      <option key={index} value={market.name}>
+                        {market.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div

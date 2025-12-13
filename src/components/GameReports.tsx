@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ReusableModal from "./ReusableModal";
 import ViewMoreBetsModal from "./ViewMoreBetsModal";
 import SearchUser from "./SearchUser";
-import { getGameReportLord } from "../api/reports";
+import { getGameReportLord, getSportListLord } from "../api/reports";
 import ReusableDatePicker from "./DatePicker";
 import { CSVLink } from "react-csv";
 import Pagination from "./Pagination";
@@ -26,10 +26,11 @@ const GameReports = () => {
 
   const [fromDate, setFromDate] = useState<Date | null>(oneWeekAgo);
   const [toDate, setToDate] = useState<Date | null>(today);
-  const [eventType, setEventType] = useState("4"); // Default to Cricket
+  const [eventType, setEventType] = useState("9999.9999");
   const [reportData, setReportData] = useState<Report[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sports, setSports] = useState<any[]>([]);
 
   // Pagination & Search States
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,57 +47,7 @@ const GameReports = () => {
     setSelectedMatchId(null);
   };
 
-  const eventNames = [
-    { value: "0", label: "All" },
-    { value: "1", label: "Football" },
-    { value: "2", label: "Tennis" },
-    { value: "4", label: "Cricket" },
-    { value: "6", label: "Boxing" },
-    { value: "8", label: "Motor Sport" },
-    { value: "9", label: "Teen Patti Oneday" },
-    { value: "10", label: "Teen Patti Test" },
-    { value: "11", label: "Teen Patti 20" },
-    { value: "12", label: "Poker 20" },
-    { value: "13", label: "Poker Oneday" },
-    { value: "14", label: "Andar Bahar" },
-    { value: "15", label: "Worli" },
-    { value: "16", label: "3 Card Judgement" },
-    { value: "17", label: "Poker 9" },
-    { value: "18", label: "32 Card A" },
-    { value: "20", label: "Lottery" },
-    { value: "22", label: "Open Teenpatti" },
-    { value: "23", label: "Instant Worli" },
-    { value: "24", label: "Lucky 7" },
-    { value: "25", label: "20-20 Dragon Tiger" },
-    { value: "26", label: "Bollywood Table" },
-    { value: "27", label: "Amar Akbar Anthony" },
-    { value: "28", label: "1Day Dragon Tiger" },
-    { value: "29", label: "32 Card B" },
-    { value: "31", label: "Casino War" },
-    { value: "32", label: "20-20 Dragon Tiger Lion" },
-    { value: "33", label: "Casino Meter" },
-    { value: "35", label: "20-20 Cricket Match" },
-    { value: "36", label: "Lucky 7 - B" },
-    { value: "37", label: "Baccarat" },
-    { value: "38", label: "Andar Bahar 2" },
-    { value: "39", label: "Baccarat2" },
-    { value: "40", label: "20-20 Dragon Tiger 2" },
-    { value: "50", label: "Muflis Teenpatti" },
-    { value: "52", label: "Kabaddi" },
-    { value: "53", label: "Sic Bo" },
-    { value: "54", label: "Teenpatti Joker" },
-    { value: "55", label: "Lucky 15" },
-    { value: "56", label: "Dus ka Dum" },
-    { value: "57", label: "29Card Baccarat" },
-    { value: "58", label: "Race to 17" },
-    { value: "59", label: "20-20 Teenpatti C" },
-    { value: "70", label: "Table Tennis" },
-    { value: "71", label: "Badminton" },
-    { value: "3503", label: "Darts" },
-    { value: "7522", label: "Basketball" },
-    { value: "2378961", label: "Election" },
-    { value: "26420387", label: "Mixed Martial Arts" }
-  ];
+
 
   const loadReport = async () => {
     setLoading(true);
@@ -116,8 +67,19 @@ const GameReports = () => {
 
   useEffect(() => {
     loadReport();
+    fetchSports();
   }, []);
 
+  const fetchSports = async () => {
+    try {
+      const response = await getSportListLord();
+      if (response.status) {
+        setSports(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching sports:", error);
+    }
+  };
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     loadReport();
@@ -138,9 +100,9 @@ const GameReports = () => {
               onChange={(e) => setEventType(e.target.value)}
             >
               <option value="9999.9999">Select Event Name</option>
-              {eventNames.map((event) => (
-                <option key={event.value} value={event.value}>
-                  {event.label}
+              {sports.map((sport: any, index: number) => (
+                <option key={index} value={sport.name}>
+                  {sport.name}
                 </option>
               ))}
             </select>

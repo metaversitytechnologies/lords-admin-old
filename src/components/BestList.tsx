@@ -8,63 +8,15 @@ import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
 import { getIpAddressDetailLord } from "../api/user";
 import { CSVLink } from "react-csv";
 import Pagination from "./Pagination";
-
-const eventOptions = [
-  { value: "0", label: "All" },
-  { value: "1", label: "Football" },
-  { value: "2", label: "Tennis" },
-  { value: "4", label: "Cricket" },
-  { value: "6", label: "Boxing" },
-  { value: "8", label: "Motor Sport" },
-  { value: "9", label: "Teen Patti Oneday" },
-  { value: "10", label: "Teen Patti Test" },
-  { value: "11", label: "Teen Patti 20" },
-  { value: "12", label: "Poker 20" },
-  { value: "13", label: "Poker Oneday" },
-  { value: "14", label: "Andar Bahar" },
-  { value: "15", label: "Worli" },
-  { value: "16", label: "3 Card Judgement" },
-  { value: "17", label: "Poker 9" },
-  { value: "18", label: "32 Card A" },
-  { value: "20", label: "Lottery" },
-  { value: "22", label: "Open Teenpatti" },
-  { value: "23", label: "Instant Worli" },
-  { value: "24", label: "Lucky 7" },
-  { value: "25", label: "20-20 Dragon Tiger" },
-  { value: "26", label: "Bollywood Table" },
-  { value: "27", label: "Amar Akbar Anthony" },
-  { value: "28", label: "1Day Dragon Tiger" },
-  { value: "29", label: "32 Card B" },
-  { value: "31", label: "Casino War" },
-  { value: "32", label: "20-20 Dragon Tiger Lion" },
-  { value: "33", label: "Casino Meter" },
-  { value: "35", label: "20-20 Cricket Match" },
-  { value: "36", label: "Lucky 7 - B" },
-  { value: "37", label: "Baccarat" },
-  { value: "38", label: "Andar Bahar 2" },
-  { value: "39", label: "Baccarat2" },
-  { value: "40", label: "20-20 Dragon Tiger 2" },
-  { value: "50", label: "Muflis Teenpatti" },
-  { value: "52", label: "Kabaddi" },
-  { value: "53", label: "Sic Bo" },
-  { value: "54", label: "Teenpatti Joker" },
-  { value: "55", label: "Lucky 15" },
-  { value: "56", label: "Dus ka Dum" },
-  { value: "57", label: "29Card Baccarat" },
-  { value: "58", label: "Race to 17" },
-  { value: "59", label: "20-20 Teenpatti C" },
-  { value: "70", label: "Table Tennis" },
-  { value: "71", label: "Badminton" },
-  { value: "3503", label: "Darts" },
-  { value: "7522", label: "Basketball" },
-  { value: "2378961", label: "Election" },
-  { value: "26420387", label: "Mixed Martial Arts" }
-];
+import { getSportListLord, getMarketListSportWiseLord } from "../api/reports";
 
 const BestList = () => {
   const { user } = useAuth();
   const userId = user?.userId;
   const [betList, setBetList] = useState([]);
+  const [sports, setSports] = useState<any[]>([]);
+  const [markets, setMarkets] = useState<any[]>([]);
+  const [marketId, setMarketId] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sportId, setSportId] = useState("0");
@@ -90,6 +42,45 @@ const BestList = () => {
   const [ipDetails, setIpDetails] = useState<IpDetails | null>(null);
   const [loadingIpDetails, setLoadingIpDetails] = useState(false);
 
+  useEffect(() => {
+    fetchSports();
+  }, []);
+
+  const fetchSports = async () => {
+    try {
+      const response = await getSportListLord();
+      if (response.status) {
+        setSports(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching sports:", error);
+    }
+  };
+
+  const fetchMarkets = async (sportName: string) => {
+    if (!sportName || sportName === "0") {
+      setMarkets([]);
+      return;
+    }
+    try {
+      const response = await getMarketListSportWiseLord({ sportId: sportName });
+      if (response.status) {
+        setMarkets(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching markets:", error);
+    }
+  };
+
+  const handleSportChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newVal = e.target.value;
+    setSportId(newVal);
+    // Find the sport Name if newVal is "0" or just use newVal
+    // Assuming value is the name as per previous file changes
+    fetchMarkets(newVal === "0" ? "" : newVal);
+    setMarketId("all");
+  };
+
   const requestCounter = useRef(0);
   const fetchMyBetReport = async (customState: any = {}) => {
     const currentRequest = ++requestCounter.current;
@@ -109,13 +100,13 @@ const BestList = () => {
         oddsTo,
         stakeFrom,
         stakeTo,
-        ...customState,
+        ...customState
       };
 
       const currentBet = state.activeTab === "Current";
       const matchedDeletedBet = state.activeRadio.toUpperCase();
-      const sportLabel =
-        eventOptions.find((e) => e.value === state.sportId)?.label || "All";
+      const matchedDeletedBet = state.activeRadio.toUpperCase();
+      const sportLabel = state.sportId === "0" ? "All" : state.sportId;
 
       const payload = {
         sportName: sportLabel,
@@ -131,7 +122,7 @@ const BestList = () => {
         oddsFrom: state.oddsFrom,
         oddsTo: state.oddsTo,
         stakeFrom: state.stakeFrom,
-        stakeTo: state.stakeTo,
+        stakeTo: state.stakeTo
       };
       const response = await getMyBetReport(payload);
       if (currentRequest === requestCounter.current) {
@@ -170,6 +161,8 @@ const BestList = () => {
     oneWeekAgo.setDate(today.getDate() - 7);
 
     setSportId("0");
+    setMarketId("all");
+    setMarkets([]);
     setUserSearch("");
     setTableSearch("");
     setFromDate(oneWeekAgo);
@@ -201,17 +194,16 @@ const BestList = () => {
     try {
       const response = await getIpAddressDetailLord({ ipAddress: ip });
       if (response?.data) {
-         setIpDetails(response.data);
+        setIpDetails(response.data);
       } else {
-        // Handle cases where data might be missing or in a different format if needed, 
+        // Handle cases where data might be missing or in a different format if needed,
         // effectively falling back to a "not found" state or displaying what's available.
         setIpDetails({
-            status: "fail",
-            message: "No details found",
-            query: ip
+          status: "fail",
+          message: "No details found",
+          query: ip
         });
       }
-
     } catch (error) {
       setIpDetails({
         status: "fail",
@@ -258,21 +250,27 @@ const BestList = () => {
                     <select
                       className="dropdown-toggle dropdown-button"
                       value={sportId}
-                      onChange={(e) => setSportId(e.target.value)}
+                      onChange={handleSportChange}
                     >
-                      {eventOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
+                      {sports.map((sport: any, index: number) => (
+                        <option key={index} value={sport.name}>
+                          {sport.name}
                         </option>
                       ))}
                     </select>
                   </div>{" "}
                   <div className="dropdown long-width m-l-10 d-inline-block v-t">
                     <label className="p-l-5 d-block">Market</label>{" "}
-                    <select className="dropdown-toggle dropdown-button title">
-                      <option value="all" selected>
-                        All
-                      </option>{" "}
+                    <select
+                      className="dropdown-toggle dropdown-button title"
+                      value={marketId}
+                      onChange={(e) => setMarketId(e.target.value)}
+                    >
+                      {markets.map((market: any, index: number) => (
+                        <option key={index} value={market.name}>
+                          {market.name}
+                        </option>
+                      ))}
                     </select>
                   </div>{" "}
                   <div className="dropdown m-l-10 d-inline-block v-t">

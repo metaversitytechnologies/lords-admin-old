@@ -422,3 +422,7 @@ nav.menu > ul > li.rootMenu.active > a {
 .nation-name p span {
     color: black;
 }
+
+.pnl label {
+    color: black;
+}
