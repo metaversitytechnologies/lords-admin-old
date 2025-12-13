@@ -94,6 +94,9 @@ const NewAgent: React.FC = () => {
         setSuccess(response.message || "Agent created successfully");
         setError(null);
         reset();
+        setTimeout(() => {
+          navigate(-1);
+        }, 1500);
       }
     } catch (err: any) {
       setError(err.message);

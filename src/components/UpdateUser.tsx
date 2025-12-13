@@ -19,9 +19,15 @@ interface UpdateUserProps {
   isOpen: boolean;
   onClose: () => void;
   agent: any;
+  onUpdateSuccess?: () => void;
 }
 
-const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
+const UpdateUser: React.FC<UpdateUserProps> = ({
+  isOpen,
+  onClose,
+  agent,
+  onUpdateSuccess
+}) => {
   const {
     register,
     handleSubmit,
@@ -111,6 +117,9 @@ const UpdateUser: React.FC<UpdateUserProps> = ({ isOpen, onClose, agent }) => {
       setTimeout(() => {
         onClose();
         reset(); // Reset form after successful submission
+        if (onUpdateSuccess) {
+          onUpdateSuccess();
+        }
       }, 1000);
     } catch (error: any) {
       setError(`Failed to update user: ${error.message}`);

@@ -327,6 +327,7 @@ const AgentListing: React.FC = () => {
         isOpen={showUpdateModal}
         onClose={closeUpdateModal}
         agent={selectedAgent}
+        onUpdateSuccess={fetchAgents}
       />
     </section>
   );
