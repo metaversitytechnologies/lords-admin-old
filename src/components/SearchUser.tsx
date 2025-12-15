@@ -77,7 +77,7 @@ const SearchUser = ({
 
   return (
     <div
-      className="search-box-container d-inline-block p-l-0"
+      className="search-box-container"
       ref={searchContainerRef}
     >
       <input

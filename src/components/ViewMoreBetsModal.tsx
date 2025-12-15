@@ -115,11 +115,11 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
       if (response?.data) {
         setIpDetails(response.data);
       } else {
-         setIpDetails({
-            status: "fail",
-            query: ip,
-            message: "No details found"
-         });
+        setIpDetails({
+          status: "fail",
+          query: ip,
+          message: "No details found"
+        });
       }
     } catch (error) {
       console.error("Error fetching IP details:", error);
@@ -165,13 +165,15 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
     <div className="modal-content account-modal">
       <div className="col-md-12 m-t-5 text-right p-l-0 p-r-15">
         <div className="d-inline-block m-l-5">
-           <CSVLink 
-                data={bets} 
-                filename={`bets-${activeTab}-${new Date().toISOString().split('T')[0]}.csv`}
-                className="btn btn-secondary m-l-5"
-            >
-                Download CSV
-            </CSVLink>
+          <CSVLink
+            data={bets}
+            filename={`bets-${activeTab}-${
+              new Date().toISOString().split("T")[0]
+            }.csv`}
+            className="btn btn-secondary m-l-5"
+          >
+            Download CSV
+          </CSVLink>
         </div>
       </div>
       <div className="tabs">
