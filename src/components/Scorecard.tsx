@@ -14,7 +14,7 @@ const Scorecard: React.FC<ScorecardProps> = ({ matchId }) => {
     const fetchScorecard = async () => {
       if (!matchId) {
         setLoading(false);
-        setError("Match ID is not provided.");
+        console.error("Match ID is not provided.");
         return;
       }
 
@@ -24,10 +24,10 @@ const Scorecard: React.FC<ScorecardProps> = ({ matchId }) => {
         if (response.data) {
           setScorecardHtml(response.data);
         } else {
-          setError("Failed to load scorecard data.");
+          console.error("Failed to load scorecard data.");
         }
       } catch (err) {
-        setError(err.message);
+        console.error(err.message);
       } finally {
         setLoading(false);
       }
@@ -39,20 +39,11 @@ const Scorecard: React.FC<ScorecardProps> = ({ matchId }) => {
     return () => clearInterval(interval);
   }, [matchId]);
 
-  if (loading && !scorecardHtml) {
-    return <div>Loading scorecard...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!scorecardHtml) {
-    return <div>No scorecard available.</div>;
-  }
-
   return (
-    <div dangerouslySetInnerHTML={{ __html: scorecardHtml }} />
+    <div
+      style={{ marginLeft: "5px" }}
+      dangerouslySetInnerHTML={{ __html: scorecardHtml }}
+    />
   );
 };
 

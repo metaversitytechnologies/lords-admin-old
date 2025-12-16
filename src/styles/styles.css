@@ -2018,7 +2018,6 @@ color: var(--accent-color)
 /*New Detail*/
 .market-container .left-market,
 .market-container .right-market {
-    display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
     align-content: flex-start;

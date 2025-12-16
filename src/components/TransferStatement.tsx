@@ -65,7 +65,7 @@ const TransferStatement = ({ childId }) => {
       </div>
 
       <div className="table-responsive transfer-statement">
-        <table className="table table-striped">
+        <table className="table">
           <thead>
             <tr>
               <th className="text-left">Date</th>
@@ -93,7 +93,7 @@ const TransferStatement = ({ childId }) => {
             statementData.map((entry, index) => (
               <tbody key={index}>
                 {/* Date Row */}
-                <tr>
+                <tr className="group">
                   <td colSpan={3} className="transferDate">
                     <span>{formatDate(entry.date)}</span>
                   </td>
