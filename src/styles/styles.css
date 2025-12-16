@@ -857,8 +857,16 @@ footer {
 }*/
 
 .table a {
-    color: var(--accent-color);
+    color: var(--primary-dark);
     font-weight: bold;
+    /* text-decoration: underline !important;
+    text-decoration-color: var(--accent-color) !important; */
+    /* text-underline-offset: 2px; */
+    cursor: pointer;
+}
+
+.fa-tachometer-alt {
+color: var(--accent-color)
 }
 
 
@@ -982,10 +990,10 @@ footer {
 
 .table-control {
     width: 44px;
-    height: calc(100% - 50px);
+    height: calc(100% - 126px);
     background-color: #ececec;
     position: absolute;
-    top: 50px;
+    top: 111px;
     right: 0;
     cursor: pointer;
     display: flex;

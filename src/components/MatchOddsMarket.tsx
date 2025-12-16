@@ -16,7 +16,19 @@ interface MatchOddsMarketProps {
 //   0: "bl-box lay changed",
 // };
 
-const MatchOddsMarket = ({ oddsData, pnlData, filterName, showOnly }: MatchOddsMarketProps) => {
+const formatOdds = (value: any) => {
+  if (value === undefined || value === null || value === "-") return "-";
+  const num = parseFloat(value);
+  if (isNaN(num)) return value;
+  return Number.isInteger(num) ? num.toString() : value;
+};
+
+const MatchOddsMarket = ({
+  oddsData,
+  pnlData,
+  filterName,
+  showOnly
+}: MatchOddsMarketProps) => {
   const sortedMarkets = [...(oddsData || [])].sort((a, b) => {
     if (a.ty === "Match Odds") return -1;
     if (b.ty === "Match Odds") return 1;
@@ -30,7 +42,7 @@ const MatchOddsMarket = ({ oddsData, pnlData, filterName, showOnly }: MatchOddsM
           ? [
               { pnl: myPnl.pnl1, selectionId: myPnl.selection1 },
               { pnl: myPnl.pnl2, selectionId: myPnl.selection2 },
-              { pnl: myPnl.pnl3, selectionId: myPnl.selection3 },
+              { pnl: myPnl.pnl3, selectionId: myPnl.selection3 }
             ]
           : [];
 
@@ -99,7 +111,7 @@ const MatchOddsMarket = ({ oddsData, pnlData, filterName, showOnly }: MatchOddsM
                     </div>
 
                     <div className="bl-box back2 changed">
-                      <span className="d-block odds">{b?.b3 ?? "-"}</span>
+                      <span className="d-block odds">{formatOdds(b?.b3)}</span>
                       {b?.br3 !== undefined ? (
                         <span className="d-block">{b.br3}</span>
                       ) : (
@@ -107,7 +119,7 @@ const MatchOddsMarket = ({ oddsData, pnlData, filterName, showOnly }: MatchOddsM
                       )}
                     </div>
                     <div className="bl-box back1 changed">
-                      <span className="d-block odds">{b?.b2 ?? "-"}</span>
+                      <span className="d-block odds">{formatOdds(b?.b2)}</span>
                       {b?.br2 !== undefined ? (
                         <span className="d-block">{b.br2}</span>
                       ) : (
@@ -115,7 +127,7 @@ const MatchOddsMarket = ({ oddsData, pnlData, filterName, showOnly }: MatchOddsM
                       )}
                     </div>
                     <div className="bl-box back changed">
-                      <span className="d-block odds">{b?.b1 ?? "-"}</span>
+                      <span className="d-block odds">{formatOdds(b?.b1)}</span>
                       {b?.br1 !== undefined ? (
                         <span className="d-block">{b.br1}</span>
                       ) : (
@@ -123,7 +135,7 @@ const MatchOddsMarket = ({ oddsData, pnlData, filterName, showOnly }: MatchOddsM
                       )}
                     </div>
                     <div className="bl-box lay changed">
-                      <span className="d-block odds">{b?.l1 ?? "-"}</span>
+                      <span className="d-block odds">{formatOdds(b?.l1)}</span>
                       {b?.lr1 !== undefined ? (
                         <span className="d-block">{b.lr1}</span>
                       ) : (
@@ -131,7 +143,7 @@ const MatchOddsMarket = ({ oddsData, pnlData, filterName, showOnly }: MatchOddsM
                       )}
                     </div>
                     <div className="bl-box lay1 changed">
-                      <span className="d-block odds">{b?.l2 ?? "-"}</span>
+                      <span className="d-block odds">{formatOdds(b?.l2)}</span>
                       {b?.lr2 !== undefined ? (
                         <span className="d-block">{b.lr2}</span>
                       ) : (
@@ -139,7 +151,7 @@ const MatchOddsMarket = ({ oddsData, pnlData, filterName, showOnly }: MatchOddsM
                       )}
                     </div>
                     <div className="bl-box lay2 changed">
-                      <span className="d-block odds">{b?.l3 ?? "-"}</span>
+                      <span className="d-block odds">{formatOdds(b?.l3)}</span>
                       {b?.lr3 !== undefined ? (
                         <span className="d-block">{b.lr3}</span>
                       ) : (

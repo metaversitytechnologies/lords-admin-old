@@ -325,19 +325,22 @@ nav.menu > ul > li.rootMenu.active > a {
 /* Balance Bar Styles (Glassmorphism Pills) */
 .balance-bar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     background-color: var(--primary-color); /* Match Header */
     padding: 10px 15px;
-    overflow-x: auto;
     border-bottom: 2px solid var(--accent-color);
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    overflow: hidden; /* Prevent outer scroll */
 }
 
 .balance-scroll-container {
     display: flex;
-    gap: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
     align-items: center;
+    flex: 1;
+    justify-content: flex-start;
+    margin-right: 10px;
 }
 
 .balance-pill {
@@ -353,8 +356,9 @@ nav.menu > ul > li.rootMenu.active > a {
     font-weight: bold;
     white-space: nowrap;
     transform: skewX(-20deg);
-    margin: 0 8px;
+    margin: 0;
     box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    flex-shrink: 0;
 }
 
 .balance-pill > * {
@@ -381,6 +385,67 @@ nav.menu > ul > li.rootMenu.active > a {
 .balance-pill .value {
     font-weight: 700;
     color: var(--text-light);
+}
+
+@media (max-width: 768px) {
+
+
+    .balance-scroll-container {
+        justify-content: space-between; /* Distribute space evenly */
+        gap: 2px; /* Minimal gap */
+        overflow-x: hidden; /* Ensure no scroll */
+        flex-wrap: nowrap; /* Force single line */
+        margin-right: 2px;
+    }
+    
+    .balance-pill {
+        flex-direction: column; /* Stack label and value vertically */
+        padding: 4px 6px; /* Very tight padding */
+        margin: 0 1px;
+        font-size: 10px;
+        height: 38px; /* Fixed height to align them */
+        line-height: 1.1;
+        flex: 1; /* Allow them to shrink/grow equally */
+        min-width: 0; /* Allow shrinking below content size if absolutely needed */
+    }
+
+    .balance-pill .label {
+        font-size: 8px; /* Tiny label */
+        margin-right: 0;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; 
+        max-width: 100%;
+    }
+
+    .balance-pill .value {
+        font-size: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+
+    /* Toggle labels on mobile */
+    .long-text { display: none; }
+    .short-text { display: inline; }
+    
+    .refresh-container .btn {
+        padding: 2px 6px; /* Smaller refresh button */
+        font-size: 10px;
+    }
+}
+
+@media (min-width: 769px) {
+    .long-text { display: inline; }
+    .short-text { display: none; }
+  
+}
+
+
+.refresh-container {
+    flex-shrink: 0;
 }
 
 .balance-pill .value.positive {

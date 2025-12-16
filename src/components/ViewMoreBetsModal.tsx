@@ -242,7 +242,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
           >
             <form onSubmit={handleFilterSubmit}>
               <div className="row">
-                <div className="form-group m-t-5 m-b-5 col-md-2 p-r-5">
+                <div className="form-group m-t-5 m-b-5 col-lg-2 col-md-6 col-sm-12 p-r-5">
                   <label className="p-l-5">Search by user</label>
                   <SearchUser
                     value={filterUname}
@@ -250,7 +250,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                     placeholder="Enter Atleast 3 character"
                   />
                 </div>
-                <div className="form-group m-t-5 m-b-5 col-md-2 p-l-0 p-r-5">
+                <div className="form-group m-t-5 m-b-5 col-lg-2 col-md-6 col-sm-12 p-l-0 p-r-5">
                   <label className="p-l-5">IP Address</label>
                   <input
                     type="text"
@@ -261,7 +261,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                     onChange={(e) => setFilterIp(e.target.value)}
                   />
                 </div>
-                <div className="form-group m-t-5 m-b-5 col-md-4 ip-address p-l-0 p-r-5">
+                <div className="form-group m-t-5 m-b-5 col-lg-4 col-md-6 col-sm-12 ip-address p-l-0 p-r-5">
                   <label className="p-l-5 d-block">Amount</label>
                   <div className=" d-flex ">
                     <input
@@ -283,7 +283,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                     />
                   </div>
                 </div>
-                <div className="form-group m-t-5 m-b-5 col-md-2 type p-l-0 p-r-5">
+                <div className="form-group m-t-5 m-b-5 col-lg-2 col-md-6 col-sm-12 type p-l-0 p-r-5">
                   <label className="p-l-5">Type</label>
                   <select
                     name="bettype"
@@ -296,7 +296,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                     <option value="LAY">Lay</option>
                   </select>
                 </div>
-                <div className="col-md-2 m-t-5 text-right p-l-0 p-r-15">
+                <div className="col-lg-2 col-md-12 col-sm-12 m-t-5 text-right p-l-0 p-r-15 m-b-5">
                   <label className="p-l-5 d-block">&nbsp;</label>
                   <button type="submit" className="btn btn-primary m-r-10">
                     Search
@@ -336,7 +336,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                       bets.map((bet, index) => (
                         <tr key={index} className={bet.back ? "back" : "lay"}>
                           <td>{index + 1}</td>
-                          <td>
+                          <td className="d-flex align-items-center">
                             {bet.userId}
                             <a
                               title="User Detail"
@@ -355,7 +355,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                           <td>{bet.currency}</td>
                           <td>{bet.placeTime}</td>
                           <td>{bet.matchedTime}</td>
-                          <td>
+                          <td className="d-flex align-items-center">
                             {bet.userIp}
                             <a
                               title="IP Details"
@@ -425,7 +425,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                         <td>{bet.amount}</td>
                         <td>{bet.currency}</td>
                         <td>{bet.placeTime}</td>
-                        <td>
+                        <td className="d-flex align-items-center">
                           {bet.userIp}
                           <a
                             title="IP Details"
@@ -497,7 +497,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                         <td>{bet.currency}</td>
                         <td>{bet.placeTime}</td>
                         <td>{bet.matchedTime}</td>
-                        <td>
+                        <td className="d-flex align-items-center">
                           {bet.userIp}
                           <a
                             title="IP Details"

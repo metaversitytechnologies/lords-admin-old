@@ -267,6 +267,7 @@ body {
 }
 
 @media only screen and (max-width: 767px) {
+
   .notfound .notfound-404 {
     height: 110px;
     line-height: 110px;
@@ -1253,3 +1254,16 @@ footer .bottom-footer {
   color: #fff !important;
   background-color: transparent !important;
 } */
+
+.search-box-container {
+    width: 100%;
+}
+.search-box-container input {
+    width: 100%;
+}
+
+@media only screen and (max-width: 767px) {
+  .search-box-container {
+    min-width: 150px;
+  }
+}

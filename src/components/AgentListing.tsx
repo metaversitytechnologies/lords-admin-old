@@ -72,7 +72,7 @@ const AgentListing: React.FC = () => {
         <h1>Agent Listing</h1>
         <div className="d-inline-block m-t-10">
           <label>Search By User Name</label>
-          <div className="search-box-container d-inline-block p-l-10">
+          <div className="d-inline-block p-l-10">
             <SearchUser
               value={searchTerm}
               onChange={setSearchTerm}
@@ -97,230 +97,201 @@ const AgentListing: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="table-responsive expandable-table">
-        <div className="m-b-10">
-          <ul>
-            <li>
-              <span>
-                <i>Downline Listing</i>
-              </span>
-            </li>
-          </ul>
+      <div style={{ position: "relative" }}>
+        <div className="table-responsive expandable-table">
+          <div className="m-b-10">
+            <ul>
+              <li>
+                <span>
+                  <i>Downline Listing</i>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="row col-page">
+            <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
+              <div className="row dataTables_length"></div>
+            </div>
+          </div>
+          <table className="table table-striped agent-listing">
+            <thead>
+              <tr>
+                <th className="text-left">Login Name</th>
+                <th className="text-left">Account Type</th>
+                <th className="text-center">Downline</th>
+                <th className="text-center">Betting Status</th>
+                <th className="text-center">Status</th>
+                <th className="text-center">Details</th>
+                <th className="text-right">Net Exposure</th>
+                <th className="text-right">G/T</th>
+                <th className="text-right">
+                  Credit Limit
+                  <br />
+                  {totalCreditLimit.toFixed(2)}
+                </th>
+                <th className="text-right">Available Credit</th>
+                <th
+                  className={`text-right ${
+                    !isExpanded ? "hidden-field" : "field-show"
+                  }`}
+                >
+                  Created
+                </th>
+                <th
+                  className={`text-right ${
+                    !isExpanded ? "hidden-field" : "field-show"
+                  }`}
+                >
+                  Last Login
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={12} className="text-center">
+                    Loading...
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan={12} className="text-center">
+                    {error}
+                  </td>
+                </tr>
+              ) : (
+                agents
+                  .filter(
+                    (agent) =>
+                      !generalSearchTerm ||
+                      Object.values(agent).some((val) =>
+                        String(val)
+                          .toLowerCase()
+                          .includes(generalSearchTerm.toLowerCase())
+                      )
+                  )
+                  .slice(
+                    (currentPage - 1) * itemsPerPage,
+                    currentPage * itemsPerPage
+                  )
+                  .map((agent) => (
+                    <tr key={agent.userId}>
+                      <td className="text-left">
+                        <span>
+                          <a
+                            href="#"
+                            title="Create"
+                            data-placement="top"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (userid) return;
+                              openUpdateModal(agent);
+                            }}
+                            style={{
+                              cursor: userid ? "default" : "pointer",
+                              textDecoration: "none"
+                            }}
+                          >
+                            {agent.userId}
+                          </a>
+                        </span>
+                      </td>
+                      <td className="text-left">
+                        <span>{agent.accountType}</span>
+                      </td>
+                      <td className="text-center">
+                        <span>
+                          {agent.accountType?.toLowerCase() === "user" ? (
+                            <span
+                              className="text"
+                              style={{ opacity: 0.5, cursor: "not-allowed" }}
+                            >
+                              <i className="fas fa-sitemap"></i>
+                            </span>
+                          ) : (
+                            <Link
+                              to={`/agentlisting/${agent.userId}`}
+                              className="text"
+                              data-placement="top"
+                              style={{ pointerEvents: "visible" }}
+                            >
+                              <i className="fas fa-sitemap"></i>
+                            </Link>
+                          )}
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <span>
+                          <a
+                            href="javascript:void(0)"
+                            data-placement="top"
+                            onClick={() => false}
+                            data-original-title="Betting Unlocked"
+                            className="text text-dark username"
+                          >
+                            <i
+                              className={`fas ${
+                                agent.bettingStatus ? "fa-unlock" : "fa-lock"
+                              } positive unlock-icon`}
+                            ></i>
+                          </a>
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <span>{agent.userActive ? "ACTIVE" : "INACTIVE"}</span>
+                      </td>
+                      <td className="text-center">
+                        <Link
+                          to={`/downlinereports/${agent.userId}`}
+                          className="text"
+                          data-placement="top"
+                          style={{ pointerEvents: "visible" }}
+                        >
+                          <i className="fas fa-eye"></i>
+                        </Link>
+                      </td>
+                      <td className="text-right positive negative">
+                        <span>{agent.netExposure}</span>
+                      </td>
+                      <td className="text-right positive">
+                        <span className="positive">{agent.gt}</span>
+                      </td>
+                      <td className="text-right">
+                        <span>{agent.creditLimit}</span>
+                      </td>
+                      <td className="text-right">
+                        <span>{agent.availabeCredit}</span>
+                      </td>
+                      <td
+                        className={`text-right ${
+                          !isExpanded ? "hidden-field" : "field-show"
+                        }`}
+                      >
+                        {agent.createdAt}
+                      </td>
+                      <td
+                        className={`text-right ${
+                          !isExpanded ? "hidden-field" : "field-show"
+                        }`}
+                      >
+                        {agent.lastLogin}
+                      </td>
+                    </tr>
+                  ))
+              )}
+            </tbody>
+          </table>
         </div>
-        <span className="table-control" onClick={toggleExpand}>
+        <span
+          className="table-control"
+          onClick={toggleExpand}
+          style={{ zIndex: 10 }}
+        >
           <i
             className={`fas ${isExpanded ? "fa-arrow-left" : "fa-arrow-right"}`}
           ></i>
         </span>
-        <div className="row col-page">
-          <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
-            <div className="row dataTables_length"></div>
-          </div>
-          <div className="col-sm-12 col-md-6">
-            <div className="dataTables_filter">
-              <div className="row">
-                <div className="f-l-m col">
-                  <label>
-                    Search:
-                    <input
-                      type="text"
-                      placeholder="Type to Search"
-                      className="form-control form-control-sm m-r-5"
-                      value={generalSearchTerm}
-                      onChange={(e) => {
-                        setGeneralSearchTerm(e.target.value);
-                        setCurrentPage(1);
-                      }}
-                    />
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <table className="table table-striped agent-listing">
-          <thead>
-            <tr>
-              <th className="text-left">Login Name</th>
-              <th className="text-left">Account Type</th>
-              <th className="text-center">Downline</th>
-              <th className="text-center">Betting Status</th>
-              <th className="text-center">Status</th>
-              <th className="text-center">Details</th>
-              <th className="text-right">Net Exposure</th>
-              <th className="text-right">G/T</th>
-              <th className="text-right">
-                Credit Limit
-                <br />
-                {totalCreditLimit.toFixed(2)}
-              </th>
-              <th className="text-right">Available Credit</th>
-              <th
-                className={`text-right ${
-                  !isExpanded ? "hidden-field" : "field-show"
-                }`}
-              >
-                Created
-              </th>
-              <th
-                className={`text-right ${
-                  !isExpanded ? "hidden-field" : "field-show"
-                }`}
-              >
-                Last Login
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={12} className="text-center">
-                  Loading...
-                </td>
-              </tr>
-            ) : error ? (
-              <tr>
-                <td colSpan={12} className="text-center">
-                  {error}
-                </td>
-              </tr>
-            ) : (
-              agents
-                .filter(
-                  (agent) =>
-                    !generalSearchTerm ||
-                    Object.values(agent).some((val) =>
-                      String(val)
-                        .toLowerCase()
-                        .includes(generalSearchTerm.toLowerCase())
-                    )
-                )
-                .slice(
-                  (currentPage - 1) * itemsPerPage,
-                  currentPage * itemsPerPage
-                )
-                .map((agent) => (
-                  <tr key={agent.userId}>
-                    <td className="text-left">
-                      <span>
-                        <a
-                          href="#"
-                          title="Create"
-                          data-placement="top"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            if (userid) return;
-                            openUpdateModal(agent);
-                          }}
-                          style={{
-                            cursor: userid ? "default" : "pointer",
-                            textDecoration: "none"
-                          }}
-                        >
-                          {agent.userId}
-                        </a>
-                      </span>
-                    </td>
-                    <td className="text-left">
-                      <span>{agent.accountType}</span>
-                    </td>
-                    <td className="text-center">
-                      <span>
-                        {agent.accountType?.toLowerCase() === "user" ? (
-                          <span
-                            className="text"
-                            style={{ opacity: 0.5, cursor: "not-allowed" }}
-                          >
-                            <i className="fas fa-sitemap"></i>
-                          </span>
-                        ) : (
-                          <Link
-                            to={`/agentlisting/${agent.userId}`}
-                            className="text"
-                            data-placement="top"
-                            style={{ pointerEvents: "visible" }}
-                          >
-                            <i className="fas fa-sitemap"></i>
-                          </Link>
-                        )}
-                      </span>
-                    </td>
-                    <td className="text-center">
-                      <span>
-                        <a
-                          href="javascript:void(0)"
-                          data-placement="top"
-                          onClick={() => false}
-                          data-original-title="Betting Unlocked"
-                          className="text text-dark username"
-                        >
-                          <i
-                            className={`fas ${
-                              agent.bettingStatus ? "fa-unlock" : "fa-lock"
-                            } positive unlock-icon`}
-                          ></i>
-                        </a>
-                      </span>
-                    </td>
-                    <td className="text-center">
-                      <span>{agent.userActive ? "ACTIVE" : "INACTIVE"}</span>
-                    </td>
-                    <td className="text-center">
-                      <Link
-                        to={`/downlinereports/${agent.userId}`}
-                        className="text"
-                        data-placement="top"
-                        style={{ pointerEvents: "visible" }}
-                      >
-                        <i className="fas fa-eye"></i>
-                      </Link>
-                    </td>
-                    <td className="text-right positive negative">
-                      <span>{agent.netExposure}</span>
-                    </td>
-                    <td className="text-right positive">
-                      <span className="positive">{agent.gt}</span>
-                    </td>
-                    <td className="text-right">
-                      <span>{agent.creditLimit}</span>
-                    </td>
-                    <td className="text-right">
-                      <span>{agent.availabeCredit}</span>
-                    </td>
-                    <td
-                      className={`text-right ${
-                        !isExpanded ? "hidden-field" : "field-show"
-                      }`}
-                    >
-                      {agent.createdAt}
-                    </td>
-                    <td
-                      className={`text-right ${
-                        !isExpanded ? "hidden-field" : "field-show"
-                      }`}
-                    >
-                      {agent.lastLogin}
-                    </td>
-                  </tr>
-                ))
-            )}
-          </tbody>
-        </table>
-        {/* <Pagination
-          currentPage={currentPage}
-          totalPages={Math.ceil(
-            agents.filter(
-              (agent) =>
-                !generalSearchTerm ||
-                Object.values(agent).some((val) =>
-                  String(val)
-                    .toLowerCase()
-                    .includes(generalSearchTerm.toLowerCase())
-                )
-            ).length / itemsPerPage
-          )}
-          onPageChange={setCurrentPage}
-        /> */}
       </div>
 
       <UpdateUser

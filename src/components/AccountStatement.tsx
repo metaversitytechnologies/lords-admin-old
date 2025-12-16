@@ -117,55 +117,60 @@ const AccountStatement: React.FC = () => {
           {/* Filters */}
           <form className="m-b-10" onSubmit={handleSubmit}>
             {/* Balance Type */}
-            <div className="select-report d-inline-block col-md-2 form-group p-l-0 p-r-5">
-              <label className="p-l-5">Balance Type</label>
-              <select
-                className="form-control"
-                value={balanceType}
-                onChange={(e) => setBalanceType(e.target.value)}
-              >
-                <option value="ALL">All</option>
-                <option value="Upper">Upper</option>
-                <option value="Lower">Lower</option>
-                <option value="Only C/W">Only C/W</option>
-                <option value="Only D/W">Only D/W</option>
-                <option value="Withdraw">Withdraw</option>
-                <option value="Deposit">Deposit</option>
-              </select>
-            </div>
+            <div className="row">
+              {/* Balance Type */}
+              <div className="col-3 col-lg-2 mb-2 form-group">
+                <label className="d-block mb-1">Balance Type</label>
+                <select
+                  className="form-control"
+                  value={balanceType}
+                  onChange={(e) => setBalanceType(e.target.value)}
+                >
+                  <option value="ALL">All</option>
+                  <option value="Upper">Upper</option>
+                  <option value="Lower">Lower</option>
+                  <option value="Only C/W">Only C/W</option>
+                  <option value="Only D/W">Only D/W</option>
+                  <option value="Withdraw">Withdraw</option>
+                  <option value="Deposit">Deposit</option>
+                </select>
+              </div>
 
-            {/* Search User */}
-            <div className="select-report d-inline-block col-md-2 form-group report-search p-l-0 p-r-5">
-              <label className="p-l-5">Search by user</label>
-              <div className="search-box-container">
+              {/* Search User */}
+              <div className="col-3 col-lg-2 mb-2 form-group">
+                <label className="d-block mb-1">Search by user</label>
                 <SearchUser
                   value={searchedUserId}
                   onChange={setSearchedUserId}
-                  placeholder="Enter Atleast 3 character"
+                  placeholder="Enter at least 3 characters"
                 />
               </div>
-            </div>
 
-            {/* Date Inputs */}
-            <div className="datepicker-wrapper d-inline-block col-md-2 form-group p-l-0 p-r-5">
-              <label className="p-l-5">From</label>
-              <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
-            </div>
+              {/* From Date */}
+              <div className="col-3 col-lg-2 mb-2 form-group">
+                <label className="d-block mb-1">From</label>
+                <ReusableDatePicker
+                  selected={fromDate}
+                  onChange={setFromDate}
+                />
+              </div>
 
-            <div className="datepicker-wrapper d-inline-block col-md-2 form-group p-l-0 p-r-5">
-              <label className="p-l-5">To</label>
-              <ReusableDatePicker selected={toDate} onChange={setToDate} />
-            </div>
+              {/* To Date */}
+              <div className="col-3 col-lg-2 mb-2 form-group">
+                <label className="d-block mb-1">To</label>
+                <ReusableDatePicker selected={toDate} onChange={setToDate} />
+              </div>
 
-            <div className="d-inline-block p-l-0 p-r-5">
-              <label className="p-l-5">&nbsp;</label>
-              <button
-                type="submit"
-                className="btn btn-secondary m-l-5 btn-load-c"
-                disabled={loading}
-              >
-                {loading ? "Loading..." : "Load"}
-              </button>
+              {/* Button */}
+              <div className="col-2 col-lg-2 mb-2 form-group d-flex align-items-end">
+                <button
+                  type="submit"
+                  className="btn btn-secondary "
+                  disabled={loading}
+                >
+                  {loading ? "Loading..." : "Load"}
+                </button>
+              </div>
             </div>
           </form>
 

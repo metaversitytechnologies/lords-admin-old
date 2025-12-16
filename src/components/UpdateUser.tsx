@@ -228,7 +228,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({
                         <div className="apl-section-inner">
                           <legend>Change Password</legend>
                           <div className="apl-form-row row m-t-25">
-                            <div className="col-4">
+                            <div className="col-6">
                               <label>Password</label>
                               <input
                                 autoComplete="new-password"
@@ -259,7 +259,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({
                                 </span>
                               )}
                             </div>
-                            <div className="col-4">
+                            <div className="col-6">
                               <label>Repeat Password</label>
                               <input
                                 autoComplete="new-password"
