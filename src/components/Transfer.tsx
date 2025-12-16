@@ -176,9 +176,9 @@ const Transfer = () => {
                 value={masterPassword}
                 onChange={(e) => setMasterPassword(e.target.value)}
               />
-              <button className="btn btn-primary v-t m-l-5 p-l-5 p-r-5">
+              {/* <button className="btn btn-primary v-t m-l-5 p-l-5 p-r-5">
                 Transfer All
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

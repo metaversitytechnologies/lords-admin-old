@@ -19,7 +19,7 @@ const DownlineBetList = ({ userId }) => {
   const [toDate, setToDate] = useState<Date | null>(today);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchData = async () => {
+  const fetchData = async (pFromDate?: Date | null, pToDate?: Date | null) => {
     setLoading(true);
     setError(null);
     try {
@@ -27,10 +27,14 @@ const DownlineBetList = ({ userId }) => {
         userId: userId,
         matchedDeletedBet: betType.toUpperCase(),
         currentBet: activeTab === "current",
-        fromDate: fromDate?.toISOString().split("T")[0],
-        toDate: toDate?.toISOString().split("T")[0],
+        fromDate: (pFromDate !== undefined ? pFromDate : fromDate)
+          ?.toISOString()
+          .split("T")[0],
+        toDate: (pToDate !== undefined ? pToDate : toDate)
+          ?.toISOString()
+          .split("T")[0],
         index: 0,
-        noOfRecords: 99999,
+        noOfRecords: 99999
       };
       const response = await getBetDetailUseridwiseLord(payload);
       if (response.status === false) {
@@ -51,6 +55,12 @@ const DownlineBetList = ({ userId }) => {
 
   const handleApply = () => {
     fetchData();
+  };
+
+  const handleCancel = () => {
+    setFromDate(oneWeekAgo);
+    setToDate(today);
+    fetchData(oneWeekAgo, today);
   };
 
   const handlePageChange = (newPage) => {
@@ -87,6 +97,14 @@ const DownlineBetList = ({ userId }) => {
                         onClick={handleApply}
                       >
                         Apply
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-cancel"
+                        style={{ marginLeft: "5px" }}
+                        onClick={handleCancel}
+                      >
+                        Cancel
                       </button>
                     </div>
                   </div>
@@ -198,9 +216,7 @@ const DownlineBetList = ({ userId }) => {
                                     style={{ width: "60px" }}
                                     value={itemsPerPage}
                                     onChange={(e) => {
-                                      setItemsPerPage(
-                                        Number(e.target.value)
-                                      );
+                                      setItemsPerPage(Number(e.target.value));
                                       setCurrentPage(1);
                                     }}
                                   >

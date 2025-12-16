@@ -1,112 +1,58 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import { getScorecardData } from '../api/oddsApi';
 
-type Team = {
-  short: string;
-  score: string;
-  crR?: string;
-  rr?: string;
-};
+interface ScorecardProps {
+  matchId: string;
+}
 
-type ScoreboardProps = {
-  scoreboard?: {
-    teamA?: Team;
-    teamB?: Team;
-    remark?: string;
-  };
-};
+const Scorecard: React.FC<ScorecardProps> = ({ matchId }) => {
+  const [scorecardHtml, setScorecardHtml] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-const Scorecard: React.FC<ScoreboardProps> = ({ scoreboard = {} }) => {
-  const sb = {
-    teamA: scoreboard.teamA ?? { short: "MPR", score: "123-10 (19.4)" },
-    teamB: scoreboard.teamB ?? {
-      short: "LIM",
-      score: "73-5 (14.2)",
-      crR: "5.09",
-      rr: "9.00"
-    },
-    remark: scoreboard.remark ?? "LIM Needed 51 runs from 34 balls"
-  };
+  useEffect(() => {
+    const fetchScorecard = async () => {
+      if (!matchId) {
+        setLoading(false);
+        setError("Match ID is not provided.");
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await getScorecardData(matchId);
+        if (response.data) {
+          setScorecardHtml(response.data);
+        } else {
+          setError("Failed to load scorecard data.");
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchScorecard();
+    const interval = setInterval(fetchScorecard, 5000); // Refresh every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [matchId]);
+
+  if (loading && !scorecardHtml) {
+    return <div>Loading scorecard...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!scorecardHtml) {
+    return <div>No scorecard available.</div>;
+  }
 
   return (
-    <div className="float-left scorecard">
-      <div className="scorecard-top-container">
-        {/* Team A */}
-        <div className="scorecard-left">
-          <div className="team-block">
-            <span className="float-left m-r-5">
-              <img
-                src="https://d3kb8xz339pq18.cloudfront.net/v12/static/backend/images/ball-icon-white.png"
-                alt="ball"
-              />
-            </span>
-            <div className="float-right">
-              <h6 className="m-b-0">
-                <span className="text-white">{sb.teamA.short}</span>
-              </h6>
-              <div className="score">
-                <p className="m-b-0">
-                  <span>{sb.teamA.score}</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Recent balls + Remark */}
-        <div className="scorecard-center">
-          <div className="text-center">
-            <div className="col-md-12 p-t-5">
-              <div>
-                <span className="m-r-5">
-                  <span className="m-b-0 ball-runs ball-runs wicket">ww</span>
-                </span>
-                <span className="m-r-5">
-                  <span className="m-b-0 ball-runs">0</span>
-                </span>
-                <span className="m-r-5">
-                  <span className="m-b-0 ball-runs">1</span>
-                </span>
-                <span className="m-r-5">
-                  <span className="m-b-0 ball-runs">1</span>
-                </span>
-                <span className="m-r-5">
-                  <span className="m-b-0 ball-runs">0</span>
-                </span>
-                <span className="m-r-5">
-                  <span className="m-b-0 ball-runs">0</span>
-                </span>
-              </div>
-            </div>
-          </div>
-          <p className="m-b-0 score-board-remark">{sb.remark}</p>
-        </div>
-
-        {/* Team B */}
-        <div className="scorecard-right active-innings">
-          <div className="team-block">
-            <div className="float-left">
-              <h6 className="m-b-0 text-white">{sb.teamB.short}</h6>
-              <div className="score">
-                <p className="m-b-0">
-                  <span>{sb.teamB.score}</span>
-                </p>
-                <p className="m-b-0">
-                  {sb.teamB.crR && <span>CRR {sb.teamB.crR}</span>}{" "}
-                  {sb.teamB.rr && <span>RR {sb.teamB.rr}</span>}
-                </p>
-              </div>
-            </div>
-
-            <span className="float-right m-l-5">
-              <img
-                src="https://d3kb8xz339pq18.cloudfront.net/v12/static/backend/images/bat-icon.png"
-                alt="bat"
-              />
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div dangerouslySetInnerHTML={{ __html: scorecardHtml }} />
   );
 };
 

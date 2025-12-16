@@ -107,7 +107,7 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
 
           <div className="form-group d-inline-block">
             <label className="d-block">&nbsp;</label>
-            <button className="btn btn-primary" onClick={handleSearch}>
+            <button className="btn btn-secondary" onClick={handleSearch}>
               <i className="fa fa-search m-r-5"></i>Search
             </button>
           </div>
@@ -164,7 +164,7 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
             </div>
           </div>
         </div>
-        <table className="table table-striped">
+        <table className="table">
           <thead>
             <tr>
               <th>Date</th>
@@ -184,36 +184,58 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
               </tr>
             ) : statementData?.dataList?.length ? (
               statementData.dataList
-                .flatMap((daily) => daily.dataList)
-                .filter(
-                  (entry) =>
-                    !searchTerm ||
-                    Object.values(entry).some((val) =>
-                      String(val)
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    )
+                .filter((daily) =>
+                  daily.dataList.some(
+                    (entry) =>
+                      !searchTerm ||
+                      Object.values(entry).some((val) =>
+                        String(val)
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      )
+                  )
                 )
                 .slice(
                   (currentPage - 1) * itemsPerPage,
                   currentPage * itemsPerPage
                 )
-                .map((entry, index) => (
-                  <tr key={index}>
-                    <td>{entry.date}</td>
-                    <td>{entry.description}</td>
-                    <td
-                      className={`text-right ${
-                        entry.pnl >= 0 ? "positive" : "negative"
-                      }`}
-                    >
-                      {entry.pnl.toFixed(2)}
-                    </td>
-                    <td className="text-right">{entry.creditLimit}</td>
-                    <td className="text-right positive">
-                      {entry.balance.toFixed(2)}
-                    </td>
-                  </tr>
+                .map((daily) => (
+                  <React.Fragment key={daily.date}>
+                    <tr className="group">
+                      <td colSpan={5}>{daily.date}</td>
+                    </tr>
+                    {daily.dataList
+                      .filter(
+                        (entry) =>
+                          !searchTerm ||
+                          Object.values(entry).some((val) =>
+                            String(val)
+                              .toLowerCase()
+                              .includes(searchTerm.toLowerCase())
+                          )
+                      )
+                      .map((entry, index) => (
+                        <tr key={index}>
+                          <td>{entry.date}</td>
+                          <td>{entry.description}</td>
+                          <td
+                            className={` ${
+                              entry.pnl >= 0 ? "positive" : "negative"
+                            }`}
+                          >
+                            {entry.pnl.toFixed(2)}
+                          </td>
+                          <td className="text-right">{entry.creditLimit}</td>
+                          <td
+                            className={`text-right ${
+                              entry.balance >= 0 ? "positive" : "negative"
+                            }`}
+                          >
+                            {entry.balance.toFixed(2)}
+                          </td>
+                        </tr>
+                      ))}
+                  </React.Fragment>
                 ))
             ) : (
               <tr>

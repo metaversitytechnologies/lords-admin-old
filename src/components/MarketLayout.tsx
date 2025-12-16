@@ -117,7 +117,7 @@ const MarketLayout = () => {
                 })}
             </div>
             <div className="right-market">
-              <Scorecard />
+              <Scorecard matchId={id ?? ""} />
               <MatchedUnmatched matchId={id ?? ""} />
               <BookmakerMarket
                 pnlData={oddsPnl}

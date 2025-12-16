@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { getBettingPnl } from "../api/auth";
 import MarketPnlBreakdown from "./MarketPnlBreakdown";
 import ReusableDatePicker from "./DatePicker";
@@ -29,11 +29,23 @@ const BettingPnl = ({ userId }) => {
         fromDate: fromDate?.toISOString().split("T")[0],
         toDate: toDate?.toISOString().split("T")[0],
         noOfRecords: 99999,
-        index: 0,
+        index: 0
       };
       const response = await getBettingPnl(payload);
       if (response.data) {
-        const pnlData = response.data.flatMap((item) => item.pnlList);
+        const pnlData = response.data.flatMap((group) => {
+          if (!group.date) return [];
+          const [year, month, day] = group.date.split("-");
+          const displayDate = `${day}/${month}/${year}`;
+          return group.pnlList.map((pnl) => ({
+            ...pnl,
+            settledDateTimeForSorting: new Date(
+              `${group.date}T${pnl.settledTime}`
+            ),
+            displaySettledTime: `${displayDate} ${pnl.settledTime}`,
+            displayDate: displayDate
+          }));
+        });
         setData(pnlData);
       } else {
         setData([]);
@@ -58,6 +70,21 @@ const BettingPnl = ({ userId }) => {
     setSelectedMarket(null);
   };
 
+  const filteredData = data.filter((item) =>
+    item.marketName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const sortedData = [...filteredData].sort(
+    (a, b) =>
+      (b.settledDateTimeForSorting?.getTime() || 0) -
+      (a.settledDateTimeForSorting?.getTime() || 0)
+  );
+
+  const paginatedData = sortedData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return (
     <div id="betting-pnl" className="tab-pane fade active show">
       <div>
@@ -68,7 +95,7 @@ const BettingPnl = ({ userId }) => {
           </div>
           <div className="datepicker-wrapper form-group d-inline-block col-md-2 v-t p-l-0 p-r-5">
             <label className="p-l-5 d-block">To</label>
-            <ReusableDatePicker selectesd={toDate} onChange={setToDate} />
+            <ReusableDatePicker selected={toDate} onChange={setToDate} />
           </div>
           <div className="d-inline-block v-t p-l-0">
             <label className="p-l-5 d-block">&nbsp;</label>
@@ -151,7 +178,7 @@ const BettingPnl = ({ userId }) => {
               </div>
             </div>
           </div>
-          <table className="table table-striped">
+          <table className="table">
             <thead>
               <tr>
                 <th>Market</th>
@@ -161,72 +188,76 @@ const BettingPnl = ({ userId }) => {
               </tr>
             </thead>
             <tbody>
-              {data.length > 0 ? (
-                data
-                  .filter((item) =>
-                    item.marketName
-                      .toLowerCase()
-                      .includes(searchTerm.toLowerCase())
-                  )
-                  .slice(
-                    (currentPage - 1) * itemsPerPage,
-                    currentPage * itemsPerPage
-                  )
-                  .map((item, index) => (
-                    <tr key={index}>
-                      <td>
-                        <a
-                          href="javascript:void(0)"
-                          onClick={() => handleMarketClick(item)}
-                        >
-                          {item.marketName}
-                        </a>
-                      </td>
-                      <td>
-                        <span>
-                          {item.startTime
-                            ? new Date(item.startTime).toLocaleString()
-                            : "-"}
-                        </span>
-                      </td>
-                      <td>
-                        <span>
-                          {item.settledTime
-                            ? new Date(item.settledTime).toLocaleString()
-                            : "-"}
-                        </span>
-                      </td>
-                      <td className="text-right">
-                        <span
-                          className={
-                            item.netWin >= 0 ? "positive" : "negative"
-                          }
-                        >
-                          {typeof item.netWin === "number"
-                            ? item.netWin.toFixed(2)
-                            : "0.00"}
-                        </span>
+              {(() => {
+                if (paginatedData.length === 0) {
+                  return (
+                    <tr>
+                      <td colSpan={4} className="text-center">
+                        No data available
                       </td>
                     </tr>
-                  ))
-              ) : (
-                <tr>
-                  <td colSpan="4" className="text-center">
-                    No data available
-                  </td>
-                </tr>
-              )}
+                  );
+                }
+
+                let lastDate = "";
+                if (currentPage > 1) {
+                  const lastItemOfPreviousPage =
+                    sortedData[(currentPage - 1) * itemsPerPage - 1];
+                  if (lastItemOfPreviousPage) {
+                    lastDate = lastItemOfPreviousPage.displayDate;
+                  }
+                }
+
+                return paginatedData.map((item) => {
+                  const showDateHeader = item.displayDate !== lastDate;
+                  lastDate = item.displayDate;
+
+                  return (
+                    <Fragment key={item.marketId}>
+                      {showDateHeader && (
+                        <tr className="group">
+                          <td>{item.displayDate}</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                      )}
+                      <tr>
+                        <td>
+                          <a
+                            href="javascript:void(0)"
+                            onClick={() => handleMarketClick(item)}
+                          >
+                            {item.marketName}
+                          </a>
+                        </td>
+                        <td>
+                          <span>{item.startTime}</span>
+                        </td>
+                        <td>
+                          <span>{item.displaySettledTime}</span>
+                        </td>
+                        <td className="text-right">
+                          <span
+                            className={
+                              item.netWin >= 0 ? "positive" : "negative"
+                            }
+                          >
+                            {typeof item.netWin === "number"
+                              ? item.netWin.toFixed(2)
+                              : "0.00"}
+                          </span>
+                        </td>
+                      </tr>
+                    </Fragment>
+                  );
+                });
+              })()}
             </tbody>
           </table>
           <Pagination
             currentPage={currentPage}
-            totalPages={Math.ceil(
-              data.filter((item) =>
-                item.marketName
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              ).length / itemsPerPage
-            )}
+            totalPages={Math.ceil(sortedData.length / itemsPerPage)}
             onPageChange={setCurrentPage}
           />
         </div>

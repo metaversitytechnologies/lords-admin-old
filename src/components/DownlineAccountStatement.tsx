@@ -3,6 +3,7 @@ import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
 import SearchUser from "./SearchUser";
 import { getAccountStatement } from "../api/reports";
 import { useAuth } from "../context/AuthContext";
+import { getIpAddressDetailLord } from "../api/user";
 import ReusableDatePicker from "./DatePicker";
 import Pagination from "./Pagination";
 
@@ -32,7 +33,10 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
   const [showModal, setShowModal] = useState(false);
   const [ipDetails, setIpDetails] = useState<IpDetails | null>(null);
 
-  const [fromDate, setFromDate] = useState<Date | null>(new Date());
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  const [fromDate, setFromDate] = useState<Date | null>(oneWeekAgo);
   const [toDate, setToDate] = useState<Date | null>(new Date());
 
   const [balanceType, setBalanceType] = useState("all");
@@ -58,7 +62,7 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
         toDate: toDate?.toISOString().split("T")[0],
         noOfRecords: 99999,
         index: 0,
-        balanceType: balanceType === "all" ? "ALL" : balanceType.toUpperCase(),
+        balanceType: balanceType === "all" ? "ALL" : balanceType.toUpperCase()
       };
 
       const res = await getAccountStatement(payload);
@@ -85,9 +89,8 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
     setShowModal(true);
 
     try {
-      const response = await fetch(`http://ip-api.com/json/${ip}`);
-      const data = await response.json();
-      setIpDetails(data);
+      const res = await getIpAddressDetailLord({ ipAddress: ip });
+      setIpDetails(res.data);
     } catch (error) {
       setIpDetails({
         status: "fail",
@@ -302,7 +305,7 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
                               <tr key={i}>
                                 <td className="text-center">{row.date}</td>
                                 <td className="">{row.description}</td>
-                                <td className="text-left">
+                                <td className="d-flex align-items-center">
                                   {row.ip}
                                   {row.ip && (
                                     <a

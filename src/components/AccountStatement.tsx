@@ -3,6 +3,7 @@ import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
 import SearchUser from "./SearchUser";
 import { getAccountStatement } from "../api/reports";
 import { useAuth } from "../context/AuthContext";
+import { getIpAddressDetailLord } from "../api/user";
 import ReusableDatePicker from "./DatePicker";
 import { CSVLink } from "react-csv";
 import Pagination from "./Pagination";
@@ -32,7 +33,10 @@ const AccountStatement: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [ipDetails, setIpDetails] = useState<IpDetails | null>(null);
 
-  const [fromDate, setFromDate] = useState<Date | null>(new Date());
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  const [fromDate, setFromDate] = useState<Date | null>(oneWeekAgo);
   const [toDate, setToDate] = useState<Date | null>(new Date());
 
   const [balanceType, setBalanceType] = useState("ALL");
@@ -83,16 +87,15 @@ const AccountStatement: React.FC = () => {
   const handleIpDetails = async (ip: string) => {
     setIpDetails(null);
     setShowModal(true);
-    a;
+
     try {
-      const response = await fetch(`http://ip-api.com/json/${ip}`);
-      const data = await response.json();
-      setIpDetails(data);
+      const res = await getIpAddressDetailLord({ ipAddress: ip });
+      setIpDetails(res.data);
     } catch (error) {
       setIpDetails({
         status: "fail",
         message: "reserved range",
-        query: ip
+        query: ip,
       });
     }
   };

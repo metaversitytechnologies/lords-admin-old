@@ -21,3 +21,20 @@ export const getOddsData = async (matchId: string) => {
 
   return response.json();
 };
+
+export const getScorecardData = async (matchId: string) => {
+
+  const response = await fetch(`https://oddsapi.khelo7.com/api/fancy/v1/scoreApi/${matchId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to fetch scorecard");
+  }
+
+  return response.json();
+};
