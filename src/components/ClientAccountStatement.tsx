@@ -81,20 +81,20 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
           {!childId && <h1>Clients Account Statement</h1>}
         </div>
 
-        <div>
-          <div className="form-group col-md-2 v-t d-inline-block p-r-5">
+        <div className="row">
+          <div className="col-12 col-md-auto form-group">
             <label className="d-block">From:</label>
             <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
           </div>
 
-          <div className="form-group col-md-2 v-t d-inline-block p-l-0 p-r-5">
+          <div className="col-12 col-md-auto form-group">
             <label className="d-block">To:</label>
             <ReusableDatePicker selected={toDate} onChange={setToDate} />
           </div>
 
           {!childId && (
-            <div className="d-inline-block col-md-2 v-t p-l-0 p-r-5">
-              <label>Search by user</label>
+            <div className="col-12 col-md-auto form-group">
+              <label className="d-block">Search by user</label>
               <div className="search-box-container">
                 <SearchUser
                   value={userId}
@@ -105,8 +105,7 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
             </div>
           )}
 
-          <div className="form-group d-inline-block">
-            <label className="d-block">&nbsp;</label>
+          <div className="col-12 col-md-auto form-group d-flex align-items-end">
             <button className="btn btn-secondary" onClick={handleSearch}>
               <i className="fa fa-search m-r-5"></i>Search
             </button>
