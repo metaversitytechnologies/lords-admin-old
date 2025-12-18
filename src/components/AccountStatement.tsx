@@ -27,6 +27,7 @@ const AccountStatement: React.FC = () => {
 
   // User searched from SearchUser
   const [searchedUserId, setSearchedUserId] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
 
   // UI states
   const [activeTab, setActiveTab] = useState("pnl");
@@ -52,6 +53,7 @@ const AccountStatement: React.FC = () => {
   const fetchStatement = async () => {
     if (!finalUserId) return;
 
+    setHasSearched(true);
     setStatementData([]);
     setLoading(true);
     try {
@@ -76,7 +78,9 @@ const AccountStatement: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchStatement();
+    if (hasSearched) {
+      fetchStatement();
+    }
   }, [activeTab]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -311,7 +315,7 @@ const AccountStatement: React.FC = () => {
                       ) : (
                         <tr>
                           <td colSpan={6} className="text-center">
-                            No data found
+                            There are no records to show
                           </td>
                         </tr>
                       )}
@@ -378,7 +382,7 @@ const AccountStatement: React.FC = () => {
                       ) : (
                         <tr>
                           <td colSpan={5} className="text-center">
-                            No data found
+                            There are no records to show
                           </td>
                         </tr>
                       )}
@@ -410,6 +414,7 @@ const AccountStatement: React.FC = () => {
         show={showModal}
         handleClose={() => setShowModal(false)}
         ipDetails={ipDetails}
+        loading={false}
       />
     </section>
   );

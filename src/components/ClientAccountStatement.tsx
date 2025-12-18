@@ -240,7 +240,7 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
             ) : (
               <tr>
                 <td colSpan={5} className="text-center">
-                  No data available.
+                  {/* No data available. */}
                 </td>
               </tr>
             )}

@@ -7,7 +7,7 @@ const MessageReport: React.FC = () => {
   return (
     <>
       <div className="w-100 float-left m-t-0">
-        <form className="m-b-10">
+        <div className="m-b-10">
           <div className="header">
             <h1>Message Report</h1>
           </div>
@@ -27,7 +27,7 @@ const MessageReport: React.FC = () => {
               Load
             </button>
           </div>
-        </form>
+        </div>
         <div className="table-responsive col-sm-12">
           <div className="row col-page">
             <div className="col-sm-12 col-md-6 p-l-0 p-r-5">

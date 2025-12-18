@@ -491,3 +491,16 @@ nav.menu > ul > li.rootMenu.active > a {
 .pnl label {
     color: black;
 }
+
+
+.totalrow, .totalrow td {
+    font-weight: bold;
+    color: var(--primary-color);
+    background: rgba(248, 116, 116, 0.092) !important;
+}
+
+tr.groupdate {
+    background-color: var(--accent-color) !important;
+    cursor: default !important;
+    /* text-decoration: underline; */
+}

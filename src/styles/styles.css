@@ -2449,9 +2449,11 @@ color: var(--accent-color)
 }
 
 .pnl-by-market td.event-group {
-    background-color: rgba(245, 245, 245, 0.3);
+    background-color: var(--primary-color);
     padding-left: 16px;
+    color: #fff;
     border-right: none;
+    font-weight: bold;
 }
 
 .datepicker input[type="text"] {
@@ -2653,6 +2655,7 @@ span.order-time {
 .update-agent .modal-content {
     background: transparent !important;
 }
+
 
 .update-agent .modal-content {
     max-height: 85vh;

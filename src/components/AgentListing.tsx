@@ -97,7 +97,7 @@ const AgentListing: React.FC = () => {
           </div>
         </div>
       </div>
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", clear: "both" }}>
         <div className="table-responsive expandable-table">
           <div className="m-b-10">
             <ul>

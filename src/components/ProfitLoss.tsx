@@ -38,6 +38,8 @@ const ProfitLoss: React.FC = () => {
   const [sports, setSports] = useState<any[]>([]);
   const [markets, setMarkets] = useState<any[]>([]);
 
+  const [hasSearched, setHasSearched] = useState(false);
+
   useEffect(() => {
     fetchSports();
   }, []);
@@ -80,6 +82,7 @@ const ProfitLoss: React.FC = () => {
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setLoading(true);
+    setHasSearched(true);
     try {
       const payload = {
         eventName: eventName === "All" ? "" : eventName,
@@ -115,8 +118,8 @@ const ProfitLoss: React.FC = () => {
   };
 
   useEffect(() => {
-    // Fetch data only when not viewing bets
-    if (!selectedMarket) {
+    // Fetch data only when not viewing bets and if a search has been performed
+    if (!selectedMarket && hasSearched) {
       handleSearch();
     }
   }, [selectedMarket]);
@@ -162,11 +165,15 @@ const ProfitLoss: React.FC = () => {
                 value={marketName}
                 onChange={(e) => setMarketName(e.target.value)}
               >
-                {markets.map((market: any, index: number) => (
-                  <option key={index} value={market.name}>
-                    {market.name}
-                  </option>
-                ))}
+                {markets.length > 0 ? (
+                  markets.map((market: any, index: number) => (
+                    <option key={index} value={market.name}>
+                      {market.name}
+                    </option>
+                  ))
+                ) : (
+                  <option value="all">All</option>
+                )}
               </select>
             </div>
             <div className="form-group v-t m-l-10 d-inline-block">
@@ -199,8 +206,8 @@ const ProfitLoss: React.FC = () => {
       <div className="table-responsive pnl-by-market">
         {selectedMarket ? (
           <MarketBets market={selectedMarket} onBack={handleBack} />
-        ) : (
-          <table className="table table-striped">
+        ) : hasSearched ? (
+          <table className="table">
             <thead>
               <tr>
                 <th></th>
@@ -220,7 +227,7 @@ const ProfitLoss: React.FC = () => {
                 <tbody>
                   {reportData.map((dateReport) => (
                     <React.Fragment key={dateReport.date}>
-                      <tr>
+                      <tr className="groupdate">
                         <td colSpan={2} className="date-group b-r-0">
                           <span>
                             {new Date(dateReport.date).toLocaleDateString(
@@ -260,7 +267,7 @@ const ProfitLoss: React.FC = () => {
                               </td>
                             </tr>
                           ))}
-                          <tr>
+                          <tr className="totalrow">
                             <td className="text-right">Total</td>
                             <td
                               className={`text-right b-r-0 ${
@@ -292,13 +299,13 @@ const ProfitLoss: React.FC = () => {
               <tbody>
                 <tr>
                   <td colSpan={2} className="text-center">
-                    No data found
+                    {hasSearched ? "No data found" : ""}
                   </td>
                 </tr>
               </tbody>
             )}
           </table>
-        )}
+        ) : null}
       </div>
     </section>
   );

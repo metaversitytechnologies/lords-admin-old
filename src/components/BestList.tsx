@@ -20,7 +20,7 @@ const BestList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sportId, setSportId] = useState("0");
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
   const [currentPage, setCurrentPage] = useState(1);
   const [index, setIndex] = useState(0);
   const today = new Date();
@@ -265,11 +265,15 @@ const BestList = () => {
                       value={marketId}
                       onChange={(e) => setMarketId(e.target.value)}
                     >
-                      {markets.map((market: any, index: number) => (
-                        <option key={index} value={market.name}>
-                          {market.name}
-                        </option>
-                      ))}
+                      {markets.length > 0 ? (
+                        markets.map((market: any, index: number) => (
+                          <option key={index} value={market.name}>
+                            {market.name}
+                          </option>
+                        ))
+                      ) : (
+                        <option value="all">All</option>
+                      )}
                     </select>
                   </div>{" "}
                   <div className="dropdown m-l-10 d-inline-block v-t">
@@ -756,7 +760,7 @@ const BestList = () => {
                                   role="cell"
                                   className="text-left"
                                 >
-                                  <div>
+                                  <div className="d-flex align-items-center">
                                     {bet.userIp}
                                     <a
                                       title="IP Details"

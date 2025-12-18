@@ -15,6 +15,7 @@ const ReusableDatePicker: React.FC<DatePickerProps> = ({ selected, onChange, cla
       selected={selected}
       onChange={onChange}
       className={`form-control ${className}`}
+      dateFormat="yyyy-MM-dd"
     />
   );
 };

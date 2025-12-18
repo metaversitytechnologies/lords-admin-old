@@ -28,18 +28,24 @@ const BetTicker = () => {
 
   // Filter States
   const [filters, setFilters] = useState({
-    sportName: "All",
+    sportName: "",
     minStake: "",
     maxStake: "",
     minOdds: "",
     maxOdds: "",
     userId: ""
   });
+  const [validationError, setValidationError] = useState("Please Select Event");
 
   const [appliedFilters, setAppliedFilters] = useState(filters);
 
   const fetchData = useCallback(
     async (showLoading = true) => {
+      if (!appliedFilters.sportName || appliedFilters.sportName === "All") {
+        if (showLoading) setLoading(false);
+        return;
+      }
+
       if (showLoading) {
         setLoading(true);
       }
@@ -144,16 +150,23 @@ const BetTicker = () => {
 
   const handleFilterChange = (field, value) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
+    if (field === "sportName" && value) {
+      setValidationError("");
+    }
   };
 
   const handleApply = (e) => {
     e.preventDefault();
+    if (!filters.sportName || filters.sportName === "All") {
+      setValidationError("Please Select Event");
+      return;
+    }
     setAppliedFilters(filters);
   };
 
   const handleCancel = () => {
     const defaultFilters = {
-      sportName: "All",
+      sportName: "",
       minStake: "",
       maxStake: "",
       minOdds: "",
@@ -162,6 +175,9 @@ const BetTicker = () => {
     };
     setFilters(defaultFilters);
     setAppliedFilters(defaultFilters);
+    setValidationError("Please Select Event");
+    setBets([]); // Clear data on cancel to match "initially data should not show" state if desired, or stay same.
+    // Given "initially data should not show", reverting to empty state implies clearing data.
   };
 
   const getPnlStyle = (pnl) => {
@@ -189,6 +205,7 @@ const BetTicker = () => {
                   <select
                     name="event"
                     className="dropdown-toggle dropdown-button"
+                    style={{ border: validationError ? "1px solid red" : "" }}
                     value={filters.sportName}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -197,12 +214,27 @@ const BetTicker = () => {
                       setMarketId("all");
                     }}
                   >
+                    {/* <option value="" disabled>
+                      Select Event
+                    </option> */}
                     {sports.map((sport: any, index: number) => (
                       <option key={index} value={sport.name}>
                         {sport.name}
                       </option>
                     ))}
                   </select>
+                  {validationError && (
+                    <span
+                      className="text-danger"
+                      style={{
+                        display: "block",
+                        fontSize: "12px",
+                        marginTop: "5px"
+                      }}
+                    >
+                      {validationError}
+                    </span>
+                  )}
                 </div>
                 <div className="dropdown long-width m-l-10 d-inline-block v-t">
                   <select
@@ -210,11 +242,15 @@ const BetTicker = () => {
                     value={marketId}
                     onChange={(e) => setMarketId(e.target.value)}
                   >
-                    {markets.map((market: any, index: number) => (
-                      <option key={index} value={market.name}>
-                        {market.name}
-                      </option>
-                    ))}
+                    {markets.length > 0 ? (
+                      markets.map((market: any, index: number) => (
+                        <option key={index} value={market.name}>
+                          {market.name}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="all">All</option>
+                    )}
                   </select>
                 </div>
                 <div
@@ -336,13 +372,15 @@ const BetTicker = () => {
               </div>
             </form>
             <div className="table-responsive expandable-table">
-              <span className="table-control" onClick={toggleExpand}>
-                <i
-                  className={`fas ${
-                    isExpanded ? "fa-arrow-left" : "fa-arrow-right"
-                  }`}
-                ></i>
-              </span>
+              {bets.length > 0 && (
+                <span className="table-control" onClick={toggleExpand}>
+                  <i
+                    className={`fas ${
+                      isExpanded ? "fa-arrow-left" : "fa-arrow-right"
+                    }`}
+                  ></i>
+                </span>
+              )}
               <div className="row col-page">
                 <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
                   <div className="row dataTables_length">
@@ -370,7 +408,7 @@ const BetTicker = () => {
                 </div>
                 <div className="col-sm-12 col-md-6">
                   <div className="dataTables_filter">
-                    <div className="row">
+                    {/* <div className="row">
                       <div className="f-l-m col">
                         <label>
                           Search:
@@ -386,7 +424,7 @@ const BetTicker = () => {
                           />
                         </label>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

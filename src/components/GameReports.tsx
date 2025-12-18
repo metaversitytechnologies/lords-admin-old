@@ -32,9 +32,11 @@ const GameReports = () => {
   const [error, setError] = useState<string | null>(null);
   const [sports, setSports] = useState<any[]>([]);
 
+  const [validationError, setValidationError] = useState<string | null>(null);
+
   // Pagination & Search States
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleOpenModal = (matchId: string) => {
@@ -50,6 +52,12 @@ const GameReports = () => {
 
 
   const loadReport = async () => {
+    if (eventType === "9999.9999") {
+      setValidationError("Please Select a Event");
+      setReportData([]);
+      return;
+    }
+    setValidationError(null);
     setLoading(true);
     setError(null);
     try {
@@ -66,7 +74,7 @@ const GameReports = () => {
   };
 
   useEffect(() => {
-    loadReport();
+    // loadReport(); // Removed initial load
     fetchSports();
   }, []);
 
@@ -222,16 +230,15 @@ const GameReports = () => {
                 <tbody role="rowgroup">
 
                   {(() => {
-                    const filteredData = reportData.filter((item) =>
-                       searchTerm === "" ||
-                       item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                       item.date.includes(searchTerm)
-                    );
-
-                    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-                    const indexOfLastItem = currentPage * itemsPerPage;
-                    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-                    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+                    if (validationError) {
+                      return (
+                        <tr>
+                          <td colSpan={5} className="text-center text-danger">
+                            {validationError}
+                          </td>
+                        </tr>
+                      );
+                    }
 
                     if (loading) {
                       return (
@@ -243,11 +250,23 @@ const GameReports = () => {
                       );
                     }
 
-                    if (currentItems.length === 0) {
+                    const filteredData = reportData.filter((item) =>
+                       searchTerm === "" ||
+                       item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                       item.date.includes(searchTerm)
+                    );
+
+                    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+                    const indexOfLastItem = currentPage * itemsPerPage;
+                    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+                    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+
+
+                    if (reportData.length === 0 || currentItems.length === 0) {
                       return (
                         <tr>
                           <td colSpan={5} className="text-center">
-                            No data available
+                            There are no records to show
                           </td>
                         </tr>
                       );
@@ -256,7 +275,7 @@ const GameReports = () => {
                     return currentItems.map((row, index) => (
                       <tr role="row" key={index}>
                         <td
-                          aria-colindex="1"
+                          aria-colindex={1}
                           data-label="Date"
                           role="cell"
                           className="text-center"
@@ -264,7 +283,7 @@ const GameReports = () => {
                           <div>{row.date}</div>
                         </td>
                         <td
-                          aria-colindex="2"
+                          aria-colindex={2}
                           data-label="Description"
                           role="cell"
                         >
@@ -274,7 +293,7 @@ const GameReports = () => {
                               className="underline"
                               onClick={(e) => {
                                 e.preventDefault();
-                                handleOpenModal(row.marketId);
+                                handleOpenModal(row.matchId);
                               }}
                             >
                               {row.description}
@@ -282,7 +301,7 @@ const GameReports = () => {
                           </div>
                         </td>
                         <td
-                          aria-colindex="3"
+                          aria-colindex={3}
                           data-label="Credit"
                           role="cell"
                           className="text-right"
@@ -290,7 +309,7 @@ const GameReports = () => {
                           <div>{row.credit}</div>
                         </td>
                         <td
-                          aria-colindex="4"
+                          aria-colindex={4}
                           data-label="Debit"
                           role="cell"
                           className="text-right"
@@ -298,7 +317,7 @@ const GameReports = () => {
                           <div>{row.debit}</div>
                         </td>
                         <td
-                          aria-colindex="5"
+                          aria-colindex={5}
                           data-label="Closing"
                           role="cell"
                           className="text-right"
