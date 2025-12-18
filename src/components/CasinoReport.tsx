@@ -50,13 +50,13 @@ export default function CasinoReport() {
       </div>
 
       <div className=" w-100 float-left m-t-0">
-        <div className="m-b-10">
-          <div className="col-md-2 v-t p-l-0 p-r-5 form-group d-inline-block">
-            <label>From</label>
+        <div className="row m-b-10">
+          <div className="col-12 col-md-auto form-group">
+            <label className="d-block">From</label>
             <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
           </div>
-          <div className="select-report d-inline-block col-md-2 form-group v-t p-l-0 p-r-5">
-            <label className="p-l-5">Account Type</label>
+          <div className="col-12 col-md-auto form-group">
+            <label className="d-block">Account Type</label>
             <select className="form-control">
               <option value="teen">One Day Teenpatti</option>
               <option value="teen9">Test Teenpatti</option>
@@ -97,11 +97,11 @@ export default function CasinoReport() {
               <option value="teen20c">20-20C Teenpatti</option>
               <option value="joker20">Teenpatti Joker 20-20</option>
             </select>
+
           </div>
 
-          <div className="d-inline-block v-t m-l-0 v-t">
-            <label className="d-block">&nbsp;</label>
-            <button type="submit" className="btn btn-primary btn-load-c v-t">
+          <div className="col-12 col-md-auto form-group d-flex align-items-end">
+            <button type="submit" className="btn btn-primary btn-load-c">
               Load
             </button>
           </div>

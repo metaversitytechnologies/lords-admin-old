@@ -7,23 +7,22 @@ const MessageReport: React.FC = () => {
   return (
     <>
       <div className="w-100 float-left m-t-0">
-        <div className="m-b-10">
-          <div className="header">
+        <div className="row m-b-10">
+          <div className="header col-12">
             <h1>Message Report</h1>
           </div>
-          <div className="datepicker-wrapper d-inline-block col-md-2 form-group v-t p-l-0 p-r-5">
-            <label className="p-l-5">From</label>
+          <div className="datepicker-wrapper col-12 col-md-auto form-group">
+            <label className="d-block">From</label>
             <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
             <span className="text-danger error-report"></span>
           </div>
-          <div className="datepicker-wrapper form-group d-inline-block col-md-2 v-t p-l-0 p-r-5">
-            <label className="p-l-5">To</label>
+          <div className="datepicker-wrapper col-12 col-md-auto form-group">
+            <label className="d-block">To</label>
             <ReusableDatePicker selected={toDate} onChange={setToDate} />
             <span className="text-danger error-report"></span>
           </div>
-          <div className="d-inline-block v-t p-l-0 p-r-5">
-            <label className="p-l-5 d-block">&nbsp;</label>
-            <button type="submit" className="btn btn-primary btn-load-c v-t">
+          <div className="col-12 col-md-auto form-group d-flex align-items-end">
+            <button type="submit" className="btn btn-primary btn-load-c">
               Load
             </button>
           </div>
@@ -36,10 +35,10 @@ const MessageReport: React.FC = () => {
                   <label htmlFor="input-small">
                     Show
                     <select style={{ width: "60px" }} className="form-control">
-                      <option value="10">10</option>
-                      <option value="20">20</option>
+                      {/* <option value="10">10</option>
+                      <option value="20">20</option> */}
                       <option value="50">50</option>
-                      <option value="100">100</option>
+                      {/* <option value="100">100</option> */}
                     </select>
                     entries
                   </label>
