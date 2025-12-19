@@ -26,7 +26,7 @@ const DownlineReports = () => {
         setError(null);
         try {
           const response = await getWinLossActivity({ userId: id });
-          setActivityData(response.data);
+          setActivityData(response.data?.dataList);
         } catch (err) {
           setError(err.message);
         } finally {

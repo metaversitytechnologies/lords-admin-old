@@ -6,6 +6,7 @@ import Pagination from "./Pagination";
 
 const BettingPnl = ({ userId }) => {
   const [data, setData] = useState([]);
+  const [pnLData, setPnLData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedMarket, setSelectedMarket] = useState(null);
@@ -33,7 +34,8 @@ const BettingPnl = ({ userId }) => {
       };
       const response = await getBettingPnl(payload);
       if (response.data) {
-        const pnlData = response.data.flatMap((group) => {
+        setPnLData(response.data);
+        const pnlData = response.data?.dataList.flatMap((group) => {
           if (!group.date) return [];
           const [year, month, day] = group.date.split("-");
           const displayDate = `${day}/${month}/${year}`;
@@ -132,51 +134,18 @@ const BettingPnl = ({ userId }) => {
       ) : (
         <div>
           <div className="row col-page">
-            <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
-              <div className="row dataTables_length">
-                <div className="p-l-m col">
-                  <label>
-                    Show
-                    <select
-                      style={{ width: "60px" }}
-                      className="form-control"
-                      value={itemsPerPage}
-                      onChange={(e) => {
-                        setItemsPerPage(Number(e.target.value));
-                        setCurrentPage(1);
-                      }}
-                    >
-                      <option value="10">10</option>
-                      <option value="20">20</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                    entries
-                  </label>
-                </div>
+            <div className="col-2 py-2">
+              <div>
+                Cricket: <span className={
+                              pnLData?.cricketPnl >= 0 ? "positive" : "negative"
+                            }>{ pnLData?.cricketPnl} </span>
               </div>
             </div>
-            <div className="col-sm-12 col-md-6">
-              <div className="dataTables_filter">
-                <div className="row">
-                  <div className="f-l-m col">
-                    <label>
-                      Search:
-                      <input
-                        type="text"
-                        placeholder="Type to Search"
-                        className="form-control form-control-sm"
-                        value={searchTerm}
-                        onChange={(e) => {
-                          setSearchTerm(e.target.value);
-                          setCurrentPage(1);
-                        }}
-                      />
-                    </label>
-                  </div>
-                </div>
+            <div className="col-2 py-2">
+                Total P&L: <span className={
+                              pnLData?.totalPnl >= 0 ? "positive" : "negative"
+                            }> { pnLData?.totalPnl} </span>
               </div>
-            </div>
           </div>
           <table className="table">
             <thead>
