@@ -1,8 +1,24 @@
+import React, { useState } from "react";
+import BetLockModal from "./BetLockModal";
+import UserBookModal from "./UserBookModal";
+import type { BetLockUser } from "./BetLockModal";
+import type { UserBookSelection } from "./UserBookModal";
+
 interface BookmakerMarketProps {
   bookmakerData: Bookmaker[] | undefined;
   pnlData: any;
 }
 const BookmakerMarket = ({ bookmakerData, pnlData }: BookmakerMarketProps) => {
+  const [isUserBookModalOpen, setIsUserBookModalOpen] = useState(false);
+  const [userBookSelections, setUserBookSelections] = useState<
+    UserBookSelection[]
+  >([]);
+  const [isBetLockModalOpen, setIsBetLockModalOpen] = useState(false);
+  const [betLockUsers, setBetLockUsers] = useState<BetLockUser[]>([
+    { name: "capetown", checked: true },
+    { name: "capetown3", checked: false }
+  ]);
+
   const groupByProviderTypeNation = (data: Bookmaker[] | undefined) => {
     if (!Array.isArray(data)) return {};
 
@@ -47,17 +63,31 @@ const BookmakerMarket = ({ bookmakerData, pnlData }: BookmakerMarketProps) => {
                   <span>{providerType}</span>
                   <div className="d-flex justify-content-end align-content-center">
                     <button
-                      type="button"
-                      className="btn btn bet-lock-btn btn-primary m-r-5"
-                    >
-                      Bet Lock
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn bet-lock-btn m-r-10 btn-primary"
+                        type="button"
+                        className="btn btn bet-lock-btn m-r-10 btn-primary"
+                        onClick={() => {
+                          setUserBookSelections(
+                            (nations || []).map((item: any) => ({
+                              name: item?.nation,
+                          pnl:
+                            pnlBookMaker.find(
+                              (p) => p.selectionId == item?.sid
+                            )?.pnl ?? "-"
+                          }))
+                        );
+                          setIsUserBookModalOpen(true);
+                        }}
                     >
                       Book
                     </button>
+                    <button
+                        type="button"
+                        className="btn btn bet-lock-btn btn-primary m-r-5"
+                        onClick={() => setIsBetLockModalOpen(true)}
+                    >
+                      Bet Lock
+                    </button>
+
                   </div>
                 </div>
 
@@ -133,6 +163,17 @@ const BookmakerMarket = ({ bookmakerData, pnlData }: BookmakerMarketProps) => {
           );
         }
       )}
+      <UserBookModal
+        show={isUserBookModalOpen}
+        onClose={() => setIsUserBookModalOpen(false)}
+        selections={userBookSelections}
+      />
+      <BetLockModal
+        show={isBetLockModalOpen}
+        onClose={() => setIsBetLockModalOpen(false)}
+        users={betLockUsers}
+        onChange={setBetLockUsers}
+      />
     </>
   );
 };

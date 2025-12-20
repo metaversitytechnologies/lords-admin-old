@@ -141,48 +141,32 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
               </div> */}
             </div>
           </div>
-          <div className="col-sm-12 col-md-6">
-            <div className="dataTables_filter">
-              <div className="row">
-                <div className="f-l-m col">
-                  <label>
-                    Search:
-                    <input
-                      type="text"
-                      placeholder="Type to Search"
-                      className="form-control form-control-sm"
-                      value={searchTerm}
-                      onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                        setCurrentPage(1);
-                      }}
-                    />
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
         <table className="table">
           <thead>
-            <tr>
-              <th>Date</th>
-              <th>Description</th>
-              <th>P&L</th>
-              <th className="text-right">Credit Limit</th>
-              <th className="text-right">Balance</th>
-            </tr>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th></th>
+            <th>P&L</th>
+            <th className="text-right">Credit Limit</th>
+            <th className="text-right">Balance</th>
+          </tr>
           </thead>
 
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={5} className="text-center">
+                <td colSpan={6} className="text-center">
                   Loading...
                 </td>
               </tr>
             ) : statementData?.dataList?.length ? (
-              statementData.dataList
+              [...statementData.dataList]
+                .sort(
+                  (a, b) =>
+                    new Date(b.date).getTime() - new Date(a.date).getTime()
+                )
                 .filter((daily) =>
                   daily.dataList.some(
                     (entry) =>
@@ -198,47 +182,55 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
                   (currentPage - 1) * itemsPerPage,
                   currentPage * itemsPerPage
                 )
-                .map((daily) => (
-                  <React.Fragment key={daily.date}>
-                    <tr className="group">
-                      <td colSpan={5}>{daily.date}</td>
-                    </tr>
-                    {daily.dataList
-                      .filter(
-                        (entry) =>
-                          !searchTerm ||
-                          Object.values(entry).some((val) =>
-                            String(val)
-                              .toLowerCase()
-                              .includes(searchTerm.toLowerCase())
-                          )
-                      )
-                      .map((entry, index) => (
-                        <tr key={index}>
-                          <td>{entry.date}</td>
-                          <td>{entry.description}</td>
-                          <td
-                            className={` ${
-                              entry.pnl >= 0 ? "positive" : "negative"
-                            }`}
-                          >
-                            {entry.pnl.toFixed(2)}
-                          </td>
-                          <td className="text-right">{entry.creditLimit}</td>
-                          <td
-                            className={`text-right ${
-                              entry.balance >= 0 ? "positive" : "negative"
-                            }`}
-                          >
-                            {entry.balance.toFixed(2)}
-                          </td>
-                        </tr>
-                      ))}
-                  </React.Fragment>
-                ))
+                .map((daily) => {
+                  const sortedEntries = [...daily.dataList].sort(
+                    (a, b) =>
+                      new Date(b.date).getTime() - new Date(a.date).getTime()
+                  );
+
+                  return (
+                    <React.Fragment key={daily.date}>
+                      <tr className="group">
+                        <td colSpan={6}>{daily.date}</td>
+                      </tr>
+                      {sortedEntries
+                        .filter(
+                          (entry) =>
+                            !searchTerm ||
+                            Object.values(entry).some((val) =>
+                              String(val)
+                                .toLowerCase()
+                                .includes(searchTerm.toLowerCase())
+                            )
+                        )
+                        .map((entry, index) => (
+                            <tr key={index}>
+                              <td>{entry.date}</td>
+                              <td>{entry.paymentType}</td>
+                              <td>{entry.description}</td>
+                              <td
+                                  className={` ${
+                                      entry.pnl >= 0 ? "positive" : "negative"
+                                  }`}
+                              >
+                                {entry.pnl.toFixed(2)}
+                              </td>
+                              <td className="text-right">{entry.creditLimit}</td>
+                              <td
+                                  className={`text-right ${
+                                      entry.balance >= 0 ? "positive" : "negative"
+                                  }`}
+                              >
+                                {entry.balance.toFixed(2)}
+                              </td>
+                            </tr>
+                        ))}
+                    </React.Fragment>
+                  );
+                })
             ) : (
               <tr>
-                <td colSpan={5} className="text-center">
+                <td colSpan={6} className="text-center">
                   {/* No data available. */}
                 </td>
               </tr>

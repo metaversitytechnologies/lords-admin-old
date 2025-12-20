@@ -60,6 +60,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setToken(newToken);
     if (newUser) {
       globalThis.localStorage.setItem("user", JSON.stringify(newUser));
+      globalThis.localStorage.setItem("userType", newUser.userType);
+      globalThis.localStorage.setItem(
+        "userTypeInfo",
+        newUser.userTypeInfo.toString()
+      );
       setUser(newUser);
     }
     const now = new Date().toISOString();
@@ -76,6 +81,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       globalThis.localStorage.removeItem("token");
       globalThis.localStorage.removeItem("user");
       globalThis.localStorage.removeItem("lastLogin");
+      globalThis.localStorage.removeItem("userType");
+      globalThis.localStorage.removeItem("userTypeInfo");
       setToken(null);
       setUser(null);
       setLastLogin(null);
@@ -89,6 +96,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     globalThis.localStorage.removeItem("token");
     globalThis.localStorage.removeItem("user");
     globalThis.localStorage.removeItem("lastLogin");
+    globalThis.localStorage.removeItem("userType");
+    globalThis.localStorage.removeItem("userTypeInfo");
     setToken(null);
     setUser(null);
     setLastLogin(null);

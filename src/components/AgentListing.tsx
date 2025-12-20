@@ -232,14 +232,16 @@ const AgentListing: React.FC = () => {
                           >
                             <i
                               className={`fas ${
-                                agent.bettingStatus ? "fa-unlock" : "fa-lock"
-                              } positive unlock-icon`}
+                                agent.betActive
+                                  ? "fa-unlock positive"
+                                  : "fa-lock negative"
+                              } unlock-icon`}
                             ></i>
                           </a>
                         </span>
                       </td>
                       <td className="text-center">
-                        <span>{agent.userActive ? "ACTIVE" : "INACTIVE"}</span>
+                        <span>{agent.userActive ? "ACTIVE" : "DEACTIVE"}</span>
                       </td>
                       <td className="text-center">
                         <Link

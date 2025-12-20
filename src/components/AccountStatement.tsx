@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
 import SearchUser from "./SearchUser";
 import { getAccountStatement } from "../api/reports";
@@ -104,6 +104,48 @@ const AccountStatement: React.FC = () => {
     }
   };
 
+  const csvConfig = useMemo(() => {
+    if (activeTab === "credit") {
+      return {
+        filename: "account-statement-credit.csv",
+        headers: [
+          { label: "Date", key: "date" },
+          { label: "User Name", key: "userName" },
+          { label: "Master Name", key: "masterName" },
+          { label: "Remark", key: "remark" },
+          { label: "Stake", key: "stake" }
+        ],
+        data: statementData.map((row) => ({
+          date: row.date,
+          userName: row.userName ?? "",
+          masterName: row.masterName ?? "",
+          remark: row.remark ?? "",
+          stake: row.stake ?? 0
+        }))
+      };
+    }
+
+    return {
+      filename: "account-statement-pnl.csv",
+      headers: [
+        { label: "Date", key: "date" },
+        { label: "Description", key: "description" },
+        { label: "IP", key: "ip" },
+        { label: "From/To", key: "fromTo" },
+        { label: "Amount", key: "amount" },
+        { label: "Closing", key: "closing" }
+      ],
+      data: statementData.map((row) => ({
+        date: row.date,
+        description: row.description ?? "",
+        ip: row.ip ?? "",
+        fromTo: row.fromTo ?? "",
+        amount: row.amount ?? 0,
+        closing: row.closing ?? 0
+      }))
+    };
+  }, [activeTab, statementData]);
+
   return (
     <section>
       <div className="tabs">
@@ -112,8 +154,9 @@ const AccountStatement: React.FC = () => {
             <h1>Account Statement</h1>
             <div className="button-options d-inline-block">
               <CSVLink
-                data={statementData}
-                filename="account-statement.csv"
+                data={csvConfig.data}
+                headers={csvConfig.headers}
+                filename={csvConfig.filename}
                 className="btn btn-secondary m-l-5"
               >
                 Download CSV
@@ -239,27 +282,6 @@ const AccountStatement: React.FC = () => {
                           entries
                         </label>
                       </div> */}
-                    </div>
-                  </div>
-                  <div className="col-sm-12 col-md-6">
-                    <div className="dataTables_filter">
-                      <div className="row">
-                        <div className="f-l-m col">
-                          <label>
-                            Search:
-                            <input
-                              type="text"
-                              placeholder="Type to Search"
-                              className="form-control form-control-sm"
-                              value={searchTerm}
-                              onChange={(e) => {
-                                setSearchTerm(e.target.value);
-                                setCurrentPage(1);
-                              }}
-                            />
-                          </label>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -388,21 +410,21 @@ const AccountStatement: React.FC = () => {
                       )}
                     </tbody>
                   </table>
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={Math.ceil(
-                      statementData.filter(
-                        (row) =>
-                          !searchTerm ||
-                          Object.values(row).some((val) =>
-                            String(val)
-                              .toLowerCase()
-                              .includes(searchTerm.toLowerCase())
-                          )
-                      ).length / itemsPerPage
-                    )}
-                    onPageChange={setCurrentPage}
-                  />
+                  {/*<Pagination*/}
+                  {/*  currentPage={currentPage}*/}
+                  {/*  totalPages={Math.ceil(*/}
+                  {/*    statementData.filter(*/}
+                  {/*      (row) =>*/}
+                  {/*        !searchTerm ||*/}
+                  {/*        Object.values(row).some((val) =>*/}
+                  {/*          String(val)*/}
+                  {/*            .toLowerCase()*/}
+                  {/*            .includes(searchTerm.toLowerCase())*/}
+                  {/*        )*/}
+                  {/*    ).length / itemsPerPage*/}
+                  {/*  )}*/}
+                  {/*  onPageChange={setCurrentPage}*/}
+                  {/*/>*/}
                 </div>
               </div>
             </div>

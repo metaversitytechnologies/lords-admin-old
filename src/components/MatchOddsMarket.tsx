@@ -1,3 +1,9 @@
+import React, { useState } from "react";
+import BetLockModal from "./BetLockModal";
+import UserBookModal from "./UserBookModal";
+import type { BetLockUser } from "./BetLockModal";
+import type { UserBookSelection } from "./UserBookModal";
+
 interface MatchOddsMarketProps {
   oddsData: Odd[] | undefined;
   pnlData: any;
@@ -29,143 +35,178 @@ const MatchOddsMarket = ({
   filterName,
   showOnly
 }: MatchOddsMarketProps) => {
+  const [isUserBookModalOpen, setIsUserBookModalOpen] = useState(false);
+  const [isBetLockModalOpen, setIsBetLockModalOpen] = useState(false);
+  const [betLockUsers, setBetLockUsers] = useState<BetLockUser[]>([
+    { name: "capetown", checked: true },
+    { name: "capetown3", checked: false }
+  ]);
+  const [userBookSelections, setUserBookSelections] = useState<
+    UserBookSelection[]
+  >([]);
   const sortedMarkets = [...(oddsData || [])].sort((a, b) => {
     if (a.ty === "Match Odds") return -1;
     if (b.ty === "Match Odds") return 1;
     return 0;
   });
   return (
-    <div className="market-4 mt-2">
-      {sortedMarkets?.map((row, rIdx) => {
-        const myPnl = pnlData?.find((item) => item?.marketId == row?.mid);
-        const plnOddsArray = myPnl
-          ? [
-              { pnl: myPnl.pnl1, selectionId: myPnl.selection1 },
-              { pnl: myPnl.pnl2, selectionId: myPnl.selection2 },
-              { pnl: myPnl.pnl3, selectionId: myPnl.selection3 }
-            ]
-          : [];
+    <>
+      <div className="market-4 mt-2">
+        {sortedMarkets?.map((row, rIdx) => {
+          const myPnl = pnlData?.find((item) => item?.marketId == row?.mid);
+          const plnOddsArray = myPnl
+            ? [
+                { pnl: myPnl.pnl1, selectionId: myPnl.selection1 },
+                { pnl: myPnl.pnl2, selectionId: myPnl.selection2 },
+                { pnl: myPnl.pnl3, selectionId: myPnl.selection3 }
+              ]
+            : [];
 
-        if (filterName) {
-          if (showOnly) {
-            if (row?.ty !== filterName) return null;
-          } else {
-            if (row?.ty === filterName) return null;
+          if (filterName) {
+            if (showOnly) {
+              if (row?.ty !== filterName) return null;
+            } else {
+              if (row?.ty === filterName) return null;
+            }
           }
-        }
 
-        return (
-          <div className="bet-table" key={rIdx}>
-            <div className="bet-table-header">
-              <span>{row.ty}</span>
-              <div className="d-flex justify-content-end align-content-center">
-                <button
-                  type="button"
-                  className="btn btn bet-lock-btn btn-primary m-r-5"
-                >
-                  Bet Lock
-                </button>
-                <button
-                  type="button"
-                  className="btn btn bet-lock-btn m-r-10 btn-primary"
-                >
-                  Book
-                </button>
-              </div>
-            </div>
-
-            <div className="bet-table-body" data-title="OPEN">
-              <div className="bet-table-row">
-                <div className="nation-name"></div>
-                <div className="bl-title"></div>
-                <div className="bl-title"></div>
-                <div className="back bl-title back-title">Back</div>
-                <div className="lay bl-title lay-title">Lay</div>
-                <div className="bl-title"></div>
-                <div className="bl-title"></div>
-              </div>
-
-              {row?.r?.map((b, bIdx) => {
-                const pnlValue =
-                  plnOddsArray.find((pnl) => pnl.selectionId == b?.rid)?.pnl ||
-                  0;
-                return (
-                  <div
-                    key={bIdx}
-                    className="bet-table-row"
-                    data-title={row.sb || "ACTIVE"}
+          return (
+            <div className="bet-table" key={rIdx}>
+              <div className="bet-table-header">
+                <span>{row.ty}</span>
+                <div className="d-flex justify-content-end align-content-center">
+                  <button
+                    type="button"
+                    className="btn btn bet-lock-btn m-r-10 btn-primary"
+                    onClick={() => {
+                      setUserBookSelections(
+                        (row?.r || []).map((item) => ({
+                          name: item?.na,
+                          pnl:
+                            plnOddsArray.find(
+                              (pnl) => pnl.selectionId == item?.rid
+                            )?.pnl ?? "-"
+                        }))
+                      );
+                      setIsUserBookModalOpen(true);
+                    }}
                   >
-                    <div className="nation-name">
-                      <p>
-                        <span>{b?.na}</span>
-                      </p>
-                      {pnlValue >= 0 ? (
-                        <p className="mb-0" style={{ color: "green" }}>
-                          {pnlValue}
-                        </p>
-                      ) : (
-                        <p className="mb-0" style={{ color: "red" }}>
-                          {pnlValue}
-                        </p>
-                      )}
-                    </div>
+                    Book
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn bet-lock-btn btn-primary m-r-5"
+                    onClick={() => setIsBetLockModalOpen(true)}
+                  >
+                    Bet Lock
+                  </button>
+                </div>
+              </div>
 
-                    <div className="bl-box back2 changed">
-                      <span className="d-block odds">{formatOdds(b?.b3)}</span>
-                      {b?.br3 !== undefined ? (
-                        <span className="d-block">{b.br3}</span>
-                      ) : (
-                        <span className="d-block">-</span>
-                      )}
+              <div className="bet-table-body" data-title="OPEN">
+                <div className="bet-table-row">
+                  <div className="nation-name"></div>
+                  <div className="bl-title"></div>
+                  <div className="bl-title"></div>
+                  <div className="back bl-title back-title">Back</div>
+                  <div className="lay bl-title lay-title">Lay</div>
+                  <div className="bl-title"></div>
+                  <div className="bl-title"></div>
+                </div>
+
+                {row?.r?.map((b, bIdx) => {
+                  const pnlValue =
+                    plnOddsArray.find((pnl) => pnl.selectionId == b?.rid)?.pnl ||
+                    0;
+                  return (
+                    <div
+                      key={bIdx}
+                      className="bet-table-row"
+                      data-title={row.sb || "ACTIVE"}
+                    >
+                      <div className="nation-name">
+                        <p>
+                          <span>{b?.na}</span>
+                        </p>
+                        {pnlValue >= 0 ? (
+                          <p className="mb-0" style={{ color: "green" }}>
+                            {pnlValue}
+                          </p>
+                        ) : (
+                          <p className="mb-0" style={{ color: "red" }}>
+                            {pnlValue}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="bl-box back2 changed">
+                        <span className="d-block odds">{formatOdds(b?.b3)}</span>
+                        {b?.br3 !== undefined ? (
+                          <span className="d-block">{b.br3}</span>
+                        ) : (
+                          <span className="d-block">-</span>
+                        )}
+                      </div>
+                      <div className="bl-box back1 changed">
+                        <span className="d-block odds">{formatOdds(b?.b2)}</span>
+                        {b?.br2 !== undefined ? (
+                          <span className="d-block">{b.br2}</span>
+                        ) : (
+                          <span className="d-block">-</span>
+                        )}
+                      </div>
+                      <div className="bl-box back changed">
+                        <span className="d-block odds">{formatOdds(b?.b1)}</span>
+                        {b?.br1 !== undefined ? (
+                          <span className="d-block">{b.br1}</span>
+                        ) : (
+                          <span className="d-block">-</span>
+                        )}
+                      </div>
+                      <div className="bl-box lay changed">
+                        <span className="d-block odds">{formatOdds(b?.l1)}</span>
+                        {b?.lr1 !== undefined ? (
+                          <span className="d-block">{b.lr1}</span>
+                        ) : (
+                          <span className="d-block">-</span>
+                        )}
+                      </div>
+                      <div className="bl-box lay1 changed">
+                        <span className="d-block odds">{formatOdds(b?.l2)}</span>
+                        {b?.lr2 !== undefined ? (
+                          <span className="d-block">{b.lr2}</span>
+                        ) : (
+                          <span className="d-block">-</span>
+                        )}
+                      </div>
+                      <div className="bl-box lay2 changed">
+                        <span className="d-block odds">{formatOdds(b?.l3)}</span>
+                        {b?.lr3 !== undefined ? (
+                          <span className="d-block">{b.lr3}</span>
+                        ) : (
+                          <span className="d-block">-</span>
+                        )}
+                      </div>
                     </div>
-                    <div className="bl-box back1 changed">
-                      <span className="d-block odds">{formatOdds(b?.b2)}</span>
-                      {b?.br2 !== undefined ? (
-                        <span className="d-block">{b.br2}</span>
-                      ) : (
-                        <span className="d-block">-</span>
-                      )}
-                    </div>
-                    <div className="bl-box back changed">
-                      <span className="d-block odds">{formatOdds(b?.b1)}</span>
-                      {b?.br1 !== undefined ? (
-                        <span className="d-block">{b.br1}</span>
-                      ) : (
-                        <span className="d-block">-</span>
-                      )}
-                    </div>
-                    <div className="bl-box lay changed">
-                      <span className="d-block odds">{formatOdds(b?.l1)}</span>
-                      {b?.lr1 !== undefined ? (
-                        <span className="d-block">{b.lr1}</span>
-                      ) : (
-                        <span className="d-block">-</span>
-                      )}
-                    </div>
-                    <div className="bl-box lay1 changed">
-                      <span className="d-block odds">{formatOdds(b?.l2)}</span>
-                      {b?.lr2 !== undefined ? (
-                        <span className="d-block">{b.lr2}</span>
-                      ) : (
-                        <span className="d-block">-</span>
-                      )}
-                    </div>
-                    <div className="bl-box lay2 changed">
-                      <span className="d-block odds">{formatOdds(b?.l3)}</span>
-                      {b?.lr3 !== undefined ? (
-                        <span className="d-block">{b.lr3}</span>
-                      ) : (
-                        <span className="d-block">-</span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+      <UserBookModal
+        show={isUserBookModalOpen}
+        onClose={() => setIsUserBookModalOpen(false)}
+        selections={userBookSelections}
+      />
+      <BetLockModal
+        show={isBetLockModalOpen}
+        onClose={() => setIsBetLockModalOpen(false)}
+        users={betLockUsers}
+        onChange={setBetLockUsers}
+      />
+    </>
   );
 };
 

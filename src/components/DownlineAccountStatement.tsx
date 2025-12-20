@@ -201,53 +201,6 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
               </div>
 
               <div className="tab-content">
-                <div className="row col-page">
-                  <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
-                    <div className="row dataTables_length">
-                      <div className="p-l-m col">
-                        <label>
-                          Show
-                          <select
-                            style={{ width: "60px" }}
-                            className="form-control"
-                            value={itemsPerPage}
-                            onChange={(e) => {
-                              setItemsPerPage(Number(e.target.value));
-                              setCurrentPage(1);
-                            }}
-                          >
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                          </select>
-                          entries
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-sm-12 col-md-6">
-                    <div className="dataTables_filter">
-                      <div className="row">
-                        <div className="f-l-m col">
-                          <label>
-                            Search:
-                            <input
-                              type="text"
-                              placeholder="Type to Search"
-                              className="form-control form-control-sm"
-                              value={searchTerm}
-                              onChange={(e) => {
-                                setSearchTerm(e.target.value);
-                                setCurrentPage(1);
-                              }}
-                            />
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                 {/* P&L Tab */}
                 <div
                   className={`tab-pane ${activeTab === "pnl" ? "active" : ""}`}

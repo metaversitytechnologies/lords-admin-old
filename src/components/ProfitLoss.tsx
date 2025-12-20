@@ -29,8 +29,8 @@ const ProfitLoss: React.FC = () => {
 
   const [fromDate, setFromDate] = useState<Date | null>(oneWeekAgo);
   const [toDate, setToDate] = useState<Date | null>(today);
-  const [eventName, setEventName] = useState("0");
-  const [marketName, setMarketName] = useState("all");
+  const [eventName, setEventName] = useState("All");
+  const [marketName, setMarketName] = useState("All");
   const [reportData, setReportData] = useState<DateReport[]>([]);
   const [loading, setLoading] = useState(false);
   const [grandTotal, setGrandTotal] = useState(0);
@@ -61,8 +61,7 @@ const ProfitLoss: React.FC = () => {
       return;
     }
     try {
-      const payload = { sportId: sportId === "All" ? "0" : sportId };
-
+      const payload = { sportId: sportId === "All" ? "All" : sportId };
       const response = await getMarketListSportWiseLord(payload);
       if (response.status) {
         setMarkets(response.data);
@@ -79,17 +78,19 @@ const ProfitLoss: React.FC = () => {
     fetchMarkets(sportName);
   };
 
+  const buildPayload = () => ({
+    eventName: eventName || "All",
+    marketName: marketName || "all",
+    fromDate: fromDate?.toISOString().split("T")[0],
+    toDate: toDate?.toISOString().split("T")[0]
+  });
+
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setLoading(true);
     setHasSearched(true);
     try {
-      const payload = {
-        eventName: eventName === "All" ? "" : eventName,
-        marketName: marketName === "all" ? "" : marketName,
-        fromDate: fromDate?.toISOString().split("T")[0],
-        toDate: toDate?.toISOString().split("T")[0]
-      };
+      const payload = buildPayload();
       const response = await getPnlReportByMarketId(payload);
       const data: DateReport[] = response.data;
 
@@ -131,6 +132,13 @@ const ProfitLoss: React.FC = () => {
   const handleBack = () => {
     setSelectedMarket(null);
   };
+
+  useEffect(() => {
+    if (!hasSearched && sports.length) {
+      handleSearch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sports]);
 
   return (
     <section>

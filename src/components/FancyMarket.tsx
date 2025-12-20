@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Ladder } from "react-bootstrap-icons";
 import ReusableModal from "./ReusableModal";
+import BetLockModal from "./BetLockModal";
+import type { BetLockUser } from "./BetLockModal";
 import { getUserFancyBook } from "../api/bet";
 
 interface FancyMarketProps {
@@ -17,6 +19,11 @@ const FancyMarket = ({
   matchId
 }: FancyMarketProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBetLockModalOpen, setIsBetLockModalOpen] = useState(false);
+  const [betLockUsers, setBetLockUsers] = useState<BetLockUser[]>([
+    { name: "capetown", checked: true },
+    { name: "capetown3", checked: false }
+  ]);
   const [ladderData, setLadderData] = useState<any[]>([]);
   const [loadingLadder, setLoadingLadder] = useState(false);
 
@@ -59,6 +66,7 @@ const FancyMarket = ({
               <button
                 type="button"
                 className="btn btn bet-lock-btn btn-primary"
+                onClick={() => setIsBetLockModalOpen(true)}
               >
                 Fancy Lock
               </button>
@@ -184,6 +192,12 @@ const FancyMarket = ({
           </table>
         </div>
       </ReusableModal>
+      <BetLockModal
+        show={isBetLockModalOpen}
+        onClose={() => setIsBetLockModalOpen(false)}
+        users={betLockUsers}
+        onChange={setBetLockUsers}
+      />
     </>
   );
 };

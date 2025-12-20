@@ -11,6 +11,31 @@ type LoginFormInputs = {
   password: string;
 };
 
+const mapUserType = (
+  userType: string | number | undefined,
+  fallback?: string | number
+) => {
+  const mappings: Record<string | number, string> = {
+    0: "supermaster",
+    1: "master",
+    2: "dealer",
+    3: "user",
+    4: "admin",
+    5: "subadmin"
+  };
+
+  const key =
+    userType !== undefined && userType !== null
+      ? userType
+      : fallback !== undefined
+        ? fallback
+        : undefined;
+
+  if (key === undefined) return "";
+
+  return mappings[key] || String(key);
+};
+
 const Login: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -36,12 +61,13 @@ const Login: React.FC = () => {
 
       if (data?.token) {
         let user;
+        const userType = mapUserType(data.userType, data.userTypeInfo);
         if (data.passwordtype === "old") {
           user = {
             // From API response body
             userId: data.userId,
             username: data.username,
-            userType: data.userType,
+            userType,
             passwordtype: data.passwordtype,
             partnership: data.partnership,
             userTypeInfo: data.userTypeInfo,
@@ -55,7 +81,7 @@ const Login: React.FC = () => {
             // From API response body
             userId: data.userId,
             username: data.username,
-            userType: data.userType,
+            userType,
             passwordtype: data.passwordtype,
             partnership: data.partnership,
             userTypeInfo: data.userTypeInfo

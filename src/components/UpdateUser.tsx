@@ -33,7 +33,7 @@ const UpdateUser: React.FC<UpdateUserProps> = ({
     handleSubmit,
     watch,
     reset,
-    formState: { errors }
+    formState: { errors, dirtyFields }
   } = useForm<FormValues>();
 
   const [loading, setLoading] = useState(false);
@@ -95,20 +95,21 @@ const UpdateUser: React.FC<UpdateUserProps> = ({
   }
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const creditRef = dirtyFields.newCreditRef
+      ? Number(data.newCreditRef)
+      : null;
     const payload: any = {
       userId: agent.userId,
       userStatus: data.userStatus === "true",
       betStatus: data.betStatus === "true",
-      creditRef: Number(data.newCreditRef),
+      creditRef,
       exposureLimit: Number(data.exposureLimit),
       userRate: Number(data.userRate),
       userLevel: agent.accountType.toUpperCase(),
       lupassword: data.lupassword,
-      notes: data.notes
+      notes: data.notes,
+      password: data.password || undefined
     };
-    if (data.password) {
-      payload.password = data.password;
-    }
 
     try {
       await updateUserLord(payload);

@@ -8,6 +8,7 @@ interface ReusableModalProps {
   footer?: React.ReactNode;
   size?: "sm" | "lg" | "xl";
   position?: "center" | "top";
+  fullWidth?: boolean;
 }
 
 const ReusableModal: React.FC<ReusableModalProps> = ({
@@ -17,7 +18,8 @@ const ReusableModal: React.FC<ReusableModalProps> = ({
   children,
   footer,
   size,
-  position = "center"
+  position = "center",
+  fullWidth = false
 }) => {
   const [animate, setAnimate] = useState(false);
 
@@ -41,6 +43,9 @@ const ReusableModal: React.FC<ReusableModalProps> = ({
   const modalSizeClass = size ? `modal-${size}` : "";
   const modalPositionClass =
     position === "center" ? "modal-dialog-centered" : "";
+  const dialogStyle = fullWidth
+    ? { maxWidth: "80%", margin: "0 auto" }
+    : undefined;
 
   if (!show) return null; // only render when needed
 
@@ -58,6 +63,7 @@ const ReusableModal: React.FC<ReusableModalProps> = ({
       >
         <div
           className={`modal-dialog ${modalSizeClass} ${modalPositionClass}`}
+          style={dialogStyle}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="modal-content">
