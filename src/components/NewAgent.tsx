@@ -145,9 +145,12 @@ const NewAgent: React.FC = () => {
         setTimeout(() => {
           navigate(-1);
         }, 1500);
+      } else {
+        setError(response.message || "Failed to create agent.");
+        setSuccess(null);
       }
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Failed to create agent.");
       setSuccess(null);
     }
   };
