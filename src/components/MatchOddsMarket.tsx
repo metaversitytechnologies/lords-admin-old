@@ -118,6 +118,8 @@ const MatchOddsMarket = ({
                   const pnlValue =
                     plnOddsArray.find((pnl) => pnl.selectionId == b?.rid)?.pnl ||
                     0;
+                  const pnlColor =
+                    pnlValue > 0 ? "green" : pnlValue < 0 ? "red" : undefined;
                   return (
                     <div
                       key={bIdx}
@@ -128,15 +130,12 @@ const MatchOddsMarket = ({
                         <p>
                           <span>{b?.na}</span>
                         </p>
-                        {pnlValue >= 0 ? (
-                          <p className="mb-0" style={{ color: "green" }}>
-                            {pnlValue}
-                          </p>
-                        ) : (
-                          <p className="mb-0" style={{ color: "red" }}>
-                            {pnlValue}
-                          </p>
-                        )}
+                        <p
+                          className="mb-0"
+                          style={pnlColor ? { color: pnlColor } : undefined}
+                        >
+                          {pnlValue}
+                        </p>
                       </div>
 
                       <div className="bl-box back2 changed">

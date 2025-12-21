@@ -53,7 +53,7 @@ const MarketPnlBreakdown = ({ market, onBack, userId, fromDate, toDate }) => {
           <li className="d-inline-block">
             <span>{market.marketName}</span>
           </li>
-          <li className="d-inline-block float-right">
+          <li className="d-inline-block float-right mb-2">
             <div id="export_1764091084670" className="">
               <CSVLink
                 data={bets}

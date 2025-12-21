@@ -183,8 +183,13 @@ const MatchedUnmatched: React.FC<MatchedUnmatchedProps> = ({ matchId }) => {
                         <tr className={m.back ? "back" : "lay"} key={i}>
                           <td>
                             {m.userId}
-                            <a title="User Detail" href="#" className="">
-                              <i className="fa fa-eye m-l-5 curser-point float-right"></i>
+                            <a
+                              title="User Detail"
+                              href="#"
+                              className="m-l-5 curser-point d-inline-flex align-items-center justify-content-center"
+                              style={{ width: "24px", height: "24px" }}
+                            >
+                              <i className="fa fa-eye"></i>
                             </a>
                           </td>
                           <td>{m.marketName}</td>

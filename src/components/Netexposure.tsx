@@ -68,20 +68,18 @@ const NetExposure = ({ userId, isActive }) => {
         <div className="header">
           <h1>Net Exposure</h1>
         </div>
-        {!userId && (
-          <div className="float-right">
-            <span className="counter">{counter}</span>
-            <button
-              className="btn btn-secondary m-l-10 m-b-5"
-              onClick={() => {
-                fetchData();
-                setCounter(8);
-              }}
-            >
-              Refresh
-            </button>
-          </div>
-        )}
+        <div className="float-right">
+          {!userId && <span className="counter">{counter}</span>}
+          <button
+            className="btn btn-secondary m-l-10 m-b-5"
+            onClick={() => {
+              fetchData();
+              setCounter(8);
+            }}
+          >
+            Refresh
+          </button>
+        </div>
         <div>
           {!userId && (
             <table className="table">

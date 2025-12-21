@@ -1,125 +1,127 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, {useCallback, useState} from "react";
 import SearchUser from "./SearchUser";
-import { getStatementUseridwiseLord } from "../api/auth";
-import { useAuth } from "../context/AuthContext";
+import {getStatementUseridwiseLord} from "../api/auth";
+import {useAuth} from "../context/AuthContext";
 import ReusableDatePicker from "./DatePicker";
-import Pagination from "./Pagination";
 
-const ClientAccountStatement: React.FC = ({ childId }) => {
-  const { user } = useAuth();
+const getSignClass = (value: number) =>
+    value > 0 ? "positive" : value < 0 ? "negative" : "";
 
-  const [userId, setUserId] = useState("");
-  const today = new Date();
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(today.getDate() - 7);
+const ClientAccountStatement: React.FC = ({childId}) => {
+    const {user} = useAuth();
 
-  const [fromDate, setFromDate] = useState<Date | null>(oneWeekAgo);
-  const [toDate, setToDate] = useState<Date | null>(today);
+    const [userId, setUserId] = useState("");
+    const today = new Date();
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(today.getDate() - 7);
 
-  const [statementData, setStatementData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [fromDate, setFromDate] = useState<Date | null>(oneWeekAgo);
+    const [toDate, setToDate] = useState<Date | null>(today);
 
-  const fetchData = useCallback(
-    async (finalId: string, from: string, to: string) => {
-      if (!finalId) return;
+    const [statementData, setStatementData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
-      setLoading(true);
-      setError(null);
+    const fetchData = useCallback(
+        async (finalId: string, from: string, to: string) => {
+            if (!finalId) return;
 
-      try {
-        const payload = {
-          fromDate: from,
-          toDate: to,
-          noOfRecords: 99999,
-          index: 0,
-          userId: finalId,
-        };
+            setLoading(true);
+            setError(null);
 
-        const response = await getStatementUseridwiseLord(payload);
+            try {
+                const payload = {
+                    fromDate: from,
+                    toDate: to,
+                    noOfRecords: 99999,
+                    index: 0,
+                    userId: finalId,
+                };
 
-        if (response.status) {
-          setStatementData(response.data);
-        } else {
-          setError(response.message || "Failed to fetch statement.");
-        }
-      } catch (err) {
-        console.error(err);
-        setError("An error occurred while fetching the statement.");
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+                const response = await getStatementUseridwiseLord(payload);
 
-  // // Initial load only
-  // useEffect(() => {
-  //   const initialId = childId || user?.userId;
-  //   if (initialId) {
-  //     fetchData(initialId, fromDate?.toISOString().split("T")[0], toDate?.toISOString().split("T")[0]);
-  //   }
-  // }, [childId, user]);
-
-  // Search button click
-  const handleSearch = () => {
-    const finalId = userId || childId || user?.userId;
-    fetchData(
-      finalId,
-      fromDate?.toISOString().split("T")[0],
-      toDate?.toISOString().split("T")[0]
+                if (response.status) {
+                    setStatementData(response.data);
+                } else {
+                    setError(response.message || "Failed to fetch statement.");
+                }
+            } catch (err) {
+                console.error(err);
+                setError("An error occurred while fetching the statement.");
+            } finally {
+                setLoading(false);
+            }
+        },
+        []
     );
-  };
 
-  return (
-    <div>
-      <div className="column m-r-40">
-        <div className="header">
-          {!childId && <h1>Clients Account Statement</h1>}
-        </div>
+    // // Initial load only
+    // useEffect(() => {
+    //   const initialId = childId || user?.userId;
+    //   if (initialId) {
+    //     fetchData(initialId, fromDate?.toISOString().split("T")[0], toDate?.toISOString().split("T")[0]);
+    //   }
+    // }, [childId, user]);
 
-        <div className="row">
-          <div className="col-12 col-md-auto form-group">
-            <label className="d-block">From:</label>
-            <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
-          </div>
+    // Search button click
+    const handleSearch = () => {
+        const finalId = userId || childId || user?.userId;
+        fetchData(
+            finalId,
+            fromDate?.toISOString().split("T")[0],
+            toDate?.toISOString().split("T")[0]
+        );
+    };
 
-          <div className="col-12 col-md-auto form-group">
-            <label className="d-block">To:</label>
-            <ReusableDatePicker selected={toDate} onChange={setToDate} />
-          </div>
+    return (
+        <div>
+            <div className="column m-r-40">
+                <div className="header">
+                    {!childId && <h1>Clients Account Statement</h1>}
+                </div>
 
-          {!childId && (
-            <div className="col-12 col-md-auto form-group">
-              <label className="d-block">Search by user</label>
-              <div className="search-box-container">
-                <SearchUser
-                  value={userId}
-                  onChange={setUserId}
-                  placeholder="Enter At least 3 characters"
-                />
-              </div>
+                <div className="row">
+                    <div className="col-12 col-md-auto form-group">
+                        <label className="d-block">From:</label>
+                        <ReusableDatePicker selected={fromDate} onChange={setFromDate}/>
+                    </div>
+
+                    <div className="col-12 col-md-auto form-group">
+                        <label className="d-block">To:</label>
+                        <ReusableDatePicker selected={toDate} onChange={setToDate}/>
+                    </div>
+
+                    {!childId && (
+                        <div className="col-12 col-md-auto form-group">
+                            <label className="d-block">Search by user</label>
+                            <div className="search-box-container">
+                                <SearchUser
+                                    value={userId}
+                                    onChange={setUserId}
+                                    placeholder="Enter At least 3 characters"
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="col-12 col-md-auto form-group d-flex align-items-end">
+                        <button className="btn btn-secondary" onClick={handleSearch}>
+                            <i className="fa fa-search m-r-5"></i>Search
+                        </button>
+                    </div>
+                </div>
+
+                {error && <div className="alert alert-danger">{error}</div>}
             </div>
-          )}
 
-          <div className="col-12 col-md-auto form-group d-flex align-items-end">
-            <button className="btn btn-secondary" onClick={handleSearch}>
-              <i className="fa fa-search m-r-5"></i>Search
-            </button>
-          </div>
-        </div>
-
-        {error && <div className="alert alert-danger">{error}</div>}
-      </div>
-
-      <div className="table-responsive col-sm-12">
-        <div className="row col-page">
-          <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
-            <div className="row dataTables_length">
-              {/* <div className="p-l-m col">
+            <div className="table-responsive col-sm-12">
+                <div className="row col-page">
+                    <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
+                        <div className="row dataTables_length">
+                            {/* <div className="p-l-m col">
                 <label>
                   Show
                   <select
@@ -139,105 +141,103 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
                   entries
                 </label>
               </div> */}
-            </div>
-          </div>
-        </div>
-        <table className="table">
-          <thead>
-          <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th></th>
-            <th>P&L</th>
-            <th className="text-right">Credit Limit</th>
-            <th className="text-right">Balance</th>
-          </tr>
-          </thead>
+                        </div>
+                    </div>
+                </div>
+                <table className="table">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th></th>
+                        <th>P&L</th>
+                        <th className="text-right">Credit Limit</th>
+                        <th className="text-right">Balance</th>
+                    </tr>
+                    </thead>
 
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={6} className="text-center">
-                  Loading...
-                </td>
-              </tr>
-            ) : statementData?.dataList?.length ? (
-              [...statementData.dataList]
-                .sort(
-                  (a, b) =>
-                    new Date(b.date).getTime() - new Date(a.date).getTime()
-                )
-                .filter((daily) =>
-                  daily.dataList.some(
-                    (entry) =>
-                      !searchTerm ||
-                      Object.values(entry).some((val) =>
-                        String(val)
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                      )
-                  )
-                )
-                .slice(
-                  (currentPage - 1) * itemsPerPage,
-                  currentPage * itemsPerPage
-                )
-                .map((daily) => {
-                  const sortedEntries = [...daily.dataList].sort(
-                    (a, b) =>
-                      new Date(b.date).getTime() - new Date(a.date).getTime()
-                  );
-
-                  return (
-                    <React.Fragment key={daily.date}>
-                      <tr className="group">
-                        <td colSpan={6}>{daily.date}</td>
-                      </tr>
-                      {sortedEntries
-                        .filter(
-                          (entry) =>
-                            !searchTerm ||
-                            Object.values(entry).some((val) =>
-                              String(val)
-                                .toLowerCase()
-                                .includes(searchTerm.toLowerCase())
+                    <tbody>
+                    {loading ? (
+                        <tr>
+                            <td colSpan={6} className="text-center">
+                                Loading...
+                            </td>
+                        </tr>
+                    ) : statementData?.dataList?.length ? (
+                        [...statementData.dataList]
+                            .sort(
+                                (a, b) =>
+                                    new Date(b.date).getTime() - new Date(a.date).getTime()
                             )
-                        )
-                        .map((entry, index) => (
-                            <tr key={index}>
-                              <td>{entry.date}</td>
-                              <td>{entry.paymentType}</td>
-                              <td>{entry.description}</td>
-                              <td
-                                  className={` ${
-                                      entry.pnl >= 0 ? "positive" : "negative"
-                                  }`}
-                              >
-                                {entry.pnl.toFixed(2)}
-                              </td>
-                              <td className="text-right">{entry.creditLimit}</td>
-                              <td
-                                  className={`text-right ${
-                                      entry.balance >= 0 ? "positive" : "negative"
-                                  }`}
-                              >
-                                {entry.balance.toFixed(2)}
-                              </td>
-                            </tr>
-                        ))}
-                    </React.Fragment>
-                  );
-                })
-            ) : (
-              <tr>
-                <td colSpan={6} className="text-center">
-                  {/* No data available. */}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        {/* <Pagination
+                            .filter((daily) =>
+                                daily.dataList.some(
+                                    (entry) =>
+                                        !searchTerm ||
+                                        Object.values(entry).some((val) =>
+                                            String(val)
+                                                .toLowerCase()
+                                                .includes(searchTerm.toLowerCase())
+                                        )
+                                )
+                            )
+                            .slice(
+                                (currentPage - 1) * itemsPerPage,
+                                currentPage * itemsPerPage
+                            )
+                            .map((daily) => {
+                                const sortedEntries = [...daily.dataList].sort(
+                                    (a, b) =>
+                                        new Date(b.date).getTime() - new Date(a.date).getTime()
+                                );
+
+                                return (
+                                    <React.Fragment key={daily.date}>
+                                        <tr className="group">
+                                            <td colSpan={6}>{daily.date}</td>
+                                        </tr>
+                                        {sortedEntries
+                                            .filter(
+                                                (entry) =>
+                                                    !searchTerm ||
+                                                    Object.values(entry).some((val) =>
+                                                        String(val)
+                                                            .toLowerCase()
+                                                            .includes(searchTerm.toLowerCase())
+                                                    )
+                                            )
+                                            .map((entry, index) => (
+                                                <tr key={index}>
+                                                    <td>{entry.date}</td>
+                                                    <td>{entry.paymentType}</td>
+                                                    <td>{entry.description}</td>
+                                                    <td className={getSignClass(entry.pnl)}>
+                                                        {entry.pnl.toFixed(2)}
+                                                    </td>
+                                                    <td
+                                                        className={`text-right ${getSignClass(entry.creditLimit)}`}
+                                                    >
+                                                        {entry.creditLimit}
+                                                    </td>
+                                                    <td
+                                                        className={`text-right ${getSignClass(entry.balance)}`}
+                                                    >
+                                                        {entry.balance.toFixed(2)}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                    </React.Fragment>
+                                );
+                            })
+                    ) : (
+                        <tr>
+                            <td colSpan={6} className="text-center">
+                                {/* No data available. */}
+                            </td>
+                        </tr>
+                    )}
+                    </tbody>
+                </table>
+                {/* <Pagination
           currentPage={currentPage}
           totalPages={Math.ceil(
             (
@@ -252,9 +252,9 @@ const ClientAccountStatement: React.FC = ({ childId }) => {
           )}
           onPageChange={setCurrentPage}
         /> */}
-      </div>
-    </div>
-  );
+            </div>
+        </div>
+    );
 };
 
 export default ClientAccountStatement;

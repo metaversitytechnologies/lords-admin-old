@@ -3,6 +3,40 @@ import { getBetDetailUseridwiseLord } from "../api/auth";
 import ReusableDatePicker from "./DatePicker";
 import Pagination from "./Pagination";
 
+const getNumericValue = (value: any) => {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  const numericValue = Number(value);
+  return Number.isNaN(numericValue) ? null : numericValue;
+};
+
+const getWinLossDisplay = (value: any) => {
+  if (value === null || value === undefined) {
+    return { text: "-", className: "" };
+  }
+
+  const numericValue = Number(value);
+  const isNumber = !Number.isNaN(numericValue);
+  const upperVal = typeof value === "string" ? value.toUpperCase() : "";
+
+  const className = isNumber
+    ? numericValue > 0
+      ? "text-success"
+      : numericValue < 0
+      ? "text-danger"
+      : ""
+    : upperVal === "WIN"
+    ? "text-success"
+    : upperVal === "LOSS"
+    ? "text-danger"
+    : "";
+
+  const text = isNumber ? numericValue.toFixed(2) : upperVal || "-";
+
+  return { text, className };
+};
+
 const DownlineBetList = ({ userId }) => {
   const [activeTab, setActiveTab] = useState("current");
   const [betType, setBetType] = useState("matched");
@@ -277,12 +311,12 @@ const DownlineBetList = ({ userId }) => {
                                   <th className="position-relative text-left">
                                     User Rate
                                   </th>
-                                  {/* <th className="position-relative text-left">
+                                  <th className="position-relative text-left">
                                     Profit
                                   </th>
                                   <th className="position-relative text-right">
                                     Win/Loss
-                                  </th> */}
+                                  </th>
                                   <th className="text-left">IP</th>
                                   <th className="position-relative text-right">
                                     Browser Details
@@ -295,14 +329,14 @@ const DownlineBetList = ({ userId }) => {
                               <tbody role="rowgroup">
                                 {loading ? (
                                   <tr>
-                                    <td colSpan="9" className="text-center">
+                                    <td colSpan="10" className="text-center">
                                       Loading...
                                     </td>
                                   </tr>
                                 ) : error ? (
                                   <tr>
                                     <td
-                                      colSpan="9"
+                                      colSpan="10"
                                       className="text-center text-danger"
                                     >
                                       {error}
@@ -368,20 +402,56 @@ const DownlineBetList = ({ userId }) => {
                                         >
                                           {bet.odds}
                                         </td>
-                                        {/* <td
-                                          data-label="Bet Type"
-                                          className={`text-left ${
-                                            bet.isback ? "back-bet" : "lay-bet"
-                                          }`}
-                                        >
-                                          {bet.isback ? "BACK" : "LAY"}
-                                        </td>
                                         <td
-                                          data-label="Odds"
+                                          data-label="Profit"
                                           className="text-right"
                                         >
-                                          {bet.odds}
-                                        </td> */}
+                                          {(() => {
+                                            const profitValue = getNumericValue(
+                                              bet.profit ??
+                                                bet.netpnl ??
+                                                bet.pnl ??
+                                                bet.memberPnl ??
+                                                bet.profitLiability
+                                            );
+                                            const profitClass =
+                                              profitValue !== null
+                                                ? profitValue > 0
+                                                  ? "text-success"
+                                                  : profitValue < 0
+                                                  ? "text-danger"
+                                                  : ""
+                                                : "";
+
+                                            return (
+                                              <span className={profitClass}>
+                                                {profitValue !== null
+                                                  ? profitValue.toFixed(2)
+                                                  : "-"}
+                                              </span>
+                                            );
+                                          })()}
+                                        </td>
+                                        <td
+                                          data-label="Win/Loss"
+                                          className="text-right"
+                                        >
+                                          {(() => {
+                                            const { text, className } =
+                                              getWinLossDisplay(
+                                                bet.winLoss ??
+                                                  bet.winLossStatus ??
+                                                  bet.winLossValue ??
+                                                  bet.win_loss ??
+                                                  bet.result
+                                              );
+                                            return (
+                                              <span className={className}>
+                                                {text}
+                                              </span>
+                                            );
+                                          })()}
+                                        </td>
                                         <td
                                           data-label="IP"
                                           className="text-left"

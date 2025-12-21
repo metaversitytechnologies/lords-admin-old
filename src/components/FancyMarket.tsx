@@ -4,6 +4,7 @@ import ReusableModal from "./ReusableModal";
 import BetLockModal from "./BetLockModal";
 import type { BetLockUser } from "./BetLockModal";
 import { getUserFancyBook } from "../api/bet";
+import type {Fancy2} from "./type";
 
 interface FancyMarketProps {
   fancyData: Fancy2[] | undefined;
@@ -96,6 +97,7 @@ const FancyMarket = ({
                     bet = fancyPnldata[currentId];
                   }
                 }
+                const betColor = bet > 0 ? "green" : bet < 0 ? "red" : undefined;
                 return (
                   <div className="fancy-tripple" key={i}>
                     <div
@@ -109,7 +111,7 @@ const FancyMarket = ({
                           <span>{r.na}</span>
                         </p>
                         <p className="mb-0">
-                          <span style={{ color: bet >= 0 ? "green" : "red" }}>
+                          <span style={betColor ? { color: betColor } : undefined}>
                             {" "}
                             {bet}
                           </span>
@@ -174,7 +176,11 @@ const FancyMarket = ({
                     <td className="text-center">{item.odds}</td>
                     <td
                       className={`text-center ${
-                        item.pnl >= 0 ? "text-success" : "text-danger"
+                        item.pnl > 0
+                          ? "text-success"
+                          : item.pnl < 0
+                          ? "text-danger"
+                          : ""
                       }`}
                     >
                       {item.pnl}
