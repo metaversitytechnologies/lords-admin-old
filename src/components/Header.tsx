@@ -8,6 +8,7 @@ import {
   faAngleDown
 } from "@fortawesome/free-solid-svg-icons";
 import ChangePasswordSelfModal from "./ChangePasswordSelfModal";
+import SelfDepositModal from "./SelfDepositModal";
 
 const Header: React.FC = () => {
   const { isAuthenticated, user, lastLogin, logout } = useAuth();
@@ -17,6 +18,8 @@ const Header: React.FC = () => {
   const [timeZone, setTimeZone] = useState<string | undefined>(undefined);
   const [showChangePasswordModal, setShowChangePasswordModal] =
     useState<boolean>(false); // State for modal
+  const [showSelfDepositModal, setShowSelfDepositModal] =
+    useState<boolean>(false);
 
   // Dropdown states
   const [tzOpen, setTzOpen] = useState(false);
@@ -54,6 +57,16 @@ const Header: React.FC = () => {
 
   const closeChangePasswordModal = () => {
     setShowChangePasswordModal(false);
+  };
+
+  const openSelfDepositModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowSelfDepositModal(true);
+    setSettingsOpen(false);
+  };
+
+  const closeSelfDepositModal = () => {
+    setShowSelfDepositModal(false);
   };
 
   const displayName =
@@ -227,6 +240,15 @@ const Header: React.FC = () => {
 
               {settingsOpen && (
                 <div className="dropdown-menu show">
+                  {user?.userType === 4 && (
+                    <a
+                      href="#"
+                      className="dropdown-item"
+                      onClick={openSelfDepositModal}
+                    >
+                      Self Deposit
+                    </a>
+                  )}
                   <a
                     href="#"
                     className="dropdown-item"
@@ -259,6 +281,10 @@ const Header: React.FC = () => {
         <ChangePasswordSelfModal
           show={showChangePasswordModal}
           handleClose={closeChangePasswordModal}
+        />
+        <SelfDepositModal
+          show={showSelfDepositModal}
+          handleClose={closeSelfDepositModal}
         />
       </header>
     );

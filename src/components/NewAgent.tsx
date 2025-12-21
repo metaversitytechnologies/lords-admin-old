@@ -18,11 +18,50 @@ type FormValues = {
   notes: string;
 };
 
+const roleLevels: { [key: string]: number } = {
+  SUPERMASTER: 0,
+  MASTER: 1,
+  DEALER: 2,
+  USER: 3,
+  ADMIN: 4,
+  SUBADMIN: 5
+};
+
+const creatableRoles: { [key: string]: string[] } = {
+  ADMIN: ["SUBADMIN"],
+  SUBADMIN: ["SUPERMASTER", "MASTER", "DEALER", "USER"],
+  SUPERMASTER: ["MASTER", "DEALER", "USER"],
+  MASTER: ["DEALER", "USER"],
+  DEALER: ["USER"],
+  USER: []
+};
+
+const levelRoleMapping: { [key: number]: string } = {
+  0: "SUPERMASTER",
+  1: "MASTER",
+  2: "DEALER",
+  3: "USER",
+  4: "ADMIN",
+  5: "SUBADMIN"
+};
+
+const toNumericUserLevel = (type: unknown): number | null => {
+  if (typeof type === "number") return type;
+  if (typeof type === "string") {
+    const parsed = Number(type);
+    if (!Number.isNaN(parsed)) return parsed;
+    const normalized = type.toUpperCase();
+    if (roleLevels[normalized] !== undefined) return roleLevels[normalized];
+  }
+  return null;
+};
+
 const NewAgent: React.FC = () => {
   const [creditLimits, setCreditLimits] = useState({
     min: 0,
     max: 0
   });
+  const [creditLoading, setCreditLoading] = useState(true);
   const navigate = useNavigate();
   const {
     register,
@@ -31,6 +70,7 @@ const NewAgent: React.FC = () => {
     formState: { errors },
     reset
   } = useForm<FormValues>({
+    mode: "onTouched",
     defaultValues: {
       userStatus: "1",
       betStatus: "1",
@@ -42,68 +82,38 @@ const NewAgent: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [userLevel, setUserLevel] = useState<number | null>(null);
-
-  const roleLevels: { [key: string]: number } = {
-    SUPERMASTER: 0,
-    MASTER: 1,
-    DEALER: 2,
-    USER: 3,
-    ADMIN: 4,
-    SUBADMIN: 5
-  };
-
-  const creatableRoles: { [key: string]: string[] } = {
-    ADMIN: ["SUBADMIN"],
-    SUBADMIN: ["SUPERMASTER", "MASTER", "DEALER", "USER"],
-    SUPERMASTER: ["MASTER", "DEALER", "USER"],
-    MASTER: ["DEALER", "USER"],
-    DEALER: ["USER"],
-    USER: []
-  };
-
-  const levelRoleMapping: { [key: number]: string } = {
-    0: "SUPERMASTER",
-    1: "MASTER",
-    2: "DEALER",
-    3: "USER",
-    4: "ADMIN",
-    5: "SUBADMIN"
-  };
-
-  const toNumericUserLevel = (type: unknown): number | null => {
-    if (typeof type === "number") return type;
-    if (typeof type === "string") {
-      const parsed = Number(type);
-      if (!Number.isNaN(parsed)) return parsed;
-      const normalized = type.toUpperCase();
-      if (roleLevels[normalized] !== undefined) return roleLevels[normalized];
+  const [userLevel] = useState<number | null>(() => {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) return null;
+    try {
+      const parsed = JSON.parse(storedUser);
+      return toNumericUserLevel(parsed.userType);
+    } catch (e) {
+      console.error("Failed to parse stored user", e);
+      return null;
     }
-    return null;
-  };
+  });
 
   useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      const user = JSON.parse(userData);
-      setUserLevel(toNumericUserLevel(user.userType));
-    }
     fetchBalance();
   }, []);
 
   const fetchBalance = async () => {
+    setCreditLoading(true);
     try {
       const response = await getBalance();
       if (response.status && response.data) {
         setCreditLimits({
           min: 0,
-          max: response.data?.availableCredit.toFixed(2)
+          max: Number(response.data?.availableCredit) || 0
         });
       } else {
         console.error(response.message || "Failed to fetch balance");
       }
     } catch (err: any) {
       console.error(err.message || "An error occurred");
+    } finally {
+      setCreditLoading(false);
     }
   };
   const password = watch("password");
@@ -352,9 +362,9 @@ const NewAgent: React.FC = () => {
                 />
                 <span className="text-danger error-account"></span>
                 <span className="float-right cref-height">
-                  &gt;= {creditLimits.min}
+                  &gt;= {creditLoading ? "--" : creditLimits.min.toFixed(2)}
                   <br />
-                  &lt;= {creditLimits.max}
+                  &lt;= {creditLoading ? "--" : creditLimits.max.toFixed(2)}
                 </span>
               </span>
             </div>
@@ -438,11 +448,11 @@ const NewAgent: React.FC = () => {
             <span className="text-danger error-account"></span>
           </div>
         </section>
-        <div className="form-group text-right">
-          <div className="apl-form-row master-pass m-b-30">
+        <div className="form-footer">
+          <div className="apl-form-row master-pass m-b-20">
             <label>Master Password</label>
             <input
-              className="m-l-5"
+              className="m-l-5 input-master-password"
               autoComplete="new-password"
               placeholder="Master Password"
               type="password"
@@ -466,16 +476,18 @@ const NewAgent: React.FC = () => {
               </p>
             )}
           </div>
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="btn btn-link"
-          >
-            Cancel
-          </button>
-          <button type="submit" className="btn btn-submit m-l-5">
-            Create
-          </button>
+          <div className="form-footer-actions">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="btn btn-link text-success m-r-5"
+            >
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-submit m-l-5">
+              Create
+            </button>
+          </div>
         </div>
       </form>
     </div>

@@ -1245,6 +1245,22 @@ color: var(--accent-color)
     width: 150px;
 }
 
+.self-deposit-title {
+    font-size: 20px;
+    font-weight: 700;
+    background-color: var(--primary-color);
+    color: #fff !important;
+    padding: 10px 14px;
+    margin: 0 0 16px;
+    border-radius: 6px;
+}
+
+.self-deposit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
 .modal-lg {
     max-width: 50%;
 }
@@ -2926,7 +2942,9 @@ span.order-time {
 }
 
 .master-pass .error-account {
+    left: auto;
     right: 0;
+    text-align: right;
 }
 
 .master-pass input {

@@ -467,6 +467,42 @@ nav.menu > ul > li.rootMenu.active > a {
     width: 100%;
 }
 
+.new-agent form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.new-agent .form-footer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.new-agent .form-footer .master-pass {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.new-agent .form-footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+.cref-height {
+    min-width: 120px;
+    display: inline-block;
+    text-align: right;
+    white-space: nowrap;
+}
+
 .balance .header h1 span {
     color: white !important;
 }

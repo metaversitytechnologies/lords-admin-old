@@ -152,3 +152,7 @@ export const changePasswordSelf = async (payload: {
 }) => {
   return apiRequest('/user/change-password-self', 'POST', payload);
 };
+
+export const selfDeposit = async (payload: { amount: number; lupassword: string }) => {
+  return apiRequest("/admin/admin-self-deposit", "POST", payload);
+};
