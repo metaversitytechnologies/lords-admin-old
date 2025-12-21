@@ -42,13 +42,51 @@ const NewAgent: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [userLevel, setUserLevel] = useState<string | null>(null);
+  const [userLevel, setUserLevel] = useState<number | null>(null);
+
+  const roleLevels: { [key: string]: number } = {
+    SUPERMASTER: 0,
+    MASTER: 1,
+    DEALER: 2,
+    USER: 3,
+    ADMIN: 4,
+    SUBADMIN: 5
+  };
+
+  const creatableRoles: { [key: string]: string[] } = {
+    ADMIN: ["SUBADMIN"],
+    SUBADMIN: ["SUPERMASTER", "MASTER", "DEALER", "USER"],
+    SUPERMASTER: ["MASTER", "DEALER", "USER"],
+    MASTER: ["DEALER", "USER"],
+    DEALER: ["USER"],
+    USER: []
+  };
+
+  const levelRoleMapping: { [key: number]: string } = {
+    0: "SUPERMASTER",
+    1: "MASTER",
+    2: "DEALER",
+    3: "USER",
+    4: "ADMIN",
+    5: "SUBADMIN"
+  };
+
+  const toNumericUserLevel = (type: unknown): number | null => {
+    if (typeof type === "number") return type;
+    if (typeof type === "string") {
+      const parsed = Number(type);
+      if (!Number.isNaN(parsed)) return parsed;
+      const normalized = type.toUpperCase();
+      if (roleLevels[normalized] !== undefined) return roleLevels[normalized];
+    }
+    return null;
+  };
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
       const user = JSON.parse(userData);
-      setUserLevel(user.userType);
+      setUserLevel(toNumericUserLevel(user.userType));
     }
     fetchBalance();
   }, []);
@@ -104,36 +142,9 @@ const NewAgent: React.FC = () => {
     }
   };
 
-  const roleLevels: { [key: string]: number } = {
-    SUPERMASTER: 0,
-    MASTER: 1,
-    DEALER: 2,
-    USER: 3,
-    ADMIN: 4,
-    SUBADMIN: 5
-  };
-
-  const creatableRoles: { [key: string]: string[] } = {
-    ADMIN: ["SUBADMIN"],
-    SUBADMIN: ["SUPERMASTER", "MASTER", "DEALER", "USER"],
-    SUPERMASTER: ["MASTER", "DEALER", "USER"],
-    MASTER: ["DEALER", "USER"],
-    DEALER: ["USER"],
-    USER: []
-  };
-
-  const levelRoleMapping: { [key: number]: string } = {
-    0: "SUPERMASTER",
-    1: "MASTER",
-    2: "DEALER",
-    3: "USER",
-    4: "ADMIN",
-    5: "SUBADMIN"
-  };
-
   const getAvailableRoles = () => {
-    if (!userLevel) return [];
-    const roleName = levelRoleMapping[parseInt(userLevel, 10)];
+    if (userLevel === null) return [];
+    const roleName = levelRoleMapping[userLevel];
     if (!roleName || !creatableRoles[roleName]) return [];
 
     return creatableRoles[roleName].map((role) => ({

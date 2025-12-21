@@ -10,7 +10,7 @@ import FlashMessage from "../components/FlashMessage";
 
 interface AuthUser {
   userId: string;
-  userType: string;
+  userType: number;
   username: string;
   passwordtype: string;
   partnership: string;
@@ -60,7 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setToken(newToken);
     if (newUser) {
       globalThis.localStorage.setItem("user", JSON.stringify(newUser));
-      globalThis.localStorage.setItem("userType", newUser.userType);
+      globalThis.localStorage.setItem("userType", String(newUser.userType));
       globalThis.localStorage.setItem(
         "userTypeInfo",
         newUser.userTypeInfo.toString()

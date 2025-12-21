@@ -11,29 +11,26 @@ type LoginFormInputs = {
   password: string;
 };
 
-const mapUserType = (
+const resolveUserTypeId = (
   userType: string | number | undefined,
   fallback?: string | number
-) => {
-  const mappings: Record<string | number, string> = {
-    0: "supermaster",
-    1: "master",
-    2: "dealer",
-    3: "user",
-    4: "admin",
-    5: "subadmin"
+): number => {
+  const toNumber = (value: string | number | undefined | null) => {
+    if (typeof value === "number") return value;
+    if (typeof value === "string") {
+      const parsed = Number(value);
+      if (!Number.isNaN(parsed)) return parsed;
+    }
+    return null;
   };
 
-  const key =
-    userType !== undefined && userType !== null
-      ? userType
-      : fallback !== undefined
-        ? fallback
-        : undefined;
+  const primary = toNumber(userType);
+  if (primary !== null) return primary;
 
-  if (key === undefined) return "";
+  const secondary = toNumber(fallback);
+  if (secondary !== null) return secondary;
 
-  return mappings[key] || String(key);
+  throw new Error("Invalid user type in login response");
 };
 
 const Login: React.FC = () => {
@@ -61,7 +58,14 @@ const Login: React.FC = () => {
 
       if (data?.token) {
         let user;
-        const userType = mapUserType(data.userType, data.userTypeInfo);
+        const userType = resolveUserTypeId(data.userType, data.userTypeInfo);
+        const rawUserTypeInfo =
+          data.userTypeInfo !== undefined && data.userTypeInfo !== null
+            ? Number(data.userTypeInfo)
+            : userType;
+        const userTypeInfo = Number.isNaN(rawUserTypeInfo)
+          ? userType
+          : rawUserTypeInfo;
         if (data.passwordtype === "old") {
           user = {
             // From API response body
@@ -70,7 +74,7 @@ const Login: React.FC = () => {
             userType,
             passwordtype: data.passwordtype,
             partnership: data.partnership,
-            userTypeInfo: data.userTypeInfo,
+            userTypeInfo,
             exp: 0
           };
         } else {
@@ -84,7 +88,7 @@ const Login: React.FC = () => {
             userType,
             passwordtype: data.passwordtype,
             partnership: data.partnership,
-            userTypeInfo: data.userTypeInfo
+            userTypeInfo
           };
         }
         auth.login(data.token, user);
