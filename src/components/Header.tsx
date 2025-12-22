@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ChangePasswordSelfModal from "./ChangePasswordSelfModal";
 import SelfDepositModal from "./SelfDepositModal";
+import AdminMessageModal from "./AdminMessageModal";
 
 const Header: React.FC = () => {
   const { isAuthenticated, user, lastLogin, logout } = useAuth();
@@ -20,6 +21,7 @@ const Header: React.FC = () => {
     useState<boolean>(false); // State for modal
   const [showSelfDepositModal, setShowSelfDepositModal] =
     useState<boolean>(false);
+  const [showMessageModal, setShowMessageModal] = useState<boolean>(false);
 
   // Dropdown states
   const [tzOpen, setTzOpen] = useState(false);
@@ -67,6 +69,16 @@ const Header: React.FC = () => {
 
   const closeSelfDepositModal = () => {
     setShowSelfDepositModal(false);
+  };
+
+  const openMessageModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowMessageModal(true);
+    setSettingsOpen(false);
+  };
+
+  const closeMessageModal = () => {
+    setShowMessageModal(false);
   };
 
   const displayName =
@@ -249,6 +261,15 @@ const Header: React.FC = () => {
                       Self Deposit
                     </a>
                   )}
+                  {user?.userType === 4 && (
+                    <a
+                      href="#"
+                      className="dropdown-item"
+                      onClick={openMessageModal}
+                    >
+                      Set Message
+                    </a>
+                  )}
                   <a
                     href="#"
                     className="dropdown-item"
@@ -285,6 +306,10 @@ const Header: React.FC = () => {
         <SelfDepositModal
           show={showSelfDepositModal}
           handleClose={closeSelfDepositModal}
+        />
+        <AdminMessageModal
+          show={showMessageModal}
+          onClose={closeMessageModal}
         />
       </header>
     );

@@ -9,6 +9,8 @@ interface ReusableModalProps {
   size?: "sm" | "lg" | "xl";
   position?: "center" | "top";
   fullWidth?: boolean;
+  maxWidth?: string | number;
+  topOffset?: string | number;
 }
 
 const ReusableModal: React.FC<ReusableModalProps> = ({
@@ -19,7 +21,9 @@ const ReusableModal: React.FC<ReusableModalProps> = ({
   footer,
   size,
   position = "center",
-  fullWidth = false
+  fullWidth = false,
+  maxWidth,
+  topOffset
 }) => {
   const [animate, setAnimate] = useState(false);
 
@@ -43,9 +47,17 @@ const ReusableModal: React.FC<ReusableModalProps> = ({
   const modalSizeClass = size ? `modal-${size}` : "";
   const modalPositionClass =
     position === "center" ? "modal-dialog-centered" : "";
-  const dialogStyle = fullWidth
-    ? { maxWidth: "80%", margin: "0 auto" }
-    : undefined;
+  const dialogStyle: React.CSSProperties = {};
+  if (fullWidth) {
+    dialogStyle.maxWidth = "80%";
+    dialogStyle.margin = "0 auto";
+  } else if (maxWidth) {
+    dialogStyle.maxWidth = maxWidth;
+    dialogStyle.margin = "0 auto";
+  }
+  if (position === "top") {
+    dialogStyle.marginTop = topOffset ?? "24px";
+  }
 
   if (!show) return null; // only render when needed
 

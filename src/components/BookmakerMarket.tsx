@@ -1,9 +1,9 @@
 import React, {useState} from "react";
 import type {BetLockUser} from "./BetLockModal";
 import BetLockModal from "./BetLockModal";
-import type {UserBookSelection} from "./UserBookModal";
 import UserBookModal from "./UserBookModal";
 import type {Bookmaker} from "./type";
+import {getUserBookMarketwise} from "../api/bet";
 
 interface BookmakerMarketProps {
     bookmakerData: Bookmaker[] | undefined;
@@ -12,9 +12,13 @@ interface BookmakerMarketProps {
 
 const BookmakerMarket = ({bookmakerData, pnlData}: BookmakerMarketProps) => {
     const [isUserBookModalOpen, setIsUserBookModalOpen] = useState(false);
-    const [userBookSelections, setUserBookSelections] = useState<
-        UserBookSelection[]
-    >([]);
+    const [userBookSelectionInfo, setUserBookSelectionInfo] = useState<{id: any; name: string}[]>([]);
+    const [userBookRaw, setUserBookRaw] = useState<{
+        selectionId1?: any;
+        selectionId2?: any;
+        selectionId3?: any;
+        dataList?: any[];
+    } | null>(null);
     const [isBetLockModalOpen, setIsBetLockModalOpen] = useState(false);
     const [betLockUsers, setBetLockUsers] = useState<BetLockUser[]>([
         {name: "capetown", checked: true},
@@ -35,11 +39,37 @@ const BookmakerMarket = ({bookmakerData, pnlData}: BookmakerMarketProps) => {
         }, {});
     };
 
+    const buildSelectionInfo = (runners: any[]) =>
+        (runners || []).map((item, idx) => ({
+            id: item?.sid ?? item?.rid ?? item?.selectionId ?? idx,
+            name: item?.nation ?? item?.na ?? `Selection ${idx + 1}`
+        }));
+
+    const openUserBookModal = async (
+        marketId: string,
+        selectionInfo: { id: any; name: string }[]
+    ) => {
+        try {
+            const response = await getUserBookMarketwise({marketId});
+            const parentName = response?.data?.parentUserName || "capetown";
+            const childName = response?.data?.childUserName || "capetown2";
+            setUserBookSelectionInfo(selectionInfo);
+            setUserBookRaw(response?.data);
+        } catch (error) {
+            console.error("Error fetching user book data:", error);
+            setUserBookSelectionInfo(selectionInfo);
+            setUserBookRaw(null);
+        } finally {
+            setIsUserBookModalOpen(true);
+        }
+    };
+
     const groupedData = groupByProviderTypeNation(bookmakerData);
     return (
         <>
             {Object.entries(groupedData).map(
                 ([providerType, nations]: [string, any]) => {
+                    const selectionInfo = buildSelectionInfo(nations);
                     const myPnl = pnlData?.find(
                         (ele: any) => ele?.marketId == nations?.[0]?.mid
                     );
@@ -67,18 +97,12 @@ const BookmakerMarket = ({bookmakerData, pnlData}: BookmakerMarketProps) => {
                                         <button
                                             type="button"
                                             className="btn btn bet-lock-btn m-r-10 btn-primary"
-                                            onClick={() => {
-                                                setUserBookSelections(
-                                                    (nations || []).map((item: any) => ({
-                                                        name: item?.nation,
-                                                        pnl:
-                                                            pnlBookMaker.find(
-                                                                (p) => p.selectionId == item?.sid
-                                                            )?.pnl ?? "-"
-                                                    }))
-                                                );
-                                                setIsUserBookModalOpen(true);
-                                            }}
+                                            onClick={() =>
+                                                openUserBookModal(
+                                                    nations?.[0]?.mid || "",
+                                                    selectionInfo
+                                                )
+                                            }
                                         >
                                             Book
                                         </button>
@@ -168,7 +192,8 @@ const BookmakerMarket = ({bookmakerData, pnlData}: BookmakerMarketProps) => {
             <UserBookModal
                 show={isUserBookModalOpen}
                 onClose={() => setIsUserBookModalOpen(false)}
-                selections={userBookSelections}
+                selectionInfo={userBookSelectionInfo}
+                rawData={userBookRaw || {dataList: []}}
             />
             <BetLockModal
                 show={isBetLockModalOpen}

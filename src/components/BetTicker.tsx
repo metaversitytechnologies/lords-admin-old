@@ -10,7 +10,7 @@ const BetTicker = () => {
   const [error, setError] = useState(null);
   const [sports, setSports] = useState<any[]>([]);
   const [markets, setMarkets] = useState<any[]>([]);
-  const [marketId, setMarketId] = useState("all");
+  const [marketName, setMarketName] = useState("all");
   const [oddsDropdownOpen, setOddsDropdownOpen] = useState(false);
   const [stakeDropdownOpen, setStakeDropdownOpen] = useState(false);
   const [counter, setCounter] = useState(3);
@@ -29,6 +29,7 @@ const BetTicker = () => {
   // Filter States
   const [filters, setFilters] = useState({
     sportName: "",
+    marketName: "all",
     minStake: "",
     maxStake: "",
     minOdds: "",
@@ -40,8 +41,10 @@ const BetTicker = () => {
   const [appliedFilters, setAppliedFilters] = useState(filters);
 
   const fetchData = useCallback(
-    async (showLoading = true) => {
-      if (!appliedFilters.sportName || appliedFilters.sportName === "All") {
+    async (showLoading = true, filterSource = appliedFilters) => {
+      const activeFilters = filterSource || appliedFilters;
+
+      if (!activeFilters.sportName || activeFilters.sportName === "All") {
         if (showLoading) setLoading(false);
         return;
       }
@@ -52,12 +55,16 @@ const BetTicker = () => {
       setError(null);
       try {
         const payload = {
-          sportName: appliedFilters.sportName.toLowerCase(),
-          minStake: appliedFilters.minStake || null,
-          maxStake: appliedFilters.maxStake || null,
-          minOdds: appliedFilters.minOdds || null,
-          maxOdds: appliedFilters.maxOdds || null,
-          userId: appliedFilters.userId || null
+          sportName: activeFilters.sportName.toLowerCase(),
+          marketName:
+            activeFilters.marketName && activeFilters.marketName !== "all"
+              ? activeFilters.marketName.toLowerCase()
+              : null,
+          minStake: activeFilters.minStake || null,
+          maxStake: activeFilters.maxStake || null,
+          minOdds: activeFilters.minOdds || null,
+          maxOdds: activeFilters.maxOdds || null,
+          userId: activeFilters.userId || null
         };
         const response = await getBetTicker(payload);
         if (response.status) {
@@ -80,9 +87,8 @@ const BetTicker = () => {
   );
 
   useEffect(() => {
-    fetchData();
     fetchSports();
-  }, [fetchData]);
+  }, []);
 
   const fetchSports = async () => {
     try {
@@ -162,11 +168,13 @@ const BetTicker = () => {
       return;
     }
     setAppliedFilters(filters);
+    fetchData(true, filters);
   };
 
   const handleCancel = () => {
     const defaultFilters = {
       sportName: "",
+      marketName: "all",
       minStake: "",
       maxStake: "",
       minOdds: "",
@@ -175,6 +183,7 @@ const BetTicker = () => {
     };
     setFilters(defaultFilters);
     setAppliedFilters(defaultFilters);
+    setMarketName("all");
     setValidationError("Please Select Event");
     setBets([]); // Clear data on cancel to match "initially data should not show" state if desired, or stay same.
     // Given "initially data should not show", reverting to empty state implies clearing data.
@@ -210,8 +219,9 @@ const BetTicker = () => {
                     onChange={(e) => {
                       const val = e.target.value;
                       handleFilterChange("sportName", val);
+                      handleFilterChange("marketName", "all");
                       fetchMarkets(val);
-                      setMarketId("all");
+                      setMarketName("all");
                     }}
                   >
                     {/* <option value="" disabled>
@@ -239,8 +249,11 @@ const BetTicker = () => {
                 <div className="dropdown long-width m-l-10 d-inline-block v-t">
                   <select
                     className="dropdown-toggle dropdown-button title"
-                    value={marketId}
-                    onChange={(e) => setMarketId(e.target.value)}
+                    value={marketName}
+                    onChange={(e) => {
+                      setMarketName(e.target.value);
+                      handleFilterChange("marketName", e.target.value);
+                    }}
                   >
                     {markets.length > 0 ? (
                       markets.map((market: any, index: number) => (

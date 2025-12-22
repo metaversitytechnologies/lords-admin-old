@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import BetLockModal from "./BetLockModal";
 import UserBookModal from "./UserBookModal";
 import type { BetLockUser } from "./BetLockModal";
-import type { UserBookSelection } from "./UserBookModal";
+import { getUserBookMarketwise } from "../api/bet";
+import type {Odd} from "./type";
 
 interface MatchOddsMarketProps {
   oddsData: Odd[] | undefined;
@@ -41,18 +42,48 @@ const MatchOddsMarket = ({
     { name: "capetown", checked: true },
     { name: "capetown3", checked: false }
   ]);
-  const [userBookSelections, setUserBookSelections] = useState<
-    UserBookSelection[]
+  const [userBookSelectionInfo, setUserBookSelectionInfo] = useState<
+    { id: any; name: string }[]
   >([]);
+  const [userBookRaw, setUserBookRaw] = useState<{
+    selectionId1?: any;
+    selectionId2?: any;
+    selectionId3?: any;
+    dataList?: any[];
+  } | null>(null);
   const sortedMarkets = [...(oddsData || [])].sort((a, b) => {
     if (a.ty === "Match Odds") return -1;
     if (b.ty === "Match Odds") return 1;
     return 0;
   });
+
+  const buildSelectionInfo = (runners: any[]) =>
+    (runners || []).map((item, idx) => ({
+      id: item?.rid ?? item?.selectionId ?? item?.sid ?? idx,
+      name: item?.na ?? `Selection ${idx + 1}`
+    }));
+
+  const openUserBookModal = async (
+    marketId: string,
+    selectionInfo: { id: any; name: string }[]
+  ) => {
+    try {
+      const response = await getUserBookMarketwise({ marketId });
+      setUserBookSelectionInfo(selectionInfo);
+      setUserBookRaw(response?.data);
+    } catch (error) {
+      console.error("Error fetching user book data:", error);
+      setUserBookSelectionInfo(selectionInfo);
+      setUserBookRaw(null);
+    } finally {
+      setIsUserBookModalOpen(true);
+    }
+  };
   return (
     <>
       <div className="market-4 mt-2">
         {sortedMarkets?.map((row, rIdx) => {
+          const selectionInfo = buildSelectionInfo(row?.r || []);
           const myPnl = pnlData?.find((item) => item?.marketId == row?.mid);
           const plnOddsArray = myPnl
             ? [
@@ -78,18 +109,12 @@ const MatchOddsMarket = ({
                   <button
                     type="button"
                     className="btn btn bet-lock-btn m-r-10 btn-primary"
-                    onClick={() => {
-                      setUserBookSelections(
-                        (row?.r || []).map((item) => ({
-                          name: item?.na,
-                          pnl:
-                            plnOddsArray.find(
-                              (pnl) => pnl.selectionId == item?.rid
-                            )?.pnl ?? "-"
-                        }))
-                      );
-                      setIsUserBookModalOpen(true);
-                    }}
+                    onClick={() =>
+                      openUserBookModal(
+                        row?.mid || row?.marketId || "",
+                        selectionInfo
+                      )
+                    }
                   >
                     Book
                   </button>
@@ -197,7 +222,8 @@ const MatchOddsMarket = ({
       <UserBookModal
         show={isUserBookModalOpen}
         onClose={() => setIsUserBookModalOpen(false)}
-        selections={userBookSelections}
+        selectionInfo={userBookSelectionInfo}
+        rawData={userBookRaw || { dataList: [] }}
       />
       <BetLockModal
         show={isBetLockModalOpen}

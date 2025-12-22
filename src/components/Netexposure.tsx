@@ -175,33 +175,24 @@ const NetExposure = ({ userId, isActive }) => {
                           <td className="cell-stake">
                             {market.liability?.toFixed(2) || "0.00"}
                           </td>
-                          <td className="cell-selection-1">
-                            <span
-                              className={
-                                market.pnl1 >= 0 ? "positive" : "negative"
-                              }
+                          {(
+                            market.pnl3 == null
+                              ? [market.pnl1, market.pnl3, market.pnl2]
+                              : [market.pnl1, market.pnl2, market.pnl3]
+                          ).map((pnl, idx) => (
+                            <td
+                              key={`selection-${idx}`}
+                              className={`cell-selection-${idx + 1}`}
                             >
-                              {market.pnl1?.toFixed(2) || "0.00"}
-                            </span>
-                          </td>
-                          <td className="cell-selection-2">
-                            <span
-                              className={
-                                market.pnl2 >= 0 ? "positive" : "negative"
-                              }
-                            >
-                              {market.pnl2?.toFixed(2) || "0.00"}
-                            </span>
-                          </td>
-                          <td className="cell-selection-3">
-                            <span
-                              className={
-                                market.pnl3 >= 0 ? "positive" : "negative"
-                              }
-                            >
-                              {market.pnl3?.toFixed(2) || "0.00"}
-                            </span>
-                          </td>
+                              <span
+                                className={
+                                  (pnl ?? 0) >= 0 ? "positive" : "negative"
+                                }
+                              >
+                                {pnl?.toFixed(2) || "-"}
+                              </span>
+                            </td>
+                          ))}
                           <td colSpan={5} className="right-empty"></td>
                         </tr>
                       )
