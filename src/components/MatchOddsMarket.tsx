@@ -15,6 +15,7 @@ interface MatchOddsMarketProps {
   filterName: string;
   showOnly: boolean;
   matchId: string;
+  matchSettings?: Record<string, any>;
 }
 
 // const backClasses: Record<number, string> = {
@@ -40,7 +41,8 @@ const MatchOddsMarket = ({
   pnlData,
   filterName,
   showOnly,
-  matchId
+  matchId,
+  matchSettings
 }: MatchOddsMarketProps) => {
   const [isUserBookModalOpen, setIsUserBookModalOpen] = useState(false);
   const [isBetLockModalOpen, setIsBetLockModalOpen] = useState(false);

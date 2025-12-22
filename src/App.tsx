@@ -13,12 +13,18 @@ import Footer from "./components/Footer";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import { useAuth } from "./context/AuthContext";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import FlashMessage from "./components/FlashMessage";
+import DevtoolsLock from "./components/DevtoolsLock";
 
 function App() {
   const { logout, flash, setFlash } = useAuth();
   const location = useLocation();
+  const devtoolsLockEnabled = useMemo(
+    () => import.meta.env.VITE_ENABLE_DEVTOOLS_LOCK !== "false",
+    []
+  );
+  const [isDevtoolsOpen, setIsDevtoolsOpen] = useState(false);
   const showFooter =
     !location.pathname.startsWith("/change-password-success") &&
     location.pathname !== "/login";
@@ -34,8 +40,31 @@ function App() {
       window.removeEventListener("logout", handleLogout);
     };
   }, [logout]);
+  useEffect(() => {
+    if (!devtoolsLockEnabled) return;
+
+    const threshold = 160;
+    const detectDevtools = () => {
+      const widthGap = Math.abs(window.outerWidth - window.innerWidth);
+      const heightGap = Math.abs(window.outerHeight - window.innerHeight);
+      const open = widthGap > threshold || heightGap > threshold;
+      setIsDevtoolsOpen(open);
+      document.body.style.overflow = open ? "hidden" : "";
+    };
+
+    detectDevtools();
+    const interval = window.setInterval(detectDevtools, 1000);
+    window.addEventListener("resize", detectDevtools);
+
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener("resize", detectDevtools);
+      document.body.style.overflow = "";
+    };
+  }, [devtoolsLockEnabled]);
   return (
     <div className="app-container">
+      {devtoolsLockEnabled && isDevtoolsOpen && <DevtoolsLock />}
       {flash && (
         <FlashMessage
           message={flash.message}

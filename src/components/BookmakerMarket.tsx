@@ -10,9 +10,20 @@ interface BookmakerMarketProps {
     bookmakerData: Bookmaker[] | undefined;
     pnlData: any;
     matchId: string;
+    matchSettings?: Record<string, any>;
 }
 
-const BookmakerMarket = ({bookmakerData, pnlData, matchId}: BookmakerMarketProps) => {
+const formatWithK = (value: any) => {
+    const num = Number(value);
+    if (isNaN(num)) return value ?? "—";
+    if (Math.abs(num) >= 1000) {
+        const rounded = Math.round((num / 1000) * 10) / 10;
+        return `${rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1)}k`;
+    }
+    return num;
+};
+
+const BookmakerMarket = ({bookmakerData, pnlData, matchId, matchSettings}: BookmakerMarketProps) => {
     const [isUserBookModalOpen, setIsUserBookModalOpen] = useState(false);
     const [userBookSelectionInfo, setUserBookSelectionInfo] = useState<{id: any; name: string}[]>([]);
     const [userBookRaw, setUserBookRaw] = useState<{
@@ -113,6 +124,10 @@ const BookmakerMarket = ({bookmakerData, pnlData, matchId}: BookmakerMarketProps
             {Object.entries(groupedData).map(
                 ([providerType, nations]: [string, any]) => {
                     const selectionInfo = buildSelectionInfo(nations);
+                    const marketKey = nations?.[0]?.mid ?? nations?.[0]?.sid ?? "";
+                    const marketSetting = marketKey ? matchSettings?.[marketKey] : undefined;
+                    const minBet = marketSetting?.minBet ?? nations?.[0]?.minBet;
+                    const maxBet = marketSetting?.maxBet ?? nations?.[0]?.maxBet;
                     const myPnl = pnlData?.find(
                         (ele: any) => ele?.marketId == nations?.[0]?.mid
                     );
@@ -160,17 +175,17 @@ const BookmakerMarket = ({bookmakerData, pnlData, matchId}: BookmakerMarketProps
                                     </div>
                                 </div>
 
-                                <div className="bet-table-body" data-title="SUSPENDED">
-                                    <div className="bet-table-row">
-                                        <div className="nation-name">
+                                    <div className="bet-table-body" data-title="SUSPENDED">
+                                        <div className="bet-table-row">
+                                            <div className="nation-name">
                       <span className="max-bet">
-                        Min:<span>{nations?.[0].minBet}</span> Max:
-                        <span>{nations?.[0].maxBet}</span>
+                        Min:<span>{formatWithK(minBet)}</span> Max:
+                        <span>{formatWithK(maxBet)}</span>
                       </span>
-                                        </div>
-                                        <div className="bl-title"></div>
-                                        <div className="bl-title"></div>
-                                        <div className="back bl-title back-title">Back</div>
+                                            </div>
+                                            <div className="bl-title"></div>
+                                            <div className="bl-title"></div>
+                                            <div className="back bl-title back-title">Back</div>
                                         <div className="lay bl-title lay-title">Lay</div>
                                         <div className="bl-title"></div>
                                         <div className="bl-title"></div>

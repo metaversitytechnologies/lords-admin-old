@@ -15,7 +15,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
   matchId,
   marketId
 }) => {
-  const [activeTab, setActiveTab] = useState("matched");
+  const activeTab = "matched";
   const [bets, setBets] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [showIpModal, setShowIpModal] = useState(false);
@@ -47,7 +47,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
       payload.marketId = marketId;
     } else if (matchId) {
       payload.matchId = matchId;
-      payload.matchedDeletedBet = activeTab.toUpperCase();
+      payload.matchedDeletedBet = "MATCHED";
     }
 
     // As per request, send null for non-selected filters.
@@ -82,7 +82,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
 
   useEffect(() => {
     fetchBets();
-  }, [activeTab, matchId, marketId]);
+  }, [matchId, marketId]);
 
   const handleFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -177,359 +177,152 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
         </div>
       </div>
       <div className="tabs">
-        <div className="">
-          <ul role="tablist" className="nav nav-tabs">
-            <li role="presentation" className="nav-item">
-              <a
-                role="tab"
-                aria-selected={activeTab === "matched"}
-                href="#"
-                target="_self"
-                className={`nav-link ${
-                  activeTab === "matched" ? "active" : ""
-                }`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveTab("matched");
-                }}
-              >
-                Matched Bets
-              </a>
-            </li>
-            <li role="presentation" className="nav-item">
-              <a
-                role="tab"
-                tabIndex={-1}
-                aria-selected={activeTab === "unmatched"}
-                href="#"
-                target="_self"
-                className={`nav-link ${
-                  activeTab === "unmatched" ? "active" : ""
-                }`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveTab("unmatched");
-                }}
-              >
-                Unmatched Bets
-              </a>
-            </li>
-            <li role="presentation" className="nav-item">
-              <a
-                role="tab"
-                tabIndex={-1}
-                aria-selected={activeTab === "deleted"}
-                href="#"
-                target="_self"
-                className={`nav-link ${
-                  activeTab === "deleted" ? "active" : ""
-                }`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveTab("deleted");
-                }}
-              >
-                Deleted Bets
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div className="tab-content">
-          <div
-            role="tabpanel"
-            aria-hidden={activeTab !== "matched"}
-            className={`tab-pane ${activeTab === "matched" ? "active" : ""}`}
-          >
-            <form onSubmit={handleFilterSubmit}>
-              <div className="row">
-                <div className="form-group m-t-5 m-b-5 col-lg-2 col-md-6 col-sm-12 p-r-5">
-                  <label className="p-l-5">Search by user</label>
-                  <SearchUser
-                    value={filterUname}
-                    onChange={setFilterUname}
-                    placeholder="Enter Atleast 3 character"
-                  />
-                </div>
-                <div className="form-group m-t-5 m-b-5 col-lg-2 col-md-6 col-sm-12 p-l-0 p-r-5">
-                  <label className="p-l-5">IP Address</label>
-                  <input
-                    type="text"
-                    name="ip"
-                    placeholder="IP Address"
-                    className="form-control d-inline-block"
-                    value={filterIp}
-                    onChange={(e) => setFilterIp(e.target.value)}
-                  />
-                </div>
-                <div className="form-group m-t-5 m-b-5 col-lg-4 col-md-6 col-sm-12 ip-address p-l-0 p-r-5">
-                  <label className="p-l-5 d-block">Amount</label>
-                  <div className=" d-flex ">
-                    <input
-                      type="text"
-                      name="fromamt"
-                      placeholder="From Amount"
-                      className="form-control d-inline-block"
-                      value={filterFromAmt}
-                      onChange={(e) => setFilterFromAmt(e.target.value)}
-                    />
-                    <span>-</span>
-                    <input
-                      type="text"
-                      name="toamt"
-                      placeholder="To Amount"
-                      className="form-control d-inline-block"
-                      value={filterToAmt}
-                      onChange={(e) => setFilterToAmt(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="form-group m-t-5 m-b-5 col-lg-2 col-md-6 col-sm-12 type p-l-0 p-r-5">
-                  <label className="p-l-5">Type</label>
-                  <select
-                    name="bettype"
-                    className="form-control d-inline-block"
-                    value={filterBetType}
-                    onChange={(e) => setFilterBetType(e.target.value)}
-                  >
-                    <option value="">All</option>
-                    <option value="BACK">Back</option>
-                    <option value="LAY">Lay</option>
-                  </select>
-                </div>
-                <div className="col-lg-2 col-md-12 col-sm-12 m-t-5 text-right p-l-0 p-r-15 m-b-5">
-                  <label className="p-l-5 d-block">&nbsp;</label>
-                  <button type="submit" className="btn btn-primary m-r-10">
-                    Search
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-cancel"
-                    onClick={handleReset}
-                  >
-                    Reset
-                  </button>
-                </div>
+        <form onSubmit={handleFilterSubmit}>
+          <div className="row">
+            <div className="form-group m-t-5 m-b-5 col-lg-2 col-md-6 col-sm-12 p-r-5">
+              <label className="p-l-5">Search by user</label>
+              <SearchUser
+                value={filterUname}
+                onChange={setFilterUname}
+                placeholder="Enter Atleast 3 character"
+              />
+            </div>
+            <div className="form-group m-t-5 m-b-5 col-lg-2 col-md-6 col-sm-12 p-l-0 p-r-5">
+              <label className="p-l-5">IP Address</label>
+              <input
+                type="text"
+                name="ip"
+                placeholder="IP Address"
+                className="form-control d-inline-block"
+                value={filterIp}
+                onChange={(e) => setFilterIp(e.target.value)}
+              />
+            </div>
+            <div className="form-group m-t-5 m-b-5 col-lg-4 col-md-6 col-sm-12 ip-address p-l-0 p-r-5">
+              <label className="p-l-5 d-block">Amount</label>
+              <div className=" d-flex ">
+                <input
+                  type="text"
+                  name="fromamt"
+                  placeholder="From Amount"
+                  className="form-control d-inline-block"
+                  value={filterFromAmt}
+                  onChange={(e) => setFilterFromAmt(e.target.value)}
+                />
+                <span>-</span>
+                <input
+                  type="text"
+                  name="toamt"
+                  placeholder="To Amount"
+                  className="form-control d-inline-block"
+                  value={filterToAmt}
+                  onChange={(e) => setFilterToAmt(e.target.value)}
+                />
               </div>
-            </form>
-            <div style={{ maxHeight: "58vh", overflowY: "scroll" }}>
-              <div className="table-responsive matched-data">
-                <table className="table coupon-table m-b-0">
-                  <thead>
-                    <tr>
-                      <th>No</th>
-                      <th>Username</th>
-                      <th>Market Name</th>
-                      <th>Nation</th>
-                      <th>Type</th>
-                      <th>User Rate</th>
-                      <th>Amount</th>
-                      <th>Currency</th>
-                      <th>Place Date</th>
-                      <th>Match Date</th>
-                      <th>IP</th>
-                      <th>Browser Details</th>
+            </div>
+            <div className="form-group m-t-5 m-b-5 col-lg-2 col-md-6 col-sm-12 type p-l-0 p-r-5">
+              <label className="p-l-5">Type</label>
+              <select
+                name="bettype"
+                className="form-control d-inline-block"
+                value={filterBetType}
+                onChange={(e) => setFilterBetType(e.target.value)}
+              >
+                <option value="">All</option>
+                <option value="BACK">Back</option>
+                <option value="LAY">Lay</option>
+              </select>
+            </div>
+            <div className="col-lg-2 col-md-12 col-sm-12 m-t-5 text-right p-l-0 p-r-15 m-b-5">
+              <label className="p-l-5 d-block">&nbsp;</label>
+              <button type="submit" className="btn btn-primary m-r-10">
+                Search
+              </button>
+              <button
+                type="button"
+                className="btn btn-cancel"
+                onClick={handleReset}
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+        </form>
+        <div style={{ maxHeight: "58vh", overflowY: "scroll" }}>
+          <div className="table-responsive matched-data">
+            <table className="table coupon-table m-b-0">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Username</th>
+                  <th>Market Name</th>
+                  <th>Nation</th>
+                  <th>Type</th>
+                  <th>User Rate</th>
+                  <th>Amount</th>
+                  <th>Currency</th>
+                  <th>Place Date</th>
+                  <th>Match Date</th>
+                  <th>IP</th>
+                  <th>Browser Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {renderTableContent(
+                  12,
+                  bets.map((bet, index) => (
+                    <tr key={index} className={bet.back ? "back" : "lay"}>
+                      <td>{index + 1}</td>
+                      <td className="d-flex align-items-center">
+                        {bet.userId}
+                        <a
+                          title="User Detail"
+                          href="#"
+                          target="_self"
+                          className=""
+                        >
+                          <i className="fa fa-eye m-l-5 curser-point float-right"></i>
+                        </a>
+                      </td>
+                      <td>{bet.marketName}</td>
+                      <td>{bet.selectionName}</td>
+                      <td>{bet.back ? "BACK" : "LAY"}</td>
+                      <td>{bet.odds}</td>
+                      <td>{bet.amount}</td>
+                      <td>{bet.currency}</td>
+                      <td>{bet.placeTime}</td>
+                      <td>{bet.matchedTime}</td>
+                      <td className="d-flex align-items-center">
+                        {bet.userIp}
+                        <a
+                          title="IP Details"
+                          href="#"
+                          target="_self"
+                          className=""
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleShowIpModal(bet.userIp);
+                          }}
+                        >
+                          <i className="fa fa-eye m-l-5 curser-point float-right"></i>
+                        </a>
+                      </td>
+                      <td>
+                        <a
+                          href="javascript:void(0)"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title={bet.browserDetails}
+                          className="text-success"
+                        >
+                          Detail
+                        </a>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {renderTableContent(
-                      12,
-                      bets.map((bet, index) => (
-                        <tr key={index} className={bet.back ? "back" : "lay"}>
-                          <td>{index + 1}</td>
-                          <td className="d-flex align-items-center">
-                            {bet.userId}
-                            <a
-                              title="User Detail"
-                              href="#"
-                              target="_self"
-                              className=""
-                            >
-                              <i className="fa fa-eye m-l-5 curser-point float-right"></i>
-                            </a>
-                          </td>
-                          <td>{bet.marketName}</td>
-                          <td>{bet.selectionName}</td>
-                          <td>{bet.back ? "BACK" : "LAY"}</td>
-                          <td>{bet.odds}</td>
-                          <td>{bet.amount}</td>
-                          <td>{bet.currency}</td>
-                          <td>{bet.placeTime}</td>
-                          <td>{bet.matchedTime}</td>
-                          <td className="d-flex align-items-center">
-                            {bet.userIp}
-                            <a
-                              title="IP Details"
-                              href="#"
-                              target="_self"
-                              className=""
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleShowIpModal(bet.userIp);
-                              }}
-                            >
-                              <i className="fa fa-eye m-l-5 curser-point float-right"></i>
-                            </a>
-                          </td>
-                          <td>
-                            <a
-                              href="javascript:void(0)"
-                              data-toggle="tooltip"
-                              data-placement="top"
-                              title={bet.browserDetails}
-                              className="text-success"
-                            >
-                              Detail
-                            </a>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div
-            role="tabpanel"
-            aria-hidden={activeTab !== "unmatched"}
-            className={`tab-pane ${activeTab === "unmatched" ? "active" : ""}`}
-          >
-            <div className="table-responsive matched-data">
-              <table className="table coupon-table m-b-0">
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Username</th>
-                    <th>Mname</th>
-                    <th>Nation</th>
-                    <th>Type</th>
-                    <th>User Rate</th>
-                    <th>Amount</th>
-                    <th>Currency</th>
-                    <th>Place Date</th>
-                    <th>IP</th>
-                    <th>Browser Details</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {renderTableContent(
-                    11,
-                    bets.map((bet, index) => (
-                      <tr key={index} className={bet.back ? "back" : "lay"}>
-                        <td>{index + 1}</td>
-                        <td>{bet.userId}</td>
-                        <td>{bet.marketName}</td>
-                        <td>{bet.selectionName}</td>
-                        <td>{bet.back ? "BACK" : "LAY"}</td>
-                        <td>{bet.odds}</td>
-                        <td>{bet.amount}</td>
-                        <td>{bet.currency}</td>
-                        <td>{bet.placeTime}</td>
-                        <td className="d-flex align-items-center">
-                          {bet.userIp}
-                          <a
-                            title="IP Details"
-                            href="#"
-                            target="_self"
-                            className=""
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleShowIpModal(bet.userIp);
-                            }}
-                          >
-                            <i className="fa fa-eye m-l-5 curser-point float-right"></i>
-                          </a>
-                        </td>
-                        <td>
-                          <a
-                            href="javascript:void(0)"
-                            data-toggle="tooltip"
-                            data-placement="top"
-                            title={bet.browserDetails}
-                            className="text-success"
-                          >
-                            Detail
-                          </a>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div
-            role="tabpanel"
-            aria-hidden={activeTab !== "deleted"}
-            className={`tab-pane ${activeTab === "deleted" ? "active" : ""}`}
-          >
-            <div className="table-responsive matched-data">
-              <table className="table coupon-table m-b-0">
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Username</th>
-                    <th>Mname</th>
-                    <th>Nation</th>
-                    <th>Type</th>
-                    <th>User Rate</th>
-                    <th>Amount</th>
-                    <th>Currency</th>
-                    <th>Place Date</th>
-                    <th>Match Date</th>
-                    <th>IP</th>
-                    <th>Browser Details</th>
-                    <th>Deleted Type</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {renderTableContent(
-                    13,
-                    bets.map((bet, index) => (
-                      <tr key={index} className={bet.back ? "back" : "lay"}>
-                        <td>{index + 1}</td>
-                        <td>{bet.userId}</td>
-                        <td>{bet.marketName}</td>
-                        <td>{bet.selectionName}</td>
-                        <td>{bet.back ? "BACK" : "LAY"}</td>
-                        <td>{bet.odds}</td>
-                        <td>{bet.amount}</td>
-                        <td>{bet.currency}</td>
-                        <td>{bet.placeTime}</td>
-                        <td>{bet.matchedTime}</td>
-                        <td className="d-flex align-items-center">
-                          {bet.userIp}
-                          <a
-                            title="IP Details"
-                            href="#"
-                            target="_self"
-                            className=""
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleShowIpModal(bet.userIp);
-                            }}
-                          >
-                            <i className="fa fa-eye m-l-5 curser-point float-right"></i>
-                          </a>
-                        </td>
-                        <td>
-                          <a
-                            href="javascript:void(0)"
-                            data-toggle="tooltip"
-                            data-placement="top"
-                            title={bet.browserDetails}
-                            className="text-success"
-                          >
-                            Detail
-                          </a>
-                        </td>
-                        <td>{bet.deletedType}</td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

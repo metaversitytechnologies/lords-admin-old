@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import ReusableDatePicker from "./DatePicker";
 
 const MessageReport: React.FC = () => {
-  const [fromDate, setFromDate] = useState<Date | null>(new Date());
-  const [toDate, setToDate] = useState<Date | null>(new Date());
+  const today = new Date();
+  const initialFromDate = new Date();
+  initialFromDate.setDate(initialFromDate.getDate() - 7);
+
+  const [fromDate, setFromDate] = useState<Date | null>(initialFromDate);
+  const [toDate, setToDate] = useState<Date | null>(today);
   return (
     <>
       <div className="w-100 float-left m-t-0">

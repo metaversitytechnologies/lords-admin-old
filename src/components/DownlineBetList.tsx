@@ -4,37 +4,40 @@ import ReusableDatePicker from "./DatePicker";
 import Pagination from "./Pagination";
 
 const getNumericValue = (value: any) => {
-  if (value === null || value === undefined) {
-    return null;
+  if (value === null || value === undefined) return null;
+
+  if (typeof value === "number") {
+    return Number.isNaN(value) ? null : value;
   }
-  const numericValue = Number(value);
-  return Number.isNaN(numericValue) ? null : numericValue;
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (
+      trimmed === "" ||
+      trimmed.toLowerCase() === "null" ||
+      trimmed.toLowerCase() === "undefined"
+    ) {
+      return null;
+    }
+    const numericValue = Number(trimmed);
+    return Number.isNaN(numericValue) ? null : numericValue;
+  }
+
+  return null;
 };
 
 const getWinLossDisplay = (value: any) => {
-  if (value === null || value === undefined) {
-    return { text: "-", className: "" };
-  }
+  const numericValue = getNumericValue(value);
+  if (numericValue === null) return { text: "-", className: "" };
 
-  const numericValue = Number(value);
-  const isNumber = !Number.isNaN(numericValue);
-  const upperVal = typeof value === "string" ? value.toUpperCase() : "";
-
-  const className = isNumber
-    ? numericValue > 0
+  const className =
+    numericValue > 0
       ? "text-success"
       : numericValue < 0
       ? "text-danger"
-      : ""
-    : upperVal === "WIN"
-    ? "text-success"
-    : upperVal === "LOSS"
-    ? "text-danger"
-    : "";
+      : "";
 
-  const text = isNumber ? numericValue.toFixed(2) : upperVal || "-";
-
-  return { text, className };
+  return { text: numericValue.toFixed(2), className };
 };
 
 const DownlineBetList = ({ userId }) => {
@@ -408,8 +411,10 @@ const DownlineBetList = ({ userId }) => {
                                         >
                                           {(() => {
                                             const profitValue = getNumericValue(
-                                              bet.profit ??
-                                                bet.netpnl ??
+                                              bet.netpnl ??
+                                                bet.netPnl ??
+                                                bet.netPNL ??
+                                                bet.profit ??
                                                 bet.pnl ??
                                                 bet.memberPnl ??
                                                 bet.profitLiability
@@ -439,11 +444,7 @@ const DownlineBetList = ({ userId }) => {
                                           {(() => {
                                             const { text, className } =
                                               getWinLossDisplay(
-                                                bet.winLoss ??
-                                                  bet.winLossStatus ??
-                                                  bet.winLossValue ??
-                                                  bet.win_loss ??
-                                                  bet.result
+                                                bet.winLoss
                                               );
                                             return (
                                               <span className={className}>

@@ -1,14 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { getMyBetReport } from "../api/bet";
 import { useAuth } from "../context/AuthContext";
-import SearchUser from "./SearchUser";
-import ReusableDatePicker from "./DatePicker";
-
 import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
 import { getIpAddressDetailLord } from "../api/user";
 import { CSVLink } from "react-csv";
 import Pagination from "./Pagination";
 import { getSportListLord, getMarketListSportWiseLord } from "../api/reports";
+import BetListFilters from "./BetListFilters";
 
 const BestList = () => {
   const { user } = useAuth();
@@ -16,7 +14,7 @@ const BestList = () => {
   const [betList, setBetList] = useState([]);
   const [sports, setSports] = useState<any[]>([]);
   const [markets, setMarkets] = useState<any[]>([]);
-  const [marketId, setMarketId] = useState("all");
+  const [marketName, setMarketName] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sportId, setSportId] = useState("0");
@@ -78,7 +76,7 @@ const BestList = () => {
     // Find the sport Name if newVal is "0" or just use newVal
     // Assuming value is the name as per previous file changes
     fetchMarkets(newVal === "0" ? "" : newVal);
-    setMarketId("all");
+    setMarketName("all");
   };
 
   const requestCounter = useRef(0);
@@ -100,6 +98,7 @@ const BestList = () => {
         oddsTo,
         stakeFrom,
         stakeTo,
+        marketName,
         ...customState
       };
 
@@ -121,7 +120,8 @@ const BestList = () => {
         oddsFrom: state.oddsFrom,
         oddsTo: state.oddsTo,
         stakeFrom: state.stakeFrom,
-        stakeTo: state.stakeTo
+        stakeTo: state.stakeTo,
+        marketName: state.marketName
       };
       const response = await getMyBetReport(payload);
       if (currentRequest === requestCounter.current) {
@@ -160,7 +160,7 @@ const BestList = () => {
     oneWeekAgo.setDate(today.getDate() - 7);
 
     setSportId("0");
-    setMarketId("all");
+    setMarketName("all");
     setMarkets([]);
     setUserSearch("");
     setTableSearch("");
@@ -181,7 +181,8 @@ const BestList = () => {
       oddsFrom: "",
       oddsTo: "",
       stakeFrom: "",
-      stakeTo: ""
+      stakeTo: "",
+      marketName: "all"
     });
   };
 
@@ -240,148 +241,34 @@ const BestList = () => {
               </div>
             </span>
           </div>{" "}
-          <form data-vv-scope="myBets" className="m-b-10">
-            <div className="additional-filters m-t-10">
-              <div className="row">
-                <div className="col-sm-12">
-                  <div className="dropdown long-width d-inline-block v-t">
-                    <label className="p-l-5 d-block">Event</label>{" "}
-                    <select
-                      className="dropdown-toggle dropdown-button"
-                      value={sportId}
-                      onChange={handleSportChange}
-                    >
-                      {sports.map((sport: any, index: number) => (
-                        <option key={index} value={sport.name}>
-                          {sport.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>{" "}
-                  <div className="dropdown long-width m-l-10 d-inline-block v-t">
-                    <label className="p-l-5 d-block">Market</label>{" "}
-                    <select
-                      className="dropdown-toggle dropdown-button title"
-                      value={marketId}
-                      onChange={(e) => setMarketId(e.target.value)}
-                    >
-                      {markets.length > 0 ? (
-                        markets.map((market: any, index: number) => (
-                          <option key={index} value={market.name}>
-                            {market.name}
-                          </option>
-                        ))
-                      ) : (
-                        <option value="all">All</option>
-                      )}
-                    </select>
-                  </div>{" "}
-                  <div className="dropdown m-l-10 d-inline-block v-t">
-                    <label className="p-l-5 d-block">Rate</label>{" "}
-                    <button
-                      data-toggle="dropdown"
-                      className="dropdown-toggle dropdown-button"
-                    >
-                      <span className="title">Odds: All</span>{" "}
-                      <i className="fas fa-caret-down"></i>
-                    </button>{" "}
-                    <div className="dropdown-menu dropdown-date">
-                      <span className="p-t-10 p-l-10 p-r-10">From</span>{" "}
-                      <input
-                        type="text"
-                        name=""
-                        className="p-t-10 p-l-10 p-r-10 p-b-10"
-                        value={oddsFrom}
-                        onChange={(e) => setOddsFrom(e.target.value)}
-                      />
-                      <span className="p-t-10 p-l-10 p-r-10 p-b-10">To</span>{" "}
-                      <input
-                        type="text"
-                        name=""
-                        className="p-t-10 p-l-10 p-r-10 p-b-10"
-                        value={oddsTo}
-                        onChange={(e) => setOddsTo(e.target.value)}
-                      />
-                    </div>
-                  </div>{" "}
-                  <div className="dropdown m-l-10 d-inline-block v-t">
-                    <label className="p-l-5 d-block">Amount</label>{" "}
-                    <button
-                      data-toggle="dropdown"
-                      className="dropdown-toggle dropdown-button"
-                    >
-                      <span className="title">Stake: All</span>{" "}
-                      <i className="fas fa-caret-down"></i>
-                    </button>{" "}
-                    <div className="dropdown-menu dropdown-date">
-                      <span className="p-t-10 p-l-10 p-r-10 p-b-10">From</span>{" "}
-                      <input
-                        type="text"
-                        name=""
-                        className="p-t-10 p-l-10 p-r-10 p-b-10"
-                        value={stakeFrom}
-                        onChange={(e) => setStakeFrom(e.target.value)}
-                      />{" "}
-                      <span className="p-t-10 p-l-10 p-r-10 p-b-10">To</span>{" "}
-                      <input
-                        type="text"
-                        name=""
-                        className="p-t-10 p-l-10 p-r-10 p-b-10"
-                        value={stakeTo}
-                        onChange={(e) => setStakeTo(e.target.value)}
-                      />
-                    </div>
-                  </div>{" "}
-                  <div className="d-inline-block v-t m-l-10">
-                    <div className="search-box-container d-inline-block p-l-0 p-r-5">
-                      <label className="p-l-5 d-block">Search by user</label>{" "}
-                      <SearchUser value={userSearch} onChange={setUserSearch} />
-                    </div>
-                  </div>
-                </div>
-              </div>{" "}
-              <div className="row m-t-10">
-                <div className="col-sm-12">
-                  {activeTab === "Past" && (
-                    <>
-                      <div className="d-inline-block v-t p-l-0 p-r-5 form-group m-b-0">
-                        <label className="d-block p-l-5">From</label>{" "}
-                        <ReusableDatePicker
-                          selected={fromDate}
-                          onChange={setFromDate}
-                        />
-                      </div>
-                      <div className="form-group d-inline-block v-t p-l-0 p-r-5 m-b-0">
-                        <label className="d-block p-l-5">To</label>{" "}
-                        <ReusableDatePicker
-                          selected={toDate}
-                          onChange={setToDate}
-                        />
-                      </div>
-                    </>
-                  )}
-
-                  <div className="text-right d-inline-block v-t p-l-0 p-r-5 m-b-0 form-group float-right">
-                    <label className="d-block p-l-5">&nbsp;</label>{" "}
-                    <button
-                      type="button"
-                      className="btn btn-secondary m-l-5"
-                      onClick={handleApply}
-                    >
-                      Apply
-                    </button>{" "}
-                    <button
-                      type="button"
-                      className="btn btn-cancel m-l-5"
-                      onClick={handleCancel}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>{" "}
+          <BetListFilters
+            sports={sports}
+            markets={markets}
+            sportId={sportId}
+            marketName={marketName}
+            oddsFrom={oddsFrom}
+            oddsTo={oddsTo}
+            stakeFrom={stakeFrom}
+            stakeTo={stakeTo}
+            userSearch={userSearch}
+            fromDate={fromDate}
+            toDate={toDate}
+            activeTab={activeTab}
+            activeRadio={activeRadio}
+            radioOptions={radioOptions}
+            onSportChange={handleSportChange}
+            onMarketChange={setMarketName}
+            onOddsFromChange={setOddsFrom}
+            onOddsToChange={setOddsTo}
+            onStakeFromChange={setStakeFrom}
+            onStakeToChange={setStakeTo}
+            onUserSearchChange={setUserSearch}
+            onFromDateChange={setFromDate}
+            onToDateChange={setToDate}
+            onApply={handleApply}
+            onCancel={handleCancel}
+            onRadioChange={setActiveRadio}
+          />{" "}
           <div className="tabs">
             <div className="">
               <ul role="tablist" className="nav nav-tabs">
@@ -649,14 +536,25 @@ const BestList = () => {
                       </thead>
                       <tbody role="rowgroup">
                         {(() => {
+                          const searchTerm = tableSearch.trim().toLowerCase();
                           const filteredBets =
-                            betList?.filter(
-                              (bet) =>
-                                !tableSearch ||
-                                JSON.stringify(bet)
-                                  .toLowerCase()
-                                  .includes(tableSearch.toLowerCase())
-                            ) || [];
+                            (betList || []).filter((bet) => {
+                              if (!searchTerm) return true;
+                              const betType =
+                                bet?.back === true ||
+                                (typeof bet?.back === "string" &&
+                                  bet.back.toLowerCase() === "back")
+                                  ? "back"
+                                  : bet?.back === false ||
+                                    (typeof bet?.back === "string" &&
+                                      bet.back.toLowerCase() === "lay")
+                                  ? "lay"
+                                  : "";
+                              const haystack = `${JSON.stringify(
+                                bet
+                              ).toLowerCase()} ${betType}`;
+                              return haystack.includes(searchTerm);
+                            }) || [];
 
                           const totalPages = Math.ceil(
                             filteredBets.length / itemsPerPage

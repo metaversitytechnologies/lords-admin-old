@@ -38,3 +38,20 @@ export const getScorecardData = async (matchId: string) => {
 
   return response.json();
 };
+
+export const getMatchSettings = async (matchId: string) => {
+  const response = await fetch(
+    `https://oddsapi.khelo7.com/api/fancy/v1/matchSettings/${matchId}`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to fetch match settings");
+  }
+
+  return response.json();
+};

@@ -4,7 +4,7 @@ import BookmakerMarket from "./BookmakerMarket";
 import FancyMarket from "./FancyMarket";
 import Scorecard from "./Scorecard";
 import LiveTvDrag from "./LiveTvDrag";
-import { getOddsData } from "../api/oddsApi";
+import { getMatchSettings, getOddsData } from "../api/oddsApi";
 import { useEffect, useState } from "react";
 import MatchedUnmatched from "./MatchedUnmatched";
 import { getBetList, getFancyPnl, getOddsPnl } from "../api/bet";
@@ -19,6 +19,7 @@ const MarketLayout = () => {
   const [oddsPnl, setOdssPnl] = useState<any>();
   const [fancyPnl, setFancyPnl] = useState<any>();
   const [betListData, setBetListData] = useState<any>();
+  const [matchSettings, setMatchSettings] = useState<any[]>([]);
   const fetchOdds = async () => {
     try {
       const response = await getOddsData(id ?? "");
@@ -54,22 +55,44 @@ const MarketLayout = () => {
       console.error("Error fetching odds data:", err);
     }
   };
+  const fetchMatchSettingsData = async () => {
+    if (!id) return;
+    try {
+      const response = await getMatchSettings(id);
+      setMatchSettings(response?.data || response || []);
+    } catch (err: any) {
+      console.error("Error fetching match settings:", err);
+    }
+  };
 
   useEffect(() => {
     fetchOdds();
     fetchOddsPnl();
     fetchFancyPnl();
     fetchBetList();
+    fetchMatchSettingsData();
 
     const interval = setInterval(() => {
       fetchOdds();
       fetchFancyPnl();
     }, 1000); // 1 second
+    const settingsInterval = setInterval(() => {
+      fetchMatchSettingsData();
+    }, 15000); // 15 seconds
 
-    return () => clearInterval(interval); // cleanup
+    return () => {
+      clearInterval(interval);
+      clearInterval(settingsInterval);
+    }; // cleanup
   }, []);
 
-  // console.log("Odds Data State:", oddsData);
+  const matchSettingsByMarketId = Array.isArray(matchSettings)
+    ? matchSettings.reduce((acc: Record<string, any>, item: any) => {
+        const key = item?.marketId || item?.mid || item?.sid;
+        if (key) acc[key] = item;
+        return acc;
+      }, {})
+    : {};
 
   return (
     <div>
@@ -83,6 +106,7 @@ const MarketLayout = () => {
                 filterName="Tied Match"
                 showOnly={false}
                 matchId={id ?? ""}
+                matchSettings={matchSettingsByMarketId}
               />
               {/* <TiedMatchMarket market={sample.tiedMarket} /> */}
               {/* <OverByOverMarket market={sample.overMarket} /> */}
@@ -112,6 +136,7 @@ const MarketLayout = () => {
                         fancyPnldata={fancyPnl}
                         fancyMarket={fancyMarket}
                         matchId={id ?? ""}
+                        matchSettings={matchSettingsByMarketId}
                       />
                     );
                   return <></>;
@@ -124,6 +149,7 @@ const MarketLayout = () => {
                 pnlData={oddsPnl}
                 bookmakerData={oddsData?.Bookmaker}
                 matchId={id ?? ""}
+                matchSettings={matchSettingsByMarketId}
               />
               <MatchOddsMarket
                 oddsData={oddsData?.Odds}
@@ -131,6 +157,7 @@ const MarketLayout = () => {
                 filterName="Tied Match"
                 showOnly={true}
                 matchId={id ?? ""}
+                matchSettings={matchSettingsByMarketId}
               />
               <LiveTvDrag />
             </div>
