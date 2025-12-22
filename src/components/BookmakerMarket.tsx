@@ -4,13 +4,15 @@ import BetLockModal from "./BetLockModal";
 import UserBookModal from "./UserBookModal";
 import type {Bookmaker} from "./type";
 import {getUserBookMarketwise} from "../api/bet";
+import {getChildListMarketBetLock, updateChildListMarketBetLock} from "../api/user";
 
 interface BookmakerMarketProps {
     bookmakerData: Bookmaker[] | undefined;
     pnlData: any;
+    matchId: string;
 }
 
-const BookmakerMarket = ({bookmakerData, pnlData}: BookmakerMarketProps) => {
+const BookmakerMarket = ({bookmakerData, pnlData, matchId}: BookmakerMarketProps) => {
     const [isUserBookModalOpen, setIsUserBookModalOpen] = useState(false);
     const [userBookSelectionInfo, setUserBookSelectionInfo] = useState<{id: any; name: string}[]>([]);
     const [userBookRaw, setUserBookRaw] = useState<{
@@ -20,10 +22,8 @@ const BookmakerMarket = ({bookmakerData, pnlData}: BookmakerMarketProps) => {
         dataList?: any[];
     } | null>(null);
     const [isBetLockModalOpen, setIsBetLockModalOpen] = useState(false);
-    const [betLockUsers, setBetLockUsers] = useState<BetLockUser[]>([
-        {name: "capetown", checked: true},
-        {name: "capetown3", checked: false}
-    ]);
+    const [betLockUsers, setBetLockUsers] = useState<BetLockUser[]>([]);
+    const [currentMarketId, setCurrentMarketId] = useState<string>("");
 
     const groupByProviderTypeNation = (data: Bookmaker[] | undefined) => {
         if (!Array.isArray(data)) return {};
@@ -45,14 +45,57 @@ const BookmakerMarket = ({bookmakerData, pnlData}: BookmakerMarketProps) => {
             name: item?.nation ?? item?.na ?? `Selection ${idx + 1}`
         }));
 
+    const openBetLockModal = async (marketId: string) => {
+        if (!marketId) return;
+        setCurrentMarketId(marketId);
+        try {
+            const res = await getChildListMarketBetLock({marketId});
+            const users =
+                res?.data?.userList ||
+                res?.userList ||
+                res?.data ||
+                [];
+            setBetLockUsers(
+                (Array.isArray(users) ? users : []).map((u: any) => ({
+                    name: u?.userId || u?.username || u?.name || "",
+                    checked: Boolean(u?.lock)
+                }))
+            );
+        } catch (err) {
+            console.error("Failed to fetch bet lock users", err);
+            setBetLockUsers([]);
+        } finally {
+            setIsBetLockModalOpen(true);
+        }
+    };
+
+    const submitBetLock = async (
+        marketId: string,
+        matchId: string,
+        users: BetLockUser[],
+        close: (value: boolean) => void
+    ) => {
+        if (!marketId) return;
+        try {
+            await updateChildListMarketBetLock({
+                marketId,
+                matchId,
+                userList: users
+                    .filter((u) => u.name)
+                    .map((u) => ({userId: u.name, lock: u.checked}))
+            });
+            close(false);
+        } catch (err) {
+            console.error("Failed to update bet lock users", err);
+        }
+    };
+
     const openUserBookModal = async (
         marketId: string,
         selectionInfo: { id: any; name: string }[]
     ) => {
         try {
             const response = await getUserBookMarketwise({marketId});
-            const parentName = response?.data?.parentUserName || "capetown";
-            const childName = response?.data?.childUserName || "capetown2";
             setUserBookSelectionInfo(selectionInfo);
             setUserBookRaw(response?.data);
         } catch (error) {
@@ -109,7 +152,7 @@ const BookmakerMarket = ({bookmakerData, pnlData}: BookmakerMarketProps) => {
                                         <button
                                             type="button"
                                             className="btn btn bet-lock-btn btn-primary m-r-5"
-                                            onClick={() => setIsBetLockModalOpen(true)}
+                                            onClick={() => openBetLockModal(nations?.[0]?.mid || "")}
                                         >
                                             Bet Lock
                                         </button>
@@ -200,6 +243,9 @@ const BookmakerMarket = ({bookmakerData, pnlData}: BookmakerMarketProps) => {
                 onClose={() => setIsBetLockModalOpen(false)}
                 users={betLockUsers}
                 onChange={setBetLockUsers}
+                onSubmit={() =>
+                    submitBetLock(currentMarketId, matchId, betLockUsers, setIsBetLockModalOpen)
+                }
             />
         </>
     );

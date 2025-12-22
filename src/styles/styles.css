@@ -547,7 +547,6 @@ header.header .infobar .last-login {
     width: 100%;
     min-height: calc(100vh - 155px);
     background-color: rgba(0, 0, 0, 0.33);
-    padding-top: 5px;
 }
 
 .content>.left-pane-wrapper {

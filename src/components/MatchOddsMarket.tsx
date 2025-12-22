@@ -4,12 +4,17 @@ import UserBookModal from "./UserBookModal";
 import type { BetLockUser } from "./BetLockModal";
 import { getUserBookMarketwise } from "../api/bet";
 import type {Odd} from "./type";
+import {
+  getChildListMarketBetLock,
+  updateChildListMarketBetLock
+} from "../api/user";
 
 interface MatchOddsMarketProps {
   oddsData: Odd[] | undefined;
   pnlData: any;
   filterName: string;
   showOnly: boolean;
+  matchId: string;
 }
 
 // const backClasses: Record<number, string> = {
@@ -34,14 +39,13 @@ const MatchOddsMarket = ({
   oddsData,
   pnlData,
   filterName,
-  showOnly
+  showOnly,
+  matchId
 }: MatchOddsMarketProps) => {
   const [isUserBookModalOpen, setIsUserBookModalOpen] = useState(false);
   const [isBetLockModalOpen, setIsBetLockModalOpen] = useState(false);
-  const [betLockUsers, setBetLockUsers] = useState<BetLockUser[]>([
-    { name: "capetown", checked: true },
-    { name: "capetown3", checked: false }
-  ]);
+  const [betLockUsers, setBetLockUsers] = useState<BetLockUser[]>([]);
+  const [currentMarketId, setCurrentMarketId] = useState<string>("");
   const [userBookSelectionInfo, setUserBookSelectionInfo] = useState<
     { id: any; name: string }[]
   >([]);
@@ -62,6 +66,51 @@ const MatchOddsMarket = ({
       id: item?.rid ?? item?.selectionId ?? item?.sid ?? idx,
       name: item?.na ?? `Selection ${idx + 1}`
     }));
+
+  const openBetLockModal = async (marketId: string) => {
+    if (!marketId) return;
+    setCurrentMarketId(marketId);
+    try {
+      const res = await getChildListMarketBetLock({ marketId });
+      const users =
+        res?.data?.userList ||
+        res?.userList ||
+        res?.data ||
+        [];
+      setBetLockUsers(
+        (Array.isArray(users) ? users : []).map((u: any) => ({
+          name: u?.userId || u?.username || u?.name || "",
+          checked: Boolean(u?.lock)
+        }))
+      );
+    } catch (err) {
+      console.error("Failed to fetch bet lock users", err);
+      setBetLockUsers([]);
+    } finally {
+      setIsBetLockModalOpen(true);
+    }
+  };
+
+  const submitBetLock = async (
+    marketId: string,
+    matchId: string,
+    users: BetLockUser[],
+    close: (value: boolean) => void
+  ) => {
+    if (!marketId) return;
+    try {
+      await updateChildListMarketBetLock({
+        marketId,
+        matchId,
+        userList: users
+          .filter((u) => u.name)
+          .map((u) => ({ userId: u.name, lock: u.checked }))
+      });
+      close(false);
+    } catch (err) {
+      console.error("Failed to update bet lock users", err);
+    }
+  };
 
   const openUserBookModal = async (
     marketId: string,
@@ -121,7 +170,7 @@ const MatchOddsMarket = ({
                   <button
                     type="button"
                     className="btn btn bet-lock-btn btn-primary m-r-5"
-                    onClick={() => setIsBetLockModalOpen(true)}
+                    onClick={() => openBetLockModal(row?.mid || row?.marketId || "")}
                   >
                     Bet Lock
                   </button>
@@ -230,6 +279,9 @@ const MatchOddsMarket = ({
         onClose={() => setIsBetLockModalOpen(false)}
         users={betLockUsers}
         onChange={setBetLockUsers}
+        onSubmit={() =>
+          submitBetLock(currentMarketId, matchId, betLockUsers, setIsBetLockModalOpen)
+        }
       />
     </>
   );

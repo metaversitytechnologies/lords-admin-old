@@ -10,6 +10,7 @@ import {
 import ChangePasswordSelfModal from "./ChangePasswordSelfModal";
 import SelfDepositModal from "./SelfDepositModal";
 import AdminMessageModal from "./AdminMessageModal";
+import { getAdminMessage } from "../api/message";
 
 const Header: React.FC = () => {
   const { isAuthenticated, user, lastLogin, logout } = useAuth();
@@ -22,6 +23,7 @@ const Header: React.FC = () => {
   const [showSelfDepositModal, setShowSelfDepositModal] =
     useState<boolean>(false);
   const [showMessageModal, setShowMessageModal] = useState<boolean>(false);
+  const [bannerMessage, setBannerMessage] = useState<string>("");
 
   // Dropdown states
   const [tzOpen, setTzOpen] = useState(false);
@@ -42,6 +44,19 @@ const Header: React.FC = () => {
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const fetchBannerMessage = async () => {
+      try {
+        const res = await getAdminMessage();
+        setBannerMessage(res?.message ?? res?.data?.message ?? "");
+      } catch (err) {
+        console.error("Failed to fetch banner message", err);
+        setBannerMessage("");
+      }
+    };
+    fetchBannerMessage();
   }, []);
 
   if (!isAuthenticated) return null;
@@ -143,7 +158,8 @@ const Header: React.FC = () => {
     };
 
     return (
-      <header className="header">
+      <>
+        <header className="header">
         <div className="logo-area float-left">
           <div className="logo">
             <Link
@@ -312,6 +328,36 @@ const Header: React.FC = () => {
           onClose={closeMessageModal}
         />
       </header>
+      {bannerMessage ? (
+        <div
+          style={{
+            background: "#9e1b32",
+            color: "#fff",
+            padding: "8px 0",
+            position: "relative",
+            borderBottom: "2px solid #d1ad34"
+          }}
+        >
+          <div
+            style={{
+              display: "inline-block",
+              whiteSpace: "nowrap",
+              paddingLeft: "100%",
+              animation: "banner-marquee 15s linear infinite",
+              fontWeight: 600
+            }}
+          >
+            {bannerMessage}
+          </div>
+          <style>
+            {`@keyframes banner-marquee {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-100%); }
+              }`}
+          </style>
+        </div>
+      ) : null}
+      </>
     );
 };
 

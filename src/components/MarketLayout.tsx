@@ -82,6 +82,7 @@ const MarketLayout = () => {
                 pnlData={oddsPnl}
                 filterName="Tied Match"
                 showOnly={false}
+                matchId={id ?? ""}
               />
               {/* <TiedMatchMarket market={sample.tiedMarket} /> */}
               {/* <OverByOverMarket market={sample.overMarket} /> */}
@@ -122,12 +123,14 @@ const MarketLayout = () => {
               <BookmakerMarket
                 pnlData={oddsPnl}
                 bookmakerData={oddsData?.Bookmaker}
+                matchId={id ?? ""}
               />
               <MatchOddsMarket
                 oddsData={oddsData?.Odds}
                 pnlData={oddsPnl}
                 filterName="Tied Match"
                 showOnly={true}
+                matchId={id ?? ""}
               />
               <LiveTvDrag />
             </div>

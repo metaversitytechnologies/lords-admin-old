@@ -56,10 +56,9 @@ const BetTicker = () => {
       try {
         const payload = {
           sportName: activeFilters.sportName.toLowerCase(),
-          marketName:
-            activeFilters.marketName && activeFilters.marketName !== "all"
-              ? activeFilters.marketName.toLowerCase()
-              : null,
+          marketName: activeFilters.marketName
+            ? activeFilters.marketName.toLowerCase()
+            : "all",
           minStake: activeFilters.minStake || null,
           maxStake: activeFilters.maxStake || null,
           minOdds: activeFilters.minOdds || null,
@@ -255,15 +254,17 @@ const BetTicker = () => {
                       handleFilterChange("marketName", e.target.value);
                     }}
                   >
-                    {markets.length > 0 ? (
-                      markets.map((market: any, index: number) => (
+                    <option value="all">All</option>
+                    {markets
+                      .filter(
+                        (market: any) =>
+                          market?.name?.toLowerCase() !== "all" && market?.name
+                      )
+                      .map((market: any, index: number) => (
                         <option key={index} value={market.name}>
                           {market.name}
                         </option>
-                      ))
-                    ) : (
-                      <option value="all">All</option>
-                    )}
+                      ))}
                   </select>
                 </div>
                 <div
