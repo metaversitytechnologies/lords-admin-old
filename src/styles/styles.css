@@ -2427,13 +2427,9 @@ color: var(--accent-color)
 }
 
 /*Game Detail End*/
-.transfer-statement table tr:nth-of-type(odd) {
-    background: rgba(245, 245, 245, 0.1);
-}
 
 .transfer-statement table tr td.transferDate {
     padding-left: 30px;
-    background: rgba(245, 245, 245, 0.4);
 }
 
 .transfer-statement table th:first-child {
