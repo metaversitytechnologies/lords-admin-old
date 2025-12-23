@@ -193,7 +193,9 @@ const ClientAccountStatement: React.FC = ({childId}) => {
                                 return (
                                     <React.Fragment key={daily.date}>
                                         <tr className="group">
-                                            <td colSpan={6}>{daily.date}</td>
+                                            <td colSpan={6}>
+                                                {new Date(daily.date).toLocaleDateString("en-GB")}
+                                            </td>
                                         </tr>
                                         {sortedEntries
                                             .filter(
