@@ -643,34 +643,17 @@ const BestList = () => {
                               <div>
                                     {(() => {
                                       const winLossValue = bet.winLoss;
-                                      if (
-                                        winLossValue === null ||
-                                        winLossValue === undefined
-                                      ) {
-                                        return <span>-</span>;
-                                      }
-
-                                      const winLossNumber = Number(winLossValue);
-                                      const isNumber =
-                                        !Number.isNaN(winLossNumber);
                                       const upperVal =
                                         typeof winLossValue === "string"
                                           ? winLossValue.toUpperCase()
                                           : "";
-                                      const className = isNumber
-                                        ? winLossNumber > 0
+                                      const className =
+                                        upperVal === "WIN"
                                           ? "text-success"
-                                          : winLossNumber < 0
+                                          : upperVal === "LOSS"
                                           ? "text-danger"
-                                          : ""
-                                        : upperVal === "WIN"
-                                        ? "text-success"
-                                        : upperVal === "LOSS"
-                                        ? "text-danger"
-                                        : "";
-                                      const displayText = isNumber
-                                        ? winLossNumber.toFixed(2)
-                                        : upperVal || "-";
+                                          : "";
+                                      const displayText = upperVal || "-";
 
                                       return (
                                         <span className={className}>

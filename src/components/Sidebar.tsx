@@ -15,7 +15,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse }: SidebarProps) => {
       links: [
         { text: "Agent Listing", href: "/agentlisting" },
         { text: "Transfer", href: "/bank" },
-        { text: "Notiication", href: "/notification" }
+        { text: "Notification", href: "/notification" }
       ]
     },
     {

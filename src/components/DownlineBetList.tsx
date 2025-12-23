@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getBetDetailUseridwiseLord } from "../api/auth";
 import ReusableDatePicker from "./DatePicker";
 import Pagination from "./Pagination";
+import { formatDateTime } from "../utils/formatDateTime";
 
 const getNumericValue = (value: any) => {
   if (value === null || value === undefined) return null;
@@ -28,16 +29,24 @@ const getNumericValue = (value: any) => {
 
 const getWinLossDisplay = (value: any) => {
   const numericValue = getNumericValue(value);
-  if (numericValue === null) return { text: "-", className: "" };
+  if (numericValue !== null) {
+    const className =
+      numericValue > 0
+        ? "text-success"
+        : numericValue < 0
+        ? "text-danger"
+        : "";
 
-  const className =
-    numericValue > 0
-      ? "text-success"
-      : numericValue < 0
-      ? "text-danger"
-      : "";
+    return { text: numericValue.toFixed(2), className };
+  }
 
-  return { text: numericValue.toFixed(2), className };
+  if (typeof value === "string") {
+    const upper = value.toUpperCase();
+    if (upper === "WIN") return { text: upper, className: "text-success" };
+    if (upper === "LOSS") return { text: upper, className: "text-danger" };
+  }
+
+  return { text: "-", className: "" };
 };
 
 const DownlineBetList = ({ userId }) => {
@@ -377,7 +386,7 @@ const DownlineBetList = ({ userId }) => {
                                           data-label="Place Date"
                                           className="text-center"
                                         >
-                                          {bet.matchedtime}
+                                          {formatDateTime(bet.matchedtime)}
                                         </td>
                                         <td
                                           data-label="Match Name"
@@ -430,7 +439,7 @@ const DownlineBetList = ({ userId }) => {
 
                                             return (
                                               <span className={profitClass}>
-                                                {profitValue !== null
+                                                {profitValue
                                                   ? profitValue.toFixed(2)
                                                   : "-"}
                                               </span>

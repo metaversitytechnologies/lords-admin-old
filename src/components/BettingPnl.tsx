@@ -3,6 +3,7 @@ import { getBettingPnl } from "../api/auth";
 import MarketPnlBreakdown from "./MarketPnlBreakdown";
 import ReusableDatePicker from "./DatePicker";
 import Pagination from "./Pagination";
+import { formatDateTime } from "../utils/formatDateTime";
 
 const BettingPnl = ({ userId }) => {
   const [data, setData] = useState([]);
@@ -44,7 +45,10 @@ const BettingPnl = ({ userId }) => {
             settledDateTimeForSorting: new Date(
               `${group.date}T${pnl.settledTime}`
             ),
-            displaySettledTime: `${displayDate} ${pnl.settledTime}`,
+            displayStartTime: formatDateTime(pnl.startTime),
+            displaySettledTime: formatDateTime(
+              `${group.date} ${pnl.settledTime}`
+            ),
             displayDate: displayDate
           }));
         });
@@ -90,16 +94,16 @@ const BettingPnl = ({ userId }) => {
   return (
     <div id="betting-pnl" className="tab-pane fade active show">
       <div>
-        <div className="header">
-          <div className="datepicker-wrapper d-inline-block col-md-2 form-group v-t p-l-0 p-r-5">
-            <label className="p-l-5">From</label>
+        <div className="header row align-items-end">
+          <div className="col-md-2 form-group p-l-0 p-r-5">
+            <label className="p-l-5 d-block">From</label>
             <ReusableDatePicker selected={fromDate} onChange={setFromDate} />
           </div>
-          <div className="datepicker-wrapper form-group d-inline-block col-md-2 v-t p-l-0 p-r-5">
+          <div className="col-md-2 form-group p-l-0 p-r-5">
             <label className="p-l-5 d-block">To</label>
             <ReusableDatePicker selected={toDate} onChange={setToDate} />
           </div>
-          <div className="d-inline-block v-t p-l-0">
+          <div className="col-md-2 form-group p-l-0">
             <label className="p-l-5 d-block">&nbsp;</label>
             <button
               className="btn btn-secondary"
@@ -134,18 +138,27 @@ const BettingPnl = ({ userId }) => {
       ) : (
         <div>
           <div className="row col-page">
-            <div className="col-2 py-2">
-              <div>
-                Cricket: <span className={
-                              pnLData?.cricketPnl >= 0 ? "positive" : "negative"
-                            }>{ pnLData?.cricketPnl} </span>
-              </div>
-            </div>
-            <div className="col-2 py-2">
-                Total P&L: <span className={
-                              pnLData?.totalPnl >= 0 ? "positive" : "negative"
-                            }> { pnLData?.totalPnl} </span>
-              </div>
+            {(pnLData?.pnlList || []).map((item, index) => {
+              const pnlNumber =
+                typeof item.pnl === "number" ? item.pnl : Number(item.pnl);
+              const isNumeric = Number.isFinite(pnlNumber);
+              const className = isNumeric
+                ? pnlNumber >= 0
+                  ? "positive"
+                  : "negative"
+                : "";
+              const displayValue = isNumeric
+                ? pnlNumber.toFixed(2)
+                : item.pnl ?? "-";
+
+              return (
+                <div className="col-2 py-2" key={`${item.sportName}-${index}`}>
+                  <div>
+                    {item.sportName}: <span className={className}>{displayValue}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
           <table className="table">
             <thead>
@@ -201,7 +214,7 @@ const BettingPnl = ({ userId }) => {
                           </a>
                         </td>
                         <td>
-                          <span>{item.startTime}</span>
+                          <span>{item.displayStartTime}</span>
                         </td>
                         <td>
                           <span>{item.displaySettledTime}</span>

@@ -6,6 +6,7 @@ import SearchUser from "./SearchUser";
 import { useAuth } from "../context/AuthContext";
 import { CSVLink } from "react-csv";
 import Pagination from "./Pagination";
+import { formatDateTime } from "../utils/formatDateTime";
 
 const AgentListing: React.FC = () => {
   const { userid } = useParams<{ userid: string }>();
@@ -256,8 +257,20 @@ const AgentListing: React.FC = () => {
                       <td className="text-right positive negative">
                         <span>{agent.netExposure}</span>
                       </td>
-                      <td className="text-right positive">
-                        <span className="positive">{agent.gt}</span>
+                      <td className="text-right">
+                        <span
+                          className={
+                            Number(agent.gt) < 0
+                              ? "positive"
+                              : Number(agent.gt) > 0
+                                ? "negative"
+                                : ""
+                          }
+                        >
+                          {Number.isFinite(Number(agent.gt))
+                            ? Number(agent.gt).toFixed(2)
+                            : agent.gt}
+                        </span>
                       </td>
                       <td className="text-right">
                         <span>{agent.creditLimit}</span>
@@ -270,14 +283,14 @@ const AgentListing: React.FC = () => {
                           !isExpanded ? "hidden-field" : "field-show"
                         }`}
                       >
-                        {agent.createdAt}
+                        {formatDateTime(agent.createdAt)}
                       </td>
                       <td
                         className={`text-right ${
                           !isExpanded ? "hidden-field" : "field-show"
                         }`}
                       >
-                        {agent.lastLogin}
+                        {formatDateTime(agent.lastLogin)}
                       </td>
                     </tr>
                   ))
