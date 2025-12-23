@@ -225,6 +225,7 @@ const BestList = () => {
     activeTab === "Past"
       ? ["Matched", "Deleted"]
       : ["Matched", "Unmatched", "Deleted"];
+
   return (
     <>
       <div>
@@ -321,47 +322,6 @@ const BestList = () => {
                 aria-labelledby="__BVID__54___BV_tab_button__"
                 style={{ display: "none" }}
               ></div>{" "}
-              <div className="col-sm-12 m-b-10 p-l-0 p-r-0">
-                <form data-vv-scope="myBets" className="m-b-10">
-                  <div className="form-group d-inline-block v-t m-b-0 p-l-0 p-r-0 bet-options">
-                    <fieldset className="form-group" id="__BVID__56">
-                      <div>
-                        <div
-                          role="radiogroup"
-                          tabIndex={-1}
-                          className="bv-no-focus-ring"
-                          id="__BVID__57"
-                        >
-                          {radioOptions.map((option, index) => (
-                            <div
-                              key={index}
-                              className="custom-control custom-control-inline custom-radio"
-                            >
-                              <input
-                                type="radio"
-                                name="radio-inline"
-                                className="custom-control-input"
-                                value={option}
-                                id={`__BVID__57_BV_option_${index}`}
-                                checked={activeRadio === option}
-                                onChange={() => {
-                                  setActiveRadio(option);
-                                }}
-                              />
-                              <label
-                                className="custom-control-label"
-                                htmlFor={`__BVID__57_BV_option_${index}`}
-                              >
-                                <span>{option}</span>
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </fieldset>
-                  </div>
-                </form>
-              </div>{" "}
               <div className="table-responsive col-sm-12">
                 <div className="row col-page">
                   <div className="col-sm-12 col-md-6 p-l-0 p-r-5">

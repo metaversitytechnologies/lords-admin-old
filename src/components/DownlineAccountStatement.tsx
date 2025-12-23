@@ -265,7 +265,6 @@ const DownlineAccountStatement: React.FC<Props> = ({ childId }) => {
                                       href="#"
                                       onClick={() => handleIpDetails(row.ip)}
                                     >
-                                      <i className="fa fa-eye m-l-5 float-right"></i>
                                     </a>
                                   )}
                                 </td>
