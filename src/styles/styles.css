@@ -428,7 +428,8 @@ header.header {
     margin: auto auto 0;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.33);
-    height: 80px;
+    min-height: 80px;
+    height: auto;
 }
 
 header.header>.logo-area {
@@ -441,7 +442,8 @@ header.header {
     margin: auto auto 0;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.33);
-    height: 80px;
+    min-height: 80px;
+    height: auto;
 }
 
 header.header>.logo-area {
@@ -545,13 +547,13 @@ header.header .infobar .last-login {
     display: flex;
     padding: 0;
     width: 100%;
-    min-height: calc(100vh - 155px);
+    min-height: calc(100vh - 185px);
     background-color: rgba(0, 0, 0, 0.33);
 }
 
 .content>.left-pane-wrapper {
     max-width: 180px;
-    min-height: calc(100vh - 160px);
+    min-height: calc(100vh - 190px);
     /* float: left; */
 }
 

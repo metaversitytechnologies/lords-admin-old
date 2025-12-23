@@ -47,6 +47,17 @@ const TransferStatement = ({ childId }) => {
     return `${day}/${month}/${year}`;
   };
 
+  const formatTime = (timeString: string) => {
+    const [hourStr, minuteStr = "00", secondStr] = timeString.split(":");
+    const hour = Number(hourStr);
+    if (Number.isNaN(hour)) return timeString;
+
+    const hours12 = ((hour + 11) % 12) + 1;
+    const suffix = hour >= 12 ? "PM" : "AM";
+    const seconds = secondStr ? `:${secondStr}` : "";
+    return `${hours12}:${minuteStr}${seconds} ${suffix}`;
+  };
+
   return (
     <div>
       <div className="header d-flex justify-content-between align-items-center">
@@ -103,7 +114,7 @@ const TransferStatement = ({ childId }) => {
                 {entry.dataList.map((record, i) => (
                   <tr key={i}>
                     <td className="transferTime">
-                      <span>{record.time}</span>
+                      <span>{formatTime(record.time)}</span>
                     </td>
                     <td>
                       <span>{record.payerPayee}</span>

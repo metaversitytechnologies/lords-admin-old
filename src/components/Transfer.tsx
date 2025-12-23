@@ -66,14 +66,17 @@ const Transfer = () => {
     }
   }, [users]);
 
-  // Flip GT when clicking "All"
   const handleFlipGT = (childUser: User) => {
-    const flipped = childUser.gt > 0 ? -childUser.gt : Math.abs(childUser.gt);
-
     setAmountValues((prev) => ({
       ...prev,
-      [childUser.userId]: flipped.toFixed(2)
+      [childUser.userId]: childUser.gt.toFixed(2)
     }));
+  };
+
+  const getGtClass = (gt: number) => {
+    if (gt > 0) return "positive";
+    if (gt < 0) return "negative";
+    return "";
   };
 
   const handleSubmit = async (childUser: User) => {
@@ -225,7 +228,7 @@ const Transfer = () => {
                           {childUser.availabeCredit.toFixed(2)}
                         </td>
 
-                        <td className="text-right">
+                        <td className={`text-right ${getGtClass(childUser.gt)}`}>
                           {childUser.gt.toFixed(2)}
                         </td>
 

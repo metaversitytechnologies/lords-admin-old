@@ -327,36 +327,40 @@ const Header: React.FC = () => {
           show={showMessageModal}
           onClose={closeMessageModal}
         />
-      </header>
-      {bannerMessage ? (
-        <div
-          style={{
-            background: "#9e1b32",
-            color: "#fff",
-            padding: "8px 0",
-            position: "relative",
-            borderBottom: "2px solid #d1ad34"
-          }}
-        >
+        {bannerMessage ? (
           <div
             style={{
-              display: "inline-block",
-              whiteSpace: "nowrap",
-              paddingLeft: "100%",
-              animation: "banner-marquee 15s linear infinite",
-              fontWeight: 600
+              background: "#9e1b32",
+              color: "#fff",
+              padding: "8px 0",
+              position: "relative",
+              borderTop: "2px solid #d1ad34",
+              overflow: "hidden",
+              width: "100%",
+              boxSizing: "border-box",
+              zIndex: 2
             }}
           >
-            {bannerMessage}
-          </div>
-          <style>
-            {`@keyframes banner-marquee {
+            <div
+              style={{
+                display: "inline-block",
+                whiteSpace: "nowrap",
+                paddingLeft: "100%",
+                animation: "banner-marquee 25s linear infinite",
+                fontWeight: 600
+              }}
+            >
+              {bannerMessage}
+            </div>
+            <style>
+              {`@keyframes banner-marquee {
                 0% { transform: translateX(0); }
                 100% { transform: translateX(-100%); }
               }`}
-          </style>
-        </div>
-      ) : null}
+            </style>
+          </div>
+        ) : null}
+      </header>
       </>
     );
 };
