@@ -44,7 +44,7 @@ const BetTicker = () => {
     async (showLoading = true, filterSource = appliedFilters) => {
       const activeFilters = filterSource || appliedFilters;
 
-      if (!activeFilters.sportName || activeFilters.sportName === "All") {
+      if (!activeFilters.sportName) {
         if (showLoading) setLoading(false);
         return;
       }
@@ -55,10 +55,8 @@ const BetTicker = () => {
       setError(null);
       try {
         const payload = {
-          sportName: activeFilters.sportName.toLowerCase(),
-          marketName: activeFilters.marketName
-            ? activeFilters.marketName.toLowerCase()
-            : "all",
+          sportName: activeFilters.sportName,
+          marketName: activeFilters.marketName || "all",
           minStake: activeFilters.minStake || null,
           maxStake: activeFilters.maxStake || null,
           minOdds: activeFilters.minOdds || null,
@@ -100,15 +98,13 @@ const BetTicker = () => {
     }
   };
 
-  const fetchMarkets = async (sportName: string) => {
-    if (!sportName || sportName === "All") {
+  const fetchMarkets = async (sportId: string) => {
+    if (!sportId) {
       setMarkets([]);
       return;
     }
-    // Assuming sportName (e.g., "Cricket") is what the API expects as 'sportId'
-    // based on previous context.
     try {
-      const response = await getMarketListSportWiseLord({ sportId: sportName });
+      const response = await getMarketListSportWiseLord({ sportId });
       if (response.status) {
         setMarkets(response.data);
       }
@@ -162,7 +158,7 @@ const BetTicker = () => {
 
   const handleApply = (e) => {
     e.preventDefault();
-    if (!filters.sportName || filters.sportName === "All") {
+    if (!filters.sportName) {
       setValidationError("Please Select Event");
       return;
     }
@@ -226,8 +222,9 @@ const BetTicker = () => {
                     {/* <option value="" disabled>
                       Select Event
                     </option> */}
+                    <option value="">Select Event</option>
                     {sports.map((sport: any, index: number) => (
-                      <option key={index} value={sport.name}>
+                      <option key={index} value={sport.id ?? sport.name}>
                         {sport.name}
                       </option>
                     ))}
@@ -261,7 +258,7 @@ const BetTicker = () => {
                           market?.name?.toLowerCase() !== "all" && market?.name
                       )
                       .map((market: any, index: number) => (
-                        <option key={index} value={market.name}>
+                        <option key={index} value={market.id ?? market.name}>
                           {market.name}
                         </option>
                       ))}

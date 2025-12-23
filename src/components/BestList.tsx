@@ -44,6 +44,9 @@ const BestList = () => {
     fetchSports();
   }, []);
 
+  const getSportNameById = (id: string) =>
+    sports.find((sport: any) => String(sport?.id) === String(id))?.name;
+
   const fetchSports = async () => {
     try {
       const response = await getSportListLord();
@@ -55,13 +58,13 @@ const BestList = () => {
     }
   };
 
-  const fetchMarkets = async (sportName: string) => {
-    if (!sportName || sportName === "0") {
+  const fetchMarkets = async (sportId: string) => {
+    if (!sportId || sportId === "0") {
       setMarkets([]);
       return;
     }
     try {
-      const response = await getMarketListSportWiseLord({ sportId: sportName });
+      const response = await getMarketListSportWiseLord({ sportId });
       if (response.status) {
         setMarkets(response.data);
       }
@@ -73,8 +76,6 @@ const BestList = () => {
   const handleSportChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newVal = e.target.value;
     setSportId(newVal);
-    // Find the sport Name if newVal is "0" or just use newVal
-    // Assuming value is the name as per previous file changes
     fetchMarkets(newVal === "0" ? "" : newVal);
     setMarketName("all");
   };
@@ -104,7 +105,10 @@ const BestList = () => {
 
       const currentBet = state.activeTab === "Current";
       const matchedDeletedBet = state.activeRadio.toUpperCase();
-      const sportLabel = state.sportId === "0" ? "All" : state.sportId;
+      const sportLabel =
+        !state.sportId || state.sportId === "0"
+          ? "All"
+          : getSportNameById(state.sportId) || state.sportId;
 
       const payload = {
         sportName: sportLabel,

@@ -71,8 +71,9 @@ const BetListFilters: React.FC<BetListFiltersProps> = ({
                 value={sportId}
                 onChange={onSportChange}
               >
+                <option value="0">All</option>
                 {sports.map((sport: any, index: number) => (
-                  <option key={index} value={sport.name}>
+                  <option key={index} value={sport.id ?? sport.name}>
                     {sport.name}
                   </option>
                 ))}
@@ -85,15 +86,13 @@ const BetListFilters: React.FC<BetListFiltersProps> = ({
                 value={marketName}
                 onChange={(e) => onMarketChange(e.target.value)}
               >
-                {markets.length > 0 ? (
+                <option value="all">All</option>
+                {markets.length > 0 &&
                   markets.map((market: any, index: number) => (
-                    <option key={index} value={market.name}>
+                    <option key={index} value={market.id ?? market.name}>
                       {market.name}
                     </option>
-                  ))
-                ) : (
-                  <option value="all">All</option>
-                )}
+                  ))}
               </select>
             </div>{" "}
             <div className="dropdown m-l-10 d-inline-block v-t">
