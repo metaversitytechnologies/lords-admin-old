@@ -3,6 +3,7 @@ import { getBetTicker } from "../api/auth";
 import { getSportListLord, getMarketListSportWiseLord } from "../api/reports";
 import SearchUser from "./SearchUser";
 import Pagination from "./Pagination";
+import { formatDateTime } from "../utils/formatDateTime";
 
 const BetTicker = () => {
   const [bets, setBets] = useState([]);
@@ -532,7 +533,9 @@ const BetTicker = () => {
                               !isExpanded ? "hidden-field" : "field-show"
                             }`}
                           >
-                            {bet.lastUpdated}
+                            {formatDateTime(bet.lastUpdated, {
+                              order: "mdy"
+                            })}
                           </td>
                         </tr>
                       ))

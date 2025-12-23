@@ -1,4 +1,14 @@
-export const formatDateTime = (value: string | number | Date | undefined) => {
+type FormatOrder = "dmy" | "mdy";
+
+interface FormatOptions {
+  order?: FormatOrder;
+  lowercaseAmPm?: boolean;
+}
+
+export const formatDateTime = (
+  value: string | number | Date | undefined,
+  options: FormatOptions = {}
+) => {
   if (!value) return "";
 
   const date = new Date(value);
@@ -15,5 +25,12 @@ export const formatDateTime = (value: string | number | Date | undefined) => {
   const ampm = hours >= 12 ? "PM" : "AM";
   const hour12 = pad(hours % 12 || 12);
 
-  return `${day}/${month}/${year} ${hour12}:${minutes}:${seconds} ${ampm}`;
+  const order: FormatOrder = options.order || "dmy";
+  const datePart =
+    order === "mdy"
+      ? `${month}/${day}/${year}`
+      : `${day}/${month}/${year}`;
+  const period = options.lowercaseAmPm ? ampm.toLowerCase() : ampm;
+
+  return `${datePart} ${hour12}:${minutes}:${seconds} ${period}`;
 };

@@ -4,23 +4,7 @@ import {
   getNetExposureDetail,
   getNetExposureDetailByUserId
 } from "../api/auth";
-
-const formatDateTime = (value) => {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const year = date.getFullYear();
-  const hours = date.getHours();
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  const seconds = String(date.getSeconds()).padStart(2, "0");
-
-  const period = hours >= 12 ? "pm" : "am";
-  const hour12 = String(hours % 12 || 12).padStart(2, "0");
-
-  return `${month}/${day}/${year} ${hour12}:${minutes}:${seconds} ${period}`;
-};
+import { formatDateTime } from "../utils/formatDateTime";
 
 const NetExposure = ({ userId, isActive }) => {
   const [data, setData] = useState([]);
@@ -163,7 +147,10 @@ const NetExposure = ({ userId, isActive }) => {
                   <thead>
                     <tr className="title">
                       <td colSpan={11} className="text-white">
-                       {item.matchName}   {formatDateTime(item.date)}
+                        {formatDateTime(item.date, {
+                          order: "mdy"
+                        })}{" "}
+                        {item.matchName}
                       </td>
                     </tr>
                   </thead>

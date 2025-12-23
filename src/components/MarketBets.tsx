@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { getBetListByMarketId } from "../api/bet";
 import Pagination from "./Pagination";
+import { formatDateTime } from "../utils/formatDateTime";
 
 interface Market {
   marketId: string;
   marketName: string;
+  matchName?: string;
   pnl: number;
 }
 
@@ -62,6 +64,9 @@ const MarketBets: React.FC<MarketBetsProps> = ({ market, onBack }) => {
               Markets
             </a>
           </li>
+          {market?.matchName ? (
+            <li className="breadcrumb-item">{market.matchName}</li>
+          ) : null}
           <li aria-current="page" className="breadcrumb-item active">
             {market?.marketName}
           </li>
@@ -120,7 +125,7 @@ const MarketBets: React.FC<MarketBetsProps> = ({ market, onBack }) => {
                 .map((bet, index) => (
                   <tr key={index}>
                     <td>{bet.userId}</td>
-                    <td>{new Date(bet.placeTime).toLocaleString()}</td>
+                    <td>{formatDateTime(bet.placeTime)}</td>
                     <td>{bet.selectionName}</td>
                     <td>{bet.isback ? "BACK" : "LAY"}</td>
                     <td>{bet.currency}</td>

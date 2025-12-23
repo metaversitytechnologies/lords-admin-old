@@ -7,6 +7,7 @@ import ReusableDatePicker from "./DatePicker";
 interface Market {
   marketId: string;
   marketName: string;
+  matchName?: string;
   pnl: number;
 }
 
@@ -125,8 +126,8 @@ const ProfitLoss: React.FC = () => {
     }
   }, [selectedMarket]);
 
-  const handleViewBets = (market: Market) => {
-    setSelectedMarket(market);
+  const handleViewBets = (market: Market, matchName?: string) => {
+    setSelectedMarket({ ...market, matchName });
   };
 
   const handleBack = () => {
@@ -260,7 +261,7 @@ const ProfitLoss: React.FC = () => {
                                   className="m-l-5"
                                   onClick={(e) => {
                                     e.preventDefault();
-                                    handleViewBets(market);
+                                    handleViewBets(market, match.matchName);
                                   }}
                                 >
                                   View Bets

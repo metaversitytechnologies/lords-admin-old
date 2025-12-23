@@ -15,8 +15,6 @@ interface BetListFiltersProps {
   fromDate: Date | null;
   toDate: Date | null;
   activeTab: string;
-  activeRadio: string;
-  radioOptions: string[];
   onSportChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onMarketChange: (value: string) => void;
   onOddsFromChange: (value: string) => void;
@@ -56,8 +54,7 @@ const BetListFilters: React.FC<BetListFiltersProps> = ({
   onFromDateChange,
   onToDateChange,
   onApply,
-  onCancel,
-  onRadioChange
+  onCancel
 }) => {
   return (
     <form data-vv-scope="myBets" className="m-b-10">
@@ -195,45 +192,6 @@ const BetListFilters: React.FC<BetListFiltersProps> = ({
             </div>
           </div>
         </div>
-      </div>
-      <div className="col-sm-12 m-b-10 p-l-0 p-r-0">
-        <form data-vv-scope="myBets" className="m-b-10">
-          <div className="form-group d-inline-block v-t m-b-0 p-l-0 p-r-0 bet-options">
-            <fieldset className="form-group" id="__BVID__56">
-              <div>
-                <div
-                  role="radiogroup"
-                  tabIndex={-1}
-                  className="bv-no-focus-ring"
-                  id="__BVID__57"
-                >
-                  {radioOptions.map((option, index) => (
-                    <div
-                      key={index}
-                      className="custom-control custom-control-inline custom-radio"
-                    >
-                      <input
-                        type="radio"
-                        name="radio-inline"
-                        className="custom-control-input"
-                        value={option}
-                        id={`__BVID__57_BV_option_${index}`}
-                        checked={activeRadio === option}
-                        onChange={() => onRadioChange(option)}
-                      />
-                      <label
-                        className="custom-control-label"
-                        htmlFor={`__BVID__57_BV_option_${index}`}
-                      >
-                        <span>{option}</span>
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </fieldset>
-          </div>
-        </form>
       </div>
     </form>
   );
