@@ -137,7 +137,7 @@ const BettingPnl = ({ userId }) => {
         />
       ) : (
         <div>
-          <div className="row col-page">
+          <div className="d-flex flex-wrap align-items-center mb-2 justify-content-start text-left w-100">
             {(pnLData?.pnlList || []).map((item, index) => {
               const pnlNumber =
                 typeof item.pnl === "number" ? item.pnl : Number(item.pnl);
@@ -152,10 +152,12 @@ const BettingPnl = ({ userId }) => {
                 : item.pnl ?? "-";
 
               return (
-                <div className="col-2 py-2" key={`${item.sportName}-${index}`}>
-                  <div>
-                    {item.sportName}: <span className={className}>{displayValue}</span>
-                  </div>
+                <div
+                  className="d-flex align-items-center py-1 mr-4"
+                  key={`${item.sportName}-${index}`}
+                >
+                  <span className="mr-1">{item.sportName}:</span>
+                  <span className={className}>{displayValue}</span>
                 </div>
               );
             })}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getBettingPnlDetail } from "../api/auth";
 import { CSVLink } from "react-csv";
+import { formatDateTime } from "../utils/formatDateTime";
 
 const MarketPnlBreakdown = ({ market, onBack, userId, fromDate, toDate }) => {
   const [bets, setBets] = useState<any[]>([]);
@@ -90,9 +91,7 @@ const MarketPnlBreakdown = ({ market, onBack, userId, fromDate, toDate }) => {
                     <tr key={index}>
                       <td>
                         <span>
-                          {bet.placedTime
-                            ? new Date(bet.placedTime).toLocaleString()
-                            : "-"}
+                          {bet.placedTime ? formatDateTime(bet.placedTime) : "-"}
                         </span>
                       </td>
                       <td>{bet.userId}</td>
