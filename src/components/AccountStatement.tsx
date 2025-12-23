@@ -394,7 +394,11 @@ const AccountStatement: React.FC = () => {
                           )
                           .map((row, i) => (
                             <tr key={i}>
-                              <td>{row.date}</td>
+                              <td>
+                                <span style={{ textDecoration: "none" }}>
+                                  {row.date}
+                                </span>
+                              </td>
                               <td>{row.userName}</td>
                               <td>{row.masterName}</td>
                               <td>{row.remark}</td>

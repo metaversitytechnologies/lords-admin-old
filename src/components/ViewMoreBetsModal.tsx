@@ -4,6 +4,7 @@ import { getIpAddressDetailLord } from "../api/user";
 import { getBetListByMarketId } from "../api/bet";
 import SearchUser from "./SearchUser";
 import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
+import ReusableModal from "./ReusableModal";
 import { CSVLink } from "react-csv";
 
 interface ViewMoreBetsModalProps {
@@ -16,12 +17,15 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
   marketId
 }) => {
   const activeTab = "matched";
+  const [allBets, setAllBets] = useState<any[]>([]);
   const [bets, setBets] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [showIpModal, setShowIpModal] = useState(false);
   const [selectedIp, setSelectedIp] = useState<string | null>(null);
   const [ipDetails, setIpDetails] = useState<IpDetails | null>(null);
   const [ipLoading, setIpLoading] = useState(false);
+  const [showBrowserModal, setShowBrowserModal] = useState(false);
+  const [browserDetails, setBrowserDetails] = useState<string>("");
 
   // states for filters
   const [filterUname, setFilterUname] = useState("");
@@ -30,17 +34,71 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
   const [filterToAmt, setFilterToAmt] = useState("");
   const [filterBetType, setFilterBetType] = useState("");
 
-  const fetchBets = async (filters?: any) => {
+  type FilterState = {
+    betType?: string;
+    minAmount?: string;
+    maxAmount?: string;
+    ipAddress?: string;
+    userId?: string;
+  };
+
+  const applyFilters = (data: any[], filters?: FilterState) => {
+    const {
+      betType = "",
+      minAmount = "",
+      maxAmount = "",
+      ipAddress = "",
+      userId = ""
+    } = filters || {};
+
+    const min = parseFloat(minAmount);
+    const max = parseFloat(maxAmount);
+    const hasMin = !Number.isNaN(min);
+    const hasMax = !Number.isNaN(max);
+
+    return data.filter((bet) => {
+      const userMatch = userId
+        ? String(bet.userId || "")
+            .toLowerCase()
+            .includes(userId.toLowerCase())
+        : true;
+      if (!userMatch) return false;
+
+      const ipMatch = ipAddress
+        ? String(bet.userIp || "")
+            .toLowerCase()
+            .includes(ipAddress.toLowerCase())
+        : true;
+      if (!ipMatch) return false;
+
+      const amountValue = Number(bet.amount ?? bet.stake ?? 0);
+      if (hasMin && amountValue < min) return false;
+      if (hasMax && amountValue > max) return false;
+
+      if (betType) {
+        const type = bet.back ? "BACK" : "LAY";
+        if (type !== betType) return false;
+      }
+
+      return true;
+    });
+  };
+
+  const getCurrentFilters = (): FilterState => ({
+    betType: filterBetType,
+    minAmount: filterFromAmt,
+    maxAmount: filterToAmt,
+    ipAddress: filterIp,
+    userId: filterUname
+  });
+
+  const fetchBets = async () => {
     if (!matchId && !marketId) return;
 
     setLoading(true);
 
     const payload: any = {
-      betType: filters?.betType || "ALL",
-      minAmount: filters?.minAmount || null,
-      maxAmount: filters?.maxAmount || null,
-      ipAddress: filters?.ipAddress || null,
-      userId: filters?.userId || null
+      betType: "ALL"
     };
 
     if (marketId) {
@@ -49,14 +107,6 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
       payload.matchId = matchId;
       payload.matchedDeletedBet = "MATCHED";
     }
-
-    // As per request, send null for non-selected filters.
-    // An empty string for a filter is considered "not selected".
-    if (!payload.betType) payload.betType = "ALL";
-    if (!payload.minAmount) delete payload.minAmount;
-    if (!payload.maxAmount) delete payload.maxAmount;
-    if (!payload.ipAddress) delete payload.ipAddress;
-    if (!payload.userId) delete payload.userId;
 
     try {
       let response;
@@ -67,13 +117,16 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
           back: bet.isback,
           amount: bet.stake
         }));
-        setBets(transformedData || []);
+        setAllBets(transformedData || []);
+        setBets(applyFilters(transformedData || [], getCurrentFilters()));
       } else {
         response = await getUnsettledByMatchId(payload);
-        setBets(response.data || []);
+        setAllBets(response.data || []);
+        setBets(applyFilters(response.data || [], getCurrentFilters()));
       }
     } catch (error) {
       console.error(`Error fetching ${activeTab} bets:`, error);
+      setAllBets([]);
       setBets([]);
     } finally {
       setLoading(false);
@@ -86,14 +139,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
 
   const handleFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const filters = {
-      betType: filterBetType,
-      minAmount: filterFromAmt,
-      maxAmount: filterToAmt,
-      ipAddress: filterIp,
-      userId: filterUname
-    };
-    fetchBets(filters);
+    setBets(applyFilters(allBets, getCurrentFilters()));
   };
 
   const handleReset = () => {
@@ -102,7 +148,7 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
     setFilterFromAmt("");
     setFilterToAmt("");
     setFilterBetType("");
-    fetchBets(); // Refetch with no filters
+    setBets(allBets);
   };
 
   const handleShowIpModal = async (ip: string) => {
@@ -137,6 +183,16 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
     setShowIpModal(false);
     setSelectedIp(null);
     setIpDetails(null);
+  };
+
+  const handleShowBrowserModal = (details?: string) => {
+    setBrowserDetails(details || "No details available");
+    setShowBrowserModal(true);
+  };
+
+  const handleCloseBrowserModal = () => {
+    setShowBrowserModal(false);
+    setBrowserDetails("");
   };
 
   const renderTableContent = (colSpan: number, content: React.ReactNode) => {
@@ -309,10 +365,17 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                       </td>
                       <td>
                         <a
-                          href="javascript:void(0)"
-                          data-toggle="tooltip"
-                          data-placement="top"
-                          title={bet.browserDetails}
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            const detailVal =
+                              bet?.browserDetails ??
+                              bet?.browser_details ??
+                              bet?.browser_detail ??
+                              bet?.browserdetail ??
+                              bet?.browser;
+                            handleShowBrowserModal(detailVal);
+                          }}
                           className="text-success"
                         >
                           Detail
@@ -332,6 +395,62 @@ const ViewMoreBetsModal: React.FC<ViewMoreBetsModalProps> = ({
         ipDetails={ipDetails}
         loading={ipLoading}
       />
+      <ReusableModal
+        show={showBrowserModal}
+        handleClose={handleCloseBrowserModal}
+        title="Browser Details"
+        size="lg"
+        position="top"
+        topOffset="32px"
+      >
+        {(() => {
+          if (!browserDetails) {
+            return <div>No details available</div>;
+          }
+          try {
+            const parsed = typeof browserDetails === "string"
+              ? JSON.parse(browserDetails)
+              : browserDetails;
+            if (parsed && typeof parsed === "object") {
+              const entries = Object.entries(parsed);
+              if (entries.length === 0) {
+                return <div>No details available</div>;
+              }
+              return (
+                <div className="table-responsive">
+                  <table className="table table-striped m-b-0">
+                    <thead>
+                      <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {entries.map(([key, value]) => (
+                        <tr key={key}>
+                          <td>{key}</td>
+                          <td>
+                            {typeof value === "object"
+                              ? JSON.stringify(value, null, 2)
+                              : String(value)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            }
+          } catch {
+            // fallback below
+          }
+          return (
+            <div style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+              {browserDetails}
+            </div>
+          );
+        })()}
+      </ReusableModal>
     </div>
   );
 };

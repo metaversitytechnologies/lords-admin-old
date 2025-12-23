@@ -13,13 +13,16 @@ interface Report {
   credit: number;
   debit: number;
   closing: number;
-  matchId: string;
+  matchId?: string;
+  matchid?: string;
+  marketId?: string;
 }
 
 const GameReports = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userId, setUserId] = useState("");
   const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
+  const [selectedMarketId, setSelectedMarketId] = useState<string | null>(null);
   const today = new Date();
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(today.getDate() - 7);
@@ -39,8 +42,11 @@ const GameReports = () => {
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleOpenModal = (matchId: string) => {
-    setSelectedMatchId(matchId);
+  const handleOpenModal = (row: Report) => {
+    const matchId = row.matchId || row.matchid || null;
+    const marketId = row.marketId || null;
+    setSelectedMatchId(matchId || marketId);
+    setSelectedMarketId(marketId || matchId);
     setIsModalOpen(true);
   };
 
@@ -293,7 +299,7 @@ const GameReports = () => {
                               className="underline"
                               onClick={(e) => {
                                 e.preventDefault();
-                                handleOpenModal(row.matchId);
+                                handleOpenModal(row);
                               }}
                             >
                               {row.description}
@@ -356,7 +362,10 @@ const GameReports = () => {
         size="xl"
         position="top"
       >
-        <ViewMoreBetsModal marketId={selectedMatchId} />
+        <ViewMoreBetsModal
+          matchId={selectedMatchId ?? undefined}
+          marketId={selectedMarketId ?? undefined}
+        />
       </ReusableModal>
     </div>
   );

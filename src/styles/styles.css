@@ -2493,9 +2493,9 @@ color: var(--accent-color)
 }
 
 tr.group {
-    background: rgba(189, 36, 36, 0.092) !important;
+    color: #fff;
     cursor: default !important;
-    text-decoration: underline;
+    background: var(--header-bg);
 }
 
 span.order-time {

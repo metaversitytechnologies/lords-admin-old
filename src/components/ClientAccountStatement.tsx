@@ -190,16 +190,21 @@ const ClientAccountStatement: React.FC = ({childId}) => {
                                         new Date(b.date).getTime() - new Date(a.date).getTime()
                                 );
 
-                                return (
-                                    <React.Fragment key={daily.date}>
-                                        <tr className="group">
-                                            <td colSpan={6}>
-                                                {new Date(daily.date).toLocaleDateString("en-GB")}
-                                            </td>
-                                        </tr>
-                                        {sortedEntries
-                                            .filter(
-                                                (entry) =>
+                                            return (
+                                        <React.Fragment key={daily.date}>
+                                            <tr className="group">
+                                                <td
+                                                  colSpan={6}
+                                                  style={{ textDecoration: "none" }}
+                                                >
+                                                  <span style={{ textDecoration: "none" }}>
+                                                    {new Date(daily.date).toLocaleDateString("en-GB")}
+                                                  </span>
+                                                </td>
+                                            </tr>
+                                            {sortedEntries
+                                                .filter(
+                                                    (entry) =>
                                                     !searchTerm ||
                                                     Object.values(entry).some((val) =>
                                                         String(val)
@@ -208,7 +213,13 @@ const ClientAccountStatement: React.FC = ({childId}) => {
                                                     )
                                             )
                                             .map((entry, index) => (
-                                                <tr key={index}>
+                                                <tr
+                                                    key={index}
+                                                    style={{
+                                                        backgroundColor:
+                                                            index % 2 === 1 ? "#bd242417" : "transparent",
+                                                    }}
+                                                >
                                                     <td>{entry.date}</td>
                                                     <td>{entry.paymentType}</td>
                                                     <td>{entry.description}</td>
