@@ -5,7 +5,6 @@ import { getChildListLord } from "../api/auth";
 import SearchUser from "./SearchUser";
 import { useAuth } from "../context/AuthContext";
 import { CSVLink } from "react-csv";
-import Pagination from "./Pagination";
 import { formatDateTime } from "../utils/formatDateTime";
 
 const AgentListing: React.FC = () => {
@@ -18,8 +17,6 @@ const AgentListing: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [generalSearchTerm, setGeneralSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const { user } = useAuth();
 
@@ -171,10 +168,6 @@ const AgentListing: React.FC = () => {
                           .toLowerCase()
                           .includes(generalSearchTerm.toLowerCase())
                       )
-                  )
-                  .slice(
-                    (currentPage - 1) * itemsPerPage,
-                    currentPage * itemsPerPage
                   )
                   .map((agent) => (
                     <tr key={agent.userId}>
