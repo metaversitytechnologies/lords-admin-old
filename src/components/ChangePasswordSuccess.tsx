@@ -18,7 +18,7 @@ const ChangePasswordSuccess: React.FC = () => {
   }, [auth, logoutType]);
 
   return (
-    <div className="cp-success-box">
+    <div className="cp-success-box" style={{ background: '#242a54'}}>
       <div className="text-center container">
         <h1>
           <span className="text-success">

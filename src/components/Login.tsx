@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ConfirmModal from "./ConfirmDialog";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { loginApi } from "../api/auth";
 import Footer from "./Footer";
@@ -40,6 +40,9 @@ const Login: React.FC = () => {
 
   const auth = useAuth();
   const navigate = useNavigate();
+  if (auth.isAuthenticated) {
+    return <Navigate to="/dashboardhome" replace />;
+  }
 
   // react-hook-form
   const {

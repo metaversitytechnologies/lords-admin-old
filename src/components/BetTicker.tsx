@@ -19,6 +19,7 @@ const BetTicker = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [pollingEnabled, setPollingEnabled] = useState(true);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -65,11 +66,17 @@ const BetTicker = () => {
           userId: activeFilters.userId || null
         };
         const response = await getBetTicker(payload);
-        if (response.status) {
-          setBets(response.data);
-        } else {
+        const noPermission =
+          response?.message?.toLowerCase() ===
+          "you do not have permission".toLowerCase();
+
+        if (noPermission) {
+          setPollingEnabled(false);
           throw new Error(response.message || "Failed to fetch data");
         }
+
+        setBets(response.data);
+        setPollingEnabled(true);
       } catch (err) {
         setError(err.message);
         if (showLoading) {
@@ -115,7 +122,7 @@ const BetTicker = () => {
   };
 
   useEffect(() => {
-    if (currentPage === 1 && searchTerm === "") {
+    if (currentPage === 1 && searchTerm === "" && pollingEnabled) {
       const timer = setInterval(() => {
         setCounter((prevCounter) => {
           if (prevCounter === 1) {
@@ -127,7 +134,7 @@ const BetTicker = () => {
       }, 1000);
       return () => clearInterval(timer);
     }
-  }, [fetchData, currentPage, searchTerm]);
+  }, [fetchData, currentPage, searchTerm, pollingEnabled]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -384,7 +391,7 @@ const BetTicker = () => {
               </div>
             </form>
             <div className="table-responsive expandable-table">
-              {bets.length > 0 && (
+              {bets?.length > 0 && (
                 <span className="table-control" onClick={toggleExpand}>
                   <i
                     className={`fas ${
@@ -480,7 +487,7 @@ const BetTicker = () => {
                         {error}
                       </td>
                     </tr>
-                  ) : bets.length > 0 ? (
+                  ) : bets?.length > 0 ? (
                     bets
                       .filter(
                         (bet) =>

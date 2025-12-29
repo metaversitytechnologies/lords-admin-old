@@ -18,16 +18,27 @@ import FlashMessage from "./components/FlashMessage";
 import DevtoolsLock from "./components/DevtoolsLock";
 
 function App() {
-  const { logout, flash, setFlash } = useAuth();
+  const { logout, flash, setFlash, isAuthenticated } = useAuth();
   const location = useLocation();
   const devtoolsLockEnabled = useMemo(
     () => import.meta.env.VITE_ENABLE_DEVTOOLS_LOCK !== "false",
     []
   );
   const [isDevtoolsOpen, setIsDevtoolsOpen] = useState(false);
-  const showFooter =
-    !location.pathname.startsWith("/change-password-success") &&
-    location.pathname !== "/login";
+  const hideChrome =
+    location.pathname === "/login" ||
+    location.pathname.startsWith("/change-password-success");
+  const showFooter = !hideChrome;
+
+  useEffect(() => {
+    const isCpSuccess = location.pathname.startsWith(
+      "/change-password-success"
+    );
+    document.body.classList.toggle("cp-success-page", isCpSuccess);
+    return () => {
+      document.body.classList.remove("cp-success-page");
+    };
+  }, [location.pathname]);
   useEffect(() => {
     const handleLogout = (event: Event) => {
       const customEvent = event as CustomEvent;
@@ -72,7 +83,7 @@ function App() {
           onClose={() => setFlash(null)}
         />
       )}
-      <Header />
+      { <Header />}
       <main className="main-content">
         <Outlet />
       </main>

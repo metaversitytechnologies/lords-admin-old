@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReusableModal from "./ReusableModal";
 import { getAdminMessage, setAdminMessage } from "../api/message";
+import { useAuth } from "../context/AuthContext";
 
 type AdminMessageModalProps = {
   show: boolean;
@@ -11,12 +12,13 @@ const AdminMessageModal: React.FC<AdminMessageModalProps> = ({
   show,
   onClose
 }) => {
+  const { isAuthenticated } = useAuth();
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (!show) return;
+    if (!show || !isAuthenticated) return;
     const fetchMessage = async () => {
       setLoading(true);
       try {
@@ -30,7 +32,7 @@ const AdminMessageModal: React.FC<AdminMessageModalProps> = ({
       }
     };
     fetchMessage();
-  }, [show]);
+  }, [show, isAuthenticated]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

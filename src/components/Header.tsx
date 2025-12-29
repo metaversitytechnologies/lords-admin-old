@@ -47,6 +47,8 @@ const Header: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     const fetchBannerMessage = async () => {
       try {
         const res = await getAdminMessage();
@@ -57,7 +59,7 @@ const Header: React.FC = () => {
       }
     };
     fetchBannerMessage();
-  }, []);
+  }, [isAuthenticated]);
 
   if (!isAuthenticated) return null;
 
