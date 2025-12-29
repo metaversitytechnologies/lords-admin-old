@@ -25,6 +25,7 @@ import DownlineReports from "./components/DownlineReports";
 import ChangePasswordSuccess from "./components/ChangePasswordSuccess";
 import ChangePassword from "./components/ChangePassword";
 import SecureAuth from "./components/SecureAuth";
+import LiveCasinoList from "./components/LiveCasinoList";
 
 export const router = createBrowserRouter([
   {
@@ -67,6 +68,7 @@ export const router = createBrowserRouter([
           { path: "profitLoss", element: <ProfitLoss /> },
           { path: "transferstmt", element: <TransferStatement /> },
           { path: "casinoresult", element: <CasinoReport /> },
+          { path: "live-casino", element: <LiveCasinoList /> },
           { path: "gamereports", element: <GameReports /> },
           { path: "fraudreport", element: <MessageReport /> },
           { path: "createagent", element: <NewAgent /> },

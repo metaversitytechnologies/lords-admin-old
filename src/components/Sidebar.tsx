@@ -48,7 +48,13 @@ const Sidebar = ({ isCollapsed, toggleCollapse }: SidebarProps) => {
       title: "Admin Users",
       links: [{ text: "Create Account", href: "/createaccount" }]
     },
-    { title: "Live Casino", links: [], extraClass: "blinking-new" }
+    {
+      title: "Live Casino",
+      links: [
+        { text: "Live Casino", href: "/live-casino" },
+      ],
+      extraClass: "blinking-new"
+    }
   ];
 
   const toggleMenu = (title: string, hasLinks: boolean) => {
