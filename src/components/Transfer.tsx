@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { getChildListLord, bankDepositWithdraw } from "../api/user";
+import {
+  getChildListForTransferLord,
+  bankDepositWithdraw
+} from "../api/user";
 import { useAuth } from "../context/AuthContext";
 
 interface User {
@@ -35,7 +38,7 @@ const Transfer = () => {
         username: ""
       };
 
-      getChildListLord(payload)
+      getChildListForTransferLord(payload)
         .then((response) => {
           if (response.data) setUsers(response.data);
           setLoading(false);

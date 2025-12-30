@@ -27,10 +27,10 @@ const AgentListing: React.FC = () => {
     setError(null);
     try {
       const payload = {
-        userId: userid || user.userId,
+        // If a user is selected from SearchUser, pass that as userId; otherwise use route/user context
+        userId: searchTerm || userid || user.userId,
         index: 0,
         noOfRecords: 20,
-        username: searchTerm
       };
       const response = await getChildListLord(payload);
       setAgents(response.data || []);
@@ -248,7 +248,11 @@ const AgentListing: React.FC = () => {
                         </Link>
                       </td>
                       <td className="text-right positive negative">
-                        <span>{agent.netExposure}</span>
+                        <span>
+                          {Number.isFinite(Number(agent.netExposure))
+                            ? Number(agent.netExposure).toFixed(2)
+                            : agent.netExposure}
+                        </span>
                       </td>
                       <td className="text-right">
                         <span
