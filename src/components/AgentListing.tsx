@@ -16,21 +16,26 @@ const AgentListing: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSearchUserId, setSelectedSearchUserId] = useState<string | null>(null);
   const [generalSearchTerm, setGeneralSearchTerm] = useState("");
 
   const { user } = useAuth();
 
-  const fetchAgents = async () => {
+  const fetchAgents = async (overrideSearchId?: string | null) => {
     if (!user) return;
 
     setLoading(true);
     setError(null);
     try {
+      const searchId =
+        overrideSearchId !== undefined ? overrideSearchId : selectedSearchUserId;
       const payload = {
-        // If a user is selected from SearchUser, pass that as userId; otherwise use route/user context
-        userId: searchTerm || userid || user.userId,
+        // Always identify requester and listing root user
+        userId: userid || user.userId,
+        // When searching, send term as searchUserId instead of overriding userId
+        ...(searchId ? { searchUserId: searchId } : {}),
         index: 0,
-        noOfRecords: 20,
+        noOfRecords: 20
       };
       const response = await getChildListLord(payload);
       setAgents(response.data || []);
@@ -42,8 +47,19 @@ const AgentListing: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchAgents();
-  }, [user, searchTerm, userid]);
+    // On navigation/refresh, reset search state and fetch once without a searchUserId
+    setSelectedSearchUserId(null);
+    setSearchTerm("");
+    fetchAgents(null);
+  }, [userid, user]);
+
+  useEffect(() => {
+    if (!user) return;
+    // Only fetch when a search selection is made; ignore clears
+    if (selectedSearchUserId) {
+      fetchAgents(selectedSearchUserId);
+    }
+  }, [selectedSearchUserId, user]);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -73,7 +89,10 @@ const AgentListing: React.FC = () => {
           <div className="d-inline-block p-l-10">
             <SearchUser
               value={searchTerm}
-              onChange={setSearchTerm}
+              onChange={(userId: string) => {
+                setSearchTerm(userId);
+                setSelectedSearchUserId(userId);
+              }}
               placeholder="Enter Atleast 3 character"
             />
           </div>
