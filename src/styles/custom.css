@@ -1291,6 +1291,30 @@ footer .bottom-footer {
   margin-top: 22px;
 }
 
+.casino-page.apl-section.casino-full-embed {
+  position: relative;
+  background: transparent !important;
+  color: inherit !important;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.casino-page.apl-section.casino-full-embed iframe {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  border: none;
+}
+
+.casino-page.apl-section.casino-full-embed .casino-back {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+}
+
 .casino-section__header {
   display: flex;
   align-items: flex-end;
@@ -1356,6 +1380,7 @@ footer .bottom-footer {
   border: none;
   border-radius: 0;
   box-shadow: none;
+  cursor: pointer;
 }
 
 .casino-card__image {

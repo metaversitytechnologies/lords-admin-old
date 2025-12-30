@@ -133,7 +133,7 @@ const Login: React.FC = () => {
             <div className="text-center logo">
               <img
                 style={{ height: "100px" }}
-                src="https://d3kb8xz339pq18.cloudfront.net/v12/static/themes/lordsexch.now/admin/logo.png"
+                src="/logo.png"
                 alt="Logo"
               />
             </div>

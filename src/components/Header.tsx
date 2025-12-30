@@ -170,7 +170,7 @@ const Header: React.FC = () => {
               className="logo router-link-exact-active router-link-active"
             >
               <img
-                src="https://d3kb8xz339pq18.cloudfront.net/v12/static/themes/lordsexch.now/admin/logo.png"
+                src="/logo.png"
                 alt="Logo"
               />
             </Link>

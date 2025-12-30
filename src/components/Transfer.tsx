@@ -24,30 +24,50 @@ const Transfer = () => {
   const { user } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [emptyMessage, setEmptyMessage] = useState("No users found.");
   const [masterPassword, setMasterPassword] = useState("");
 
   const [amountValues, setAmountValues] = useState<Record<string, string>>({});
   const [statuses, setStatuses] = useState<Record<string, Status>>({});
 
   useEffect(() => {
-    if (user) {
-      const payload = {
-        userId: user.userId,
-        index: 0,
-        noOfRecords: 20,
-        username: ""
-      };
+    if (!user) return;
 
-      getChildListForTransferLord(payload)
-        .then((response) => {
-          if (response.data) setUsers(response.data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Failed to fetch child list:", error);
-          setLoading(false);
-        });
-    }
+    setLoading(true);
+    const payload = {
+      userId: user.userId,
+      index: 0,
+      noOfRecords: 20,
+      username: ""
+    };
+
+    getChildListForTransferLord(payload)
+      .then((response) => {
+        const hasUsers =
+          Array.isArray(response.data) && response.data.length > 0;
+
+        if (hasUsers) {
+          setUsers(response.data);
+          setEmptyMessage("");
+        } else {
+          setUsers([]);
+          setEmptyMessage(
+            typeof response.message === "string" && response.message
+              ? response.message
+              : "No users found."
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to fetch child list:", error);
+        const fallbackMessage =
+          error instanceof Error && error.message
+            ? error.message
+            : "No users found.";
+        setUsers([]);
+        setEmptyMessage(fallbackMessage);
+      })
+      .finally(() => setLoading(false));
   }, [user]);
 
   useEffect(() => {
@@ -286,7 +306,7 @@ const Transfer = () => {
                   ) : (
                     <tr>
                       <td colSpan={8} className="text-center">
-                        No users found.
+                        {emptyMessage || "No users found."}
                       </td>
                     </tr>
                   )}

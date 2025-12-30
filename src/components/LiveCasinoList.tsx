@@ -1,6 +1,7 @@
-import React from "react";
-import { auraData, fantsySlot } from "../data/casinoGames";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { auraData } from "../data/casinoGames";
 import type { CasinoGame } from "../data/casinoGames";
+import { useAuth } from "../context/AuthContext";
 
 const palette = [
   "#d64035",
@@ -12,13 +13,6 @@ const palette = [
   "#b7a23a",
   "#5ab55c"
 ];
-
-const fallbackMonogram = (name: string) => {
-  const cleaned = name.replace(/[()]/g, " ");
-  const parts = cleaned.split(" ").filter(Boolean);
-  const letters = parts.slice(0, 3).map((p) => p[0] || "");
-  return letters.join("").substring(0, 3).toUpperCase() || "CAS";
-};
 
 type Section = {
   title: string;
@@ -35,6 +29,103 @@ const sections: Section[] = [
 ];
 
 const LiveCasinoList: React.FC = () => {
+  const { token } = useAuth();
+  const [selectedGame, setSelectedGame] = useState<CasinoGame | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  const iframeSrc = useMemo(() => {
+    if (!token || !selectedGame) return "";
+    return `https://aura.fawk.app/${token}/9815/${selectedGame.game_id}`;
+  }, [token, selectedGame]);
+
+  const handleCardClick = (game: CasinoGame) => {
+    setSelectedGame(game);
+  };
+
+  const handleClose = () => setSelectedGame(null);
+
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe || !selectedGame) return;
+
+    const tryHideRightPane = () => {
+      try {
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (!doc) {
+          console.warn("Casino iframe: no access to iframe document.");
+          return;
+        }
+
+        const style = doc.createElement("style");
+        style.textContent = `
+          .right-pane,
+          .right-pane__bettingPL,
+          .right-pane__game-rules,
+          .inner-right-pane,
+          .inner-right-pane-placeholder {
+            display: none !important;
+          }
+        `;
+        doc.head?.appendChild(style);
+
+        const hiddenTargets = doc.querySelectorAll(
+          ".right-pane, .right-pane__bettingPL, .right-pane__game-rules, .inner-right-pane, .inner-right-pane-placeholder"
+        );
+
+        if (!hiddenTargets.length) {
+          console.warn(
+            "Casino iframe: right-side selectors not found; layout may have changed."
+          );
+        }
+      } catch (error) {
+        console.warn(
+          "Casino iframe: could not inject hide CSS (likely cross-origin).",
+          error
+        );
+      }
+    };
+
+    iframe.addEventListener("load", tryHideRightPane);
+    return () => {
+      iframe.removeEventListener("load", tryHideRightPane);
+    };
+  }, [iframeSrc, selectedGame]);
+
+  if (selectedGame) {
+    if (!token) {
+      return (
+        <section className="casino-page apl-section casino-full-embed">
+          <button
+            type="button"
+            className="btn btn-sm btn-light casino-back"
+            onClick={handleClose}
+          >
+            Back to games
+          </button>
+          <p className="m-0">Unable to load the game. Please log in again.</p>
+        </section>
+      );
+    }
+
+    return (
+      <section className="casino-page apl-section casino-full-embed">
+        <button
+          type="button"
+          className="btn btn-sm btn-light casino-back"
+          onClick={handleClose}
+        >
+          Back to games
+        </button>
+        <iframe
+          ref={iframeRef}
+          src={iframeSrc}
+          title={selectedGame.name}
+          allowFullScreen
+        />
+      </section>
+    );
+  }
+
   return (
     <section className="casino-page apl-section">
       <div className="casino-hero">
@@ -49,13 +140,21 @@ const LiveCasinoList: React.FC = () => {
             {section.games.map((game, index) => {
               const accent =
                 palette[(index + sectionIndex * 3) % palette.length];
-              const monogram = fallbackMonogram(game.name);
 
               return (
                 <article
                   key={`${game.game_id}-${game.game_code}`}
                   className="casino-card"
                   style={{ ["--card-accent" as string]: accent }}
+                  onClick={() => handleCardClick(game)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleCardClick(game);
+                    }
+                  }}
                 >
                   <div className="casino-card__image only-image">
                     {game.thumb ? (
