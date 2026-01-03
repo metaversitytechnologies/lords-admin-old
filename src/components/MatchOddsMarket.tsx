@@ -152,6 +152,13 @@ const MatchOddsMarket = ({
             }
           }
 
+          const marketKey = row?.mid || row?.marketId || "";
+          const marketSetting = marketKey ? matchSettings?.[marketKey] : undefined;
+          const displayMessage =
+            typeof marketSetting?.displayMessage === "string"
+              ? marketSetting.displayMessage
+              : undefined;
+
           return (
             <div className="bet-table" key={rIdx}>
               <div className="bet-table-header">
@@ -266,6 +273,9 @@ const MatchOddsMarket = ({
                   );
                 })}
               </div>
+              {displayMessage && (
+                <div className="market-display-message">{displayMessage}</div>
+              )}
             </div>
           );
         })}

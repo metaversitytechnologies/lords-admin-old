@@ -128,6 +128,10 @@ const BookmakerMarket = ({bookmakerData, pnlData, matchId, matchSettings}: Bookm
                     const marketSetting = marketKey ? matchSettings?.[marketKey] : undefined;
                     const minBet = marketSetting?.minBet ?? nations?.[0]?.minBet;
                     const maxBet = marketSetting?.maxBet ?? nations?.[0]?.maxBet;
+                    const displayMessage =
+                        typeof marketSetting?.displayMessage === "string"
+                            ? marketSetting.displayMessage
+                            : undefined;
                     const myPnl = pnlData?.find(
                         (ele: any) => ele?.marketId == nations?.[0]?.mid
                     );
@@ -243,6 +247,9 @@ const BookmakerMarket = ({bookmakerData, pnlData, matchId, matchSettings}: Bookm
                                     })}
                                 </div>
                             </div>
+                            {displayMessage && (
+                                <div className="market-display-message">{displayMessage}</div>
+                            )}
                         </div>
                     );
                 }

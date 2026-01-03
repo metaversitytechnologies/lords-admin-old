@@ -201,6 +201,10 @@ const FancyMarket = ({
                 const marketSetting = currentId ? matchSettings?.[currentId] : undefined;
                 const minBet = marketSetting?.minBet ?? r?.minBet ?? 100;
                 const maxBet = marketSetting?.maxBet ?? r?.maxBet ?? 1000;
+                const displayMessage =
+                  typeof marketSetting?.displayMessage === "string"
+                    ? marketSetting.displayMessage
+                    : undefined;
                 return (
                   <div className="fancy-tripple" key={i}>
                     <div
@@ -295,6 +299,9 @@ const FancyMarket = ({
                           </tbody>
                         </table>
                       </div>
+                    )}
+                    {displayMessage && (
+                      <div className="market-display-message">{displayMessage}</div>
                     )}
                   </div>
                 );
