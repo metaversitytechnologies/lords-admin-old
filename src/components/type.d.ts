@@ -9,6 +9,7 @@ interface oddsResponse {
   Meter: Fancy2[];
   OddEven: Fancy2[];
   BallByBall: Fancy2[];
+  CricketCasino?: Fancy2[];
 }
 
  interface Odd {

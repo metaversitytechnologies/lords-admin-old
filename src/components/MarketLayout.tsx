@@ -120,7 +120,7 @@ const MarketLayout = () => {
               {oddsData &&
                 Object.keys(oddsData)?.map((fancyMarket: string) => {
                   if (
-                    ["Odds", "Bookmaker", "CricketCasino"].includes(fancyMarket)
+                    ["Odds", "Bookmaker"].includes(fancyMarket)
                   )
                     return <></>;
                   if (oddsData[fancyMarket]?.length > 0)
