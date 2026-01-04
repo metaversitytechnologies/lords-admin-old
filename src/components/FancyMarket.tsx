@@ -101,6 +101,7 @@ const FancyMarket = ({
   matchId,
   matchSettings
 }: FancyMarketProps) => {
+  const isCricketCasino = fancyMarket === "CricketCasino";
   const [isBetLockModalOpen, setIsBetLockModalOpen] = useState(false);
   const [betLockUsers, setBetLockUsers] = useState<BetLockUser[]>([
     { name: "capetown", checked: true },
@@ -209,12 +210,20 @@ const FancyMarket = ({
 
             <div className="bet-table-body" data-title="OPEN">
               <div className="fancy-tripple">
-                <div className="bet-table-row">
-                  <div className="nation-name">&nbsp;</div>
-                  <div className="lay bl-title lay-title">No</div>
-                  <div className="back bl-title back-title">Yes</div>
-                  <div className="fancy-min-max"></div>
-                </div>
+                {isCricketCasino ? (
+                  <div className="bet-table-row">
+                    <div className="nation-name">&nbsp;</div>
+                    <div className="back bl-title back-title">Back</div>
+                    <div className="fancy-min-max"></div>
+                  </div>
+                ) : (
+                  <div className="bet-table-row">
+                    <div className="nation-name">&nbsp;</div>
+                    <div className="lay bl-title lay-title">No</div>
+                    <div className="back bl-title back-title">Yes</div>
+                    <div className="fancy-min-max"></div>
+                  </div>
+                )}
               </div>
 
               {filteredFancy?.map((r, i) => {
@@ -271,12 +280,20 @@ const FancyMarket = ({
                           </span>
                         </p>
                       </div>
-                      <div className="bl-box lay ">
-                        <span className="d-block odds">{r.l || "—"}</span>
-                      </div>
-                      <div className="bl-box back ">
-                        <span className="d-block odds">{r.b || "—"}</span>
-                      </div>
+                      {isCricketCasino ? (
+                        <div className="bl-box back ">
+                          <span className="d-block odds">{r?.ra ?? "—"}</span>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="bl-box lay ">
+                            <span className="d-block odds">{r.l || "—"}</span>
+                          </div>
+                          <div className="bl-box back ">
+                            <span className="d-block odds">{r.b || "—"}</span>
+                          </div>
+                        </>
+                      )}
                       <div className="fancy-min-max">
                         Min:<span>{formatWithK(minBet)}</span> Max:
                         <span>{formatWithK(maxBet)}</span>
