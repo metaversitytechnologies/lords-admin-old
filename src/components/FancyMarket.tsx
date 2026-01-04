@@ -84,6 +84,16 @@ const sortLadderRows = (rows: any[]) => {
     });
 };
 
+const getOddsLabel = (item: any, index: number, market: string) => {
+  const baseLabel =
+    item.start === item.end ? item.start : `${item.start} - ${item.end}`;
+  if (market === "BallByBall") {
+    if (index === 0) return `${baseLabel} Or Less`;
+    if (index === 1) return `${baseLabel} Or More`;
+  }
+  return baseLabel;
+};
+
 const FancyMarket = ({
   fancyData,
   fancyPnldata,
@@ -293,10 +303,11 @@ const FancyMarket = ({
                               </tr>
                             ) : groupedLadderRows.length > 0 ? (
                               groupedLadderRows.map((item, index) => {
-                                const oddsLabel =
-                                  item.start === item.end
-                                    ? item.start
-                                    : `${item.start} - ${item.end}`;
+                                const oddsLabel = getOddsLabel(
+                                  item,
+                                  index,
+                                  fancyMarket
+                                );
                                 return (
                                   <tr key={index}>
                                     <td className="text-center">{oddsLabel}</td>
