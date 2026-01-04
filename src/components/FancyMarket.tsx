@@ -62,6 +62,28 @@ const groupLadderRows = (rows: any[]) => {
   return grouped;
 };
 
+const sortLadderRows = (rows: any[]) => {
+  if (!Array.isArray(rows)) return [];
+  return [...rows]
+    .sort((a, b) => {
+      const aNum = Number(a?.odds);
+      const bNum = Number(b?.odds);
+      const aIsNum = !Number.isNaN(aNum);
+      const bIsNum = !Number.isNaN(bNum);
+      if (aIsNum && bIsNum) return aNum - bNum;
+      return String(a?.odds ?? "").localeCompare(String(b?.odds ?? ""));
+    })
+    .map((item) => {
+      const oddsNum = Number(item?.odds);
+      const isNum = !Number.isNaN(oddsNum);
+      return {
+        start: isNum ? oddsNum : item?.odds,
+        end: isNum ? oddsNum : item?.odds,
+        pnl: item?.pnl
+      };
+    });
+};
+
 const FancyMarket = ({
   fancyData,
   fancyPnldata,
@@ -110,7 +132,10 @@ const FancyMarket = ({
     }
   };
 
-  const groupedLadderRows = groupLadderRows(ladderData);
+  const groupedLadderRows =
+    fancyMarket === "CricketCasino"
+      ? sortLadderRows(ladderData)
+      : groupLadderRows(ladderData);
 
   const openFancyLockModal = async () => {
     const marketId =
