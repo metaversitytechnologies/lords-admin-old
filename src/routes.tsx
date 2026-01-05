@@ -26,6 +26,7 @@ import ChangePasswordSuccess from "./components/ChangePasswordSuccess";
 import ChangePassword from "./components/ChangePassword";
 import SecureAuth from "./components/SecureAuth";
 import LiveCasinoList from "./components/LiveCasinoList";
+import CrashGame from "./components/CrashGame";
 
 export const router = createBrowserRouter([
   {
@@ -35,11 +36,11 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "login",
-        element: <Login />
+        element: <Login />,
       },
       {
         path: "change-password-success/:id",
-        element: <ChangePasswordSuccess />
+        element: <ChangePasswordSuccess />,
       },
       {
         path: "/",
@@ -51,7 +52,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Navigate to="/netexpouser" replace />
+            element: <Navigate to="/netexpouser" replace />,
           },
           { path: "agentlisting", element: <AgentListing /> },
           { path: "agentlisting/:userid", element: <AgentListing /> },
@@ -69,6 +70,7 @@ export const router = createBrowserRouter([
           { path: "transferstmt", element: <TransferStatement /> },
           { path: "casinoresult", element: <CasinoReport /> },
           { path: "live-casino", element: <LiveCasinoList /> },
+          { path: "crash-casino", element: <CrashGame /> },
           { path: "gamereports", element: <GameReports /> },
           { path: "fraudreport", element: <MessageReport /> },
           { path: "createagent", element: <NewAgent /> },
@@ -76,10 +78,10 @@ export const router = createBrowserRouter([
           { path: "secureauth", element: <SecureAuth /> },
           {
             path: "downlinereports/:id/",
-            element: <DownlineReports />
-          }
-        ]
-      }
-    ]
-  }
+            element: <DownlineReports />,
+          },
+        ],
+      },
+    ],
+  },
 ]);

@@ -52,6 +52,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse }: SidebarProps) => {
       title: "Live Casino",
       links: [
         { text: "Live Casino", href: "/live-casino" },
+        { text: "Crash Game", href: "/crash-casino" },
       ],
       extraClass: "blinking-new"
     }

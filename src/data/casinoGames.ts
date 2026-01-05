@@ -7,502 +7,632 @@ export type CasinoGame = {
   favourite: number;
   gameType: string;
   match_id?: number | string;
+  filterName?: string;
 };
 
 export const auraData: CasinoGame[] = [
   {
-    game_id: 56762,
-    game_code: "teenpatti",
-    name: "Teen Patti",
-    product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Live%20Teenpatti.png",
     favourite: 0,
-    gameType: "LG1"
-  },
-  {
-    game_id: 567681,
+    filterName: "teenpatti",
+    gameType: "LG1",
     game_code: "teenpatti20",
+    game_id: 567682,
+    match_id: 56768,
     name: "Teen Patti T20",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Teenpatti%20T20.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/teen20.jpg",
   },
   {
-    game_id: 569672,
+    favourite: 0,
+    filterName: "32-cards",
+    gameType: "LG1",
     game_code: "32-cards-casino",
+    game_id: 569672,
+    match_id: 56967,
     name: "32 Cards Casino",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/32%20cards%20casino.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/card32.jpg",
   },
   {
-    game_id: 569682,
+    favourite: 0,
+    filterName: "others",
+    gameType: "LG1",
     game_code: "hi-low",
+    game_id: 569682,
+    match_id: 56968,
     name: "Hi Low",
     product: "AURA EGAMING",
     thumb: "https://d2.fawk.app/assets/images/Games/Hi%20Low.png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 675642,
+    favourite: 0,
+    filterName: "poker",
+    gameType: "LG1",
     game_code: "poker",
+    game_id: 675642,
+    match_id: 67564,
     name: "Poker",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Poker.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/poker.jpg",
   },
   {
-    game_id: 675652,
+    favourite: 0,
+    filterName: "poker",
+    gameType: "LG1",
     game_code: "six-player-poker",
+    game_id: 675652,
+    match_id: 67565,
     name: "Six Player Poker",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Six%20player%20poker.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/poker6.jpg",
   },
   {
-    game_id: 675672,
+    favourite: 0,
+    filterName: "poker",
+    gameType: "LG1",
     game_code: "poker20-20",
+    game_id: 675672,
+    match_id: 67567,
     name: "Poker 20-20",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Poker%2020-20.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/poker20.jpg",
   },
   {
-    game_id: 675682,
+    favourite: 0,
+    filterName: "poker",
+    gameType: "LG1",
     game_code: "poker-20-20(virtual)",
+    game_id: 675682,
+    match_id: 67568,
     name: "Poker 20-20 (virtual)",
     product: "AURA EGAMING",
     thumb:
-      "https://d2.fawk.app/assets/images/Games/Poker%2020-20%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/poker20.jpg",
   },
   {
-    game_id: 675702,
+    favourite: 0,
+    filterName: "bollywood",
+    gameType: "LG1",
     game_code: "bollywood_casino",
+    game_id: 675702,
+    match_id: 67570,
     name: "Bollywood Casino",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Bollywood%20Casino.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/btable.jpg",
   },
+
   {
-    game_id: 675712,
+    favourite: 0,
+    filterName: "bollywood",
+    gameType: "LG1",
     game_code: "bollywood-casino(virtual)",
+    game_id: 675712,
+    match_id: 67571,
     name: "Bollywood Casino (virtual)",
     product: "AURA EGAMING",
     thumb:
-      "https://d2.fawk.app/assets/images/Games/Bollywood%20Casino%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/vbtable.jpg",
   },
   {
-    game_id: 675752,
+    favourite: 0,
+    filterName: "Sports",
+    gameType: "LG1",
     game_code: "casino-meter",
+    game_id: 675752,
+    match_id: 67575,
     name: "Casino Meter",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Casino%20Meter.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/cmeter.jpg",
   },
   {
-    game_id: 675762,
+    favourite: 0,
+    filterName: "others",
+    gameType: "LG1",
     game_code: "casino-meter(virtual)",
+    game_id: 675762,
+    match_id: 67576,
     name: "Casino Meter (virtual)",
     product: "AURA EGAMING",
     thumb:
-      "https://d2.fawk.app/assets/images/Games/Casino%20Meter%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/cmeter.jpg",
   },
+
   {
-    game_id: 675802,
+    favourite: 0,
+    filterName: "casino-war",
+    gameType: "LG1",
     game_code: "casino-war",
+    game_id: 675802,
+    match_id: 67580,
     name: "Casino War",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Casino%20War.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/war.jpg",
   },
+
   {
-    game_id: 675812,
+    favourite: 0,
+    filterName: "casino-war",
+    gameType: "LG1",
     game_code: "casino-war(virtual)",
+    game_id: 675812,
+    match_id: 67581,
     name: "Casino War (virtual)",
     product: "AURA EGAMING",
     thumb:
-      "https://d2.fawk.app/assets/images/Games/Casino%20War%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/war.jpg",
   },
+
   {
-    game_id: 676002,
+    favourite: 0,
+    filterName: "teenpatti",
+    gameType: "LG1",
     game_code: "muflis-teenpatti",
+    game_id: 676002,
+    match_id: 67600,
     name: "Muflis Teenpatti",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Muflis%20Teenpatti.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/teenmuf.jpg",
   },
+
   {
-    game_id: 676012,
+    favourite: 0,
+    filterName: "teenpatti",
+    gameType: "LG1",
     game_code: "muflis-teenpatti(virtual)",
+    game_id: 676012,
+    match_id: 67601,
     name: "Muflis Teenpatti (virtual)",
     product: "AURA EGAMING",
     thumb:
-      "https://d2.fawk.app/assets/images/Games/Muflis%20Teenpatti%20(virtual).png",
-    favourite: 0,
-    gameType: "LG1"
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/vteenmuf.jpg",
   },
+
   {
-    game_id: 676102,
+    favourite: 0,
+    filterName: "others",
+    gameType: "LG1",
     game_code: "trio",
+    game_id: 676102,
+    match_id: 67610,
     name: "Trio",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Trio.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/trio.jpg",
   },
+
   {
-    game_id: 676112,
+    favourite: 0,
+    filterName: "others",
+    gameType: "LG1",
     game_code: "trio(virtual)",
+    game_id: 676112,
+    match_id: 67611,
     name: "Trio (virtual)",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Trio%20(virtual).png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/vtrio.jpg",
   },
+
   {
-    game_id: 676202,
+    favourite: 0,
+    filterName: "Queen",
+    gameType: "LG1",
     game_code: "queen",
+    game_id: 676202,
+    match_id: 67620,
     name: "Queen",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Queen.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/queen.jpg",
   },
   {
-    game_id: 676212,
+    favourite: 0,
+    filterName: "queen",
+    gameType: "LG1",
     game_code: "queen-race(virtual)",
+    game_id: 676212,
+    match_id: 67621,
     name: "Queen Race (virtual)",
     product: "AURA EGAMING",
     thumb: "https://d2.fawk.app/assets/images/Games/Queen%20(virtual).png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 676302,
+    favourite: 0,
+    filterName: "teenpatti",
+    gameType: "LG1",
     game_code: "teenpatti-test",
+    game_id: 676302,
+    match_id: 67630,
     name: "Teenpatti Test",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Teenpatti%20Test.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/teen9.jpg",
   },
   {
-    game_id: 676312,
+    favourite: 0,
+    filterName: "teenpatti",
+    gameType: "LG1",
     game_code: "teenpatti-test(virtual)",
+    game_id: 676312,
+    match_id: 67631,
     name: "Teenpatti Test (virtual)",
     product: "AURA EGAMING",
     thumb:
-      "https://d2.fawk.app/assets/images/Games/Teenpatti%20Test%20(virtual).png",
-    favourite: 0,
-    gameType: "LG1"
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/teen9.jpg",
   },
   {
-    game_id: 676402,
+    favourite: 0,
+    filterName: "teenpatti",
+    gameType: "LG1",
     game_code: "teenpatti-open",
+    game_id: 676402,
+    match_id: 67640,
     name: "Teenpatti Open",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Teenpatti%20Open.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/teen8.jpg",
   },
   {
-    game_id: 676412,
+    favourite: 0,
+    filterName: "teenpatti",
+    gameType: "LG1",
     game_code: "teenpatti-open(virtual)",
+    game_id: 676412,
+    match_id: 67641,
     name: "Teenpatti Open (virtual)",
     product: "AURA EGAMING",
     thumb:
       "https://d2.fawk.app/assets/images/Games/Teenpatti%20Open%20(virtual).png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 676602,
+    favourite: 0,
+    filterName: "teenpatti",
+    gameType: "LG1",
     game_code: "2-card-teenpatti",
+    game_id: 676602,
+    match_id: 67660,
     name: "2 Card Teenpatti",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/2%20Cards%20Teenpatti.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/patti2.jpg",
   },
   {
-    game_id: 676702,
+    favourite: 0,
+    filterName: "3-card",
+    gameType: "LG1",
     game_code: "3-card-judgement",
+    game_id: 676702,
+    match_id: 67670,
     name: "3 Card Judgement",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/3%20Cards%20Judgement.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/3cardj.jpg",
   },
   {
-    game_id: 676802,
+    favourite: 0,
+    filterName: "others",
+    gameType: "LG1",
     game_code: "the-trap",
+    game_id: 676802,
+    match_id: 67680,
     name: "The Trap",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/The%20Trap.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/trap.jpg",
   },
   {
-    game_id: 676902,
+    favourite: 0,
+    filterName: "baccarat",
+    gameType: "LG1",
     game_code: "29-card-baccarat",
+    game_id: 676902,
+    match_id: 67690,
     name: "29 Card Baccarat",
     product: "AURA EGAMING",
     thumb: "https://d2.fawk.app/assets/images/Games/29%20Card%20Baccarat.png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 677102,
+    favourite: 0,
+    filterName: "race",
+    gameType: "LG1",
     game_code: "race-17",
+    game_id: 677102,
+    match_id: 67710,
     name: "Race to 17",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Race%20to%2017.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/race17.jpg",
   },
   {
-    game_id: 677202,
+    favourite: 0,
+    filterName: "Sports",
+    gameType: "LG1",
     game_code: "super-over",
+    game_id: 677202,
+    match_id: 67720,
     name: "Super Over",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Super%20Over.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/superover.jpg",
   },
   {
-    game_id: 901002,
+    favourite: 0,
+    filterName: "race",
+    gameType: "LG1",
     game_code: "race_2020",
+    game_id: 901002,
+    match_id: 90100,
     name: "Race 20-20",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Race%2020-20.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/race20.jpg",
   },
   {
-    game_id: 901012,
+    favourite: 0,
+    filterName: "race",
+    gameType: "LG1",
     game_code: "race-20-20(virtual)",
+    game_id: 901012,
+    match_id: 90101,
     name: "Race 20-20 (virtual)",
     product: "AURA EGAMING",
     thumb:
       "https://d2.fawk.app/assets/images/Games/Race%2020-20%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 920372,
+    favourite: 0,
+    filterName: "worli",
+    gameType: "LG1",
     game_code: "worli-matka",
+    game_id: 920372,
+    match_id: 92037,
     name: "Worli Matka",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Worli%20Matka.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/worli.jpg",
   },
   {
-    game_id: 920382,
+    favourite: 0,
+    filterName: "baccarat",
+    gameType: "LG1",
     game_code: "baccarat",
+    game_id: 920382,
+    match_id: 92038,
     name: "Baccarat",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Baccarat.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/baccarat.jpg",
   },
   {
-    game_id: 920392,
+    favourite: 0,
+    filterName: "baccarat",
+    gameType: "LG1",
     game_code: "baccarat(virtual)",
+    game_id: 920392,
+    match_id: 92039,
     name: "Baccarat (virtual)",
     product: "AURA EGAMING",
     thumb: "https://d2.fawk.app/assets/images/Games/Baccarat%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 985662,
+    favourite: 0,
+    filterName: "others",
+    gameType: "LG1",
     game_code: "super-sic-bo",
+    game_id: 985662,
+    match_id: 98566,
     name: "Super Sic Bo",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Sicbo.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/sicbo2.jpg",
   },
   {
-    game_id: 985672,
+    favourite: 0,
+    filterName: "others",
+    gameType: "LG1",
     game_code: "dream-catcher",
+    game_id: 985672,
+    match_id: 98567,
     name: "Dream Catcher",
     product: "AURA EGAMING",
     thumb: "https://d2.fawk.app/assets/images/Games/Dream%20Catcher.png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 987882,
+    favourite: 0,
+    filterName: "Roulette",
+    gameType: "LG1",
     game_code: "roulette",
+    game_id: 987882,
+    match_id: 98788,
     name: "Roulette",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Roulette.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/roulette.jpg",
   },
   {
-    game_id: 987892,
+    favourite: 0,
+    filterName: "others",
+    gameType: "LG1",
     game_code: "7updown",
+    game_id: 987892,
+    match_id: 98789,
     name: "7 Up & Down",
     product: "AURA EGAMING",
     thumb: "https://d2.fawk.app/assets/images/Games/7%20up%20&%20Down.png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 987902,
+    favourite: 0,
+    filterName: "dragon-tiger",
+    gameType: "LG1",
     game_code: "dragon-tiger",
+    game_id: 987902,
+    match_id: 98790,
     name: "Dragon Tiger",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Dragon%20Tiger.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/dt20.jpg",
   },
   {
-    game_id: 987912,
+    favourite: 0,
+    filterName: "others",
+    gameType: "LG1",
     game_code: "amar_akbar_anthony",
+    game_id: 987912,
+    match_id: 98791,
     name: "Amar Akbar Anthony",
     product: "AURA EGAMING",
-    thumb: "https://d2.fawk.app/assets/images/Games/Amar%20Akbar%20Anthony.png",
-    favourite: 0,
-    gameType: "LG1"
+    thumb:
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/aaa.jpg",
   },
   {
-    game_id: 567662,
+    favourite: 0,
+    filterName: "teenpatti",
+    gameType: "LG1",
     game_code: "teenpatti-one-day(Virtual)",
+    game_id: 567662,
+    match_id: 56766,
     name: "Teenpatti One-Day (Virtual)",
     product: "AURA EGAMING",
     thumb:
-      "https://d2.fawk.app/assets/images/Games/Teenpatti%20One-Day%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/vteen.jpg",
   },
   {
-    game_id: 567692,
+    favourite: 0,
+    filterName: "teenpatti",
+    gameType: "LG1",
     game_code: "teenpatti20(Virtual)",
+    game_id: 567692,
+    match_id: 56769,
     name: "Teenpatti T20 (Virtual)",
     product: "AURA EGAMING",
     thumb:
-      "https://d2.fawk.app/assets/images/Games/Teenpatti%20T20%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/vteen20.jpg",
   },
   {
-    game_id: 569662,
+    favourite: 0,
+    filterName: "32-cards",
+    gameType: "LG1",
     game_code: "32-cards-casino(Virtual)",
+    game_id: 569662,
+    match_id: 56966,
     name: "32 Cards Casino (Virtual)",
     product: "AURA EGAMING",
     thumb:
       "https://d2.fawk.app/assets/images/Games/32%20cards%20casino%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 569692,
+    favourite: 0,
+    filterName: "others",
+    gameType: "LG1",
     game_code: "hi-low(Virtual)",
+    game_id: 569692,
+    match_id: 56969,
     name: "Hi Low (Virtual)",
     product: "AURA EGAMING",
     thumb: "https://d2.fawk.app/assets/images/Games/Hi%20Low%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 675632,
+    favourite: 0,
+    filterName: "poker",
+    gameType: "LG1",
     game_code: "poker(Virtual)",
+    game_id: 675632,
+    match_id: 67563,
     name: "Poker  (Virtual)",
     product: "AURA EGAMING",
     thumb: "https://d2.fawk.app/assets/images/Games/Poker%20%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 675662,
+    favourite: 0,
+    filterName: "poker",
+    gameType: "LG1",
     game_code: "six-player-poker(Virtual)",
+    game_id: 675662,
+    match_id: 67566,
     name: "Six Player Poker (Virtual)",
     product: "AURA EGAMING",
     thumb:
       "https://d2.fawk.app/assets/images/Games/Six%20player%20poker%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 875652,
+    favourite: 0,
+    filterName: "andarbahar",
+    gameType: "LG1",
     game_code: "andar-bahar(Virtual)",
+    game_id: 875652,
+    match_id: 87565,
     name: "Andar Bahar (Virtual)",
     product: "AURA EGAMING",
     thumb:
       "https://d2.fawk.app/assets/images/Games/Andar%20Bahar%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 920362,
+    favourite: 0,
+    filterName: "others",
+    gameType: "LG1",
     game_code: "matka(Virtual)",
+    game_id: 920362,
+    match_id: 92036,
     name: "Matka (Virtual)",
     product: "AURA EGAMING",
     thumb: "https://d2.fawk.app/assets/images/Games/Matka%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 987922,
+    favourite: 0,
+    filterName: "Roulette",
+    gameType: "LG1",
     game_code: "roulette(Virtual)",
+    game_id: 987922,
+    match_id: 98792,
     name: "Roulette (Virtual)",
     product: "AURA EGAMING",
     thumb: "https://d2.fawk.app/assets/images/Games/Roulette%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 987932,
+    favourite: 0,
+    filterName: "others",
+    gameType: "LG1",
     game_code: "7updown(Virtual)",
+    game_id: 987932,
+    match_id: 98793,
     name: "7 Up & Down (Virtual)",
     product: "AURA EGAMING",
     thumb:
       "https://d2.fawk.app/assets/images/Games/7%20up%20&%20Down%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
   },
   {
-    game_id: 987942,
+    favourite: 0,
+    filterName: "dragon-tiger",
+    gameType: "LG1",
     game_code: "dragon-tiger(Virtual)",
+    game_id: 987942,
+    match_id: 98794,
     name: "Dragon Tiger (Virtual)",
     product: "AURA EGAMING",
     thumb:
-      "https://d2.fawk.app/assets/images/Games/Dragon%20Tiger%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/vdt6.jpg",
   },
   {
-    game_id: 987952,
+    favourite: 0,
+    filterName: "others",
+    gameType: "LG1",
     game_code: "amar_akbar_anthony(Virtual)",
+    game_id: 987952,
+    match_id: 98795,
     name: "Amar Akbar Anthony (Virtual)",
     product: "AURA EGAMING",
     thumb:
-      "https://d2.fawk.app/assets/images/Games/7%20up%20&%20Down%20(Virtual).png",
-    favourite: 0,
-    gameType: "LG1"
-  }
+      "https://antpro.blr1.cdn.digitaloceanspaces.com/aura-new-casino/vaaa.jpg",
+  },
 ];
 
 export const fantsySlot: CasinoGame[] = [
@@ -513,7 +643,7 @@ export const fantsySlot: CasinoGame[] = [
     name: "Aviator",
     product: "FANTASY",
     thumb: "",
-    gameType: "LG1"
+    gameType: "LG1",
   },
   {
     favourite: 0,
@@ -523,7 +653,7 @@ export const fantsySlot: CasinoGame[] = [
     name: "Fortune Wheel",
     product: "FANTASY",
     thumb: "",
-    gameType: "LG1"
+    gameType: "LG1",
   },
   {
     favourite: 0,
@@ -533,7 +663,7 @@ export const fantsySlot: CasinoGame[] = [
     name: "Coin Toss",
     product: "FANTASY",
     thumb: "",
-    gameType: "LG1"
+    gameType: "LG1",
   },
   {
     favourite: 0,
@@ -543,7 +673,7 @@ export const fantsySlot: CasinoGame[] = [
     name: "Limbo",
     product: "FANTASY",
     thumb: "",
-    gameType: "LG1"
+    gameType: "LG1",
   },
   {
     favourite: 0,
@@ -553,7 +683,7 @@ export const fantsySlot: CasinoGame[] = [
     name: "Slot Game",
     product: "FANTASY",
     thumb: "",
-    gameType: "LG1"
+    gameType: "LG1",
   },
   {
     favourite: 0,
@@ -563,7 +693,7 @@ export const fantsySlot: CasinoGame[] = [
     name: "Rock Paper Scissors",
     product: "FANTASY",
     thumb: "",
-    gameType: "LG1"
+    gameType: "LG1",
   },
   {
     favourite: 0,
@@ -573,7 +703,7 @@ export const fantsySlot: CasinoGame[] = [
     name: "Cricket",
     product: "FANTASY",
     thumb: "",
-    gameType: "LG1"
+    gameType: "LG1",
   },
   {
     favourite: 0,
@@ -583,7 +713,7 @@ export const fantsySlot: CasinoGame[] = [
     name: "Classic Dice",
     product: "FANTASY",
     thumb: "",
-    gameType: "LG1"
+    gameType: "LG1",
   },
   {
     favourite: 0,
@@ -593,7 +723,7 @@ export const fantsySlot: CasinoGame[] = [
     name: "Crash",
     product: "FANTASY",
     thumb: "",
-    gameType: "LG1"
+    gameType: "LG1",
   },
   {
     favourite: 0,
@@ -603,7 +733,7 @@ export const fantsySlot: CasinoGame[] = [
     name: "Mines",
     product: "FANTASY",
     thumb: "",
-    gameType: "LG1"
+    gameType: "LG1",
   },
   {
     favourite: 0,
@@ -613,9 +743,8 @@ export const fantsySlot: CasinoGame[] = [
     name: "Tower Legends",
     product: "FANTASY",
     thumb: "",
-    gameType: "LG1"
-  }
+    gameType: "LG1",
+  },
 ];
 
 // Convenience alias for consistent naming in the component
-export const fantasySlots = fantsySlot;

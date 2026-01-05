@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { auraData } from "../data/casinoGames";
+import { auraData, fantsySlot } from "../data/casinoGames";
 import type { CasinoGame } from "../data/casinoGames";
 import { useAuth } from "../context/AuthContext";
 import ReusableModal from "./ReusableModal";
@@ -26,11 +26,11 @@ const sections: Section[] = [
   {
     title: "Live Casino",
     description: "AURA tables, instant settle, and signature classics.",
-    games: auraData,
+    games: fantsySlot,
   },
 ];
 
-const LiveCasinoList: React.FC = () => {
+const CrashGame: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { token } = useAuth();
   const [selectedGame, setSelectedGame] = useState<CasinoGame | null>(null);
@@ -140,7 +140,7 @@ const LiveCasinoList: React.FC = () => {
         <section className="casino-page apl-section">
           <div className="casino-hero">
             <div>
-              <p className="casino-label">Live Casino</p>
+              <p className="casino-label">Crash Game</p>
             </div>
           </div>
 
@@ -150,6 +150,8 @@ const LiveCasinoList: React.FC = () => {
                 {section.games.map((game, index) => {
                   const accent =
                     palette[(index + sectionIndex * 3) % palette.length];
+
+                    console.log(game, "gamegamegame")
 
                   return (
                     <article
@@ -166,8 +168,11 @@ const LiveCasinoList: React.FC = () => {
                         }
                       }}>
                       <div className="casino-card__image only-image">
-                        {game.thumb ? (
-                          <img src={game.thumb} alt={game.name} />
+                        {game.game_id ? (
+                          <img
+                            src={`/img/avitor/${game?.game_id}.avif`}
+                            alt={game.name}
+                          />
                         ) : (
                           <div className="casino-card__placeholder" />
                         )}
@@ -194,4 +199,4 @@ const LiveCasinoList: React.FC = () => {
   );
 };
 
-export default LiveCasinoList;
+export default CrashGame;
