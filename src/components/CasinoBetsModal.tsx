@@ -2,20 +2,10 @@ import React, { useState, useEffect } from "react";
 import { getUnsettledByMatchId } from "../api/auth";
 import { getIpAddressDetailLord } from "../api/user";
 import { getBetListByMarketId } from "../api/bet";
-import SearchUser from "./SearchUser";
 import IpDetailsModal, { type IpDetails } from "./IpDetailsModal";
 import ReusableModal from "./ReusableModal";
-import { CSVLink } from "react-csv";
 
-interface ViewMoreBetsModalProps {
-  matchId?: string;
-  marketId?: string;
-}
-
-const CasinoBetsModal: React.FC<ViewMoreBetsModalProps> = ({
-  matchId,
-  marketId,
-}) => {
+const CasinoBetsModal = ({ matchId, marketId }: any) => {
   const activeTab = "matched";
   const [allBets, setAllBets] = useState<any[]>([]);
   const [bets, setBets] = useState<any[]>([]);
@@ -137,20 +127,6 @@ const CasinoBetsModal: React.FC<ViewMoreBetsModalProps> = ({
     fetchBets();
   }, [matchId, marketId]);
 
-  const handleFilterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setBets(applyFilters(allBets, getCurrentFilters()));
-  };
-
-  const handleReset = () => {
-    setFilterUname("");
-    setFilterIp("");
-    setFilterFromAmt("");
-    setFilterToAmt("");
-    setFilterBetType("");
-    setBets(allBets);
-  };
-
   const handleShowIpModal = async (ip: string) => {
     if (!ip) return;
     setSelectedIp(ip);
@@ -183,11 +159,6 @@ const CasinoBetsModal: React.FC<ViewMoreBetsModalProps> = ({
     setShowIpModal(false);
     setSelectedIp(null);
     setIpDetails(null);
-  };
-
-  const handleShowBrowserModal = (details?: string) => {
-    setBrowserDetails(details || "No details available");
-    setShowBrowserModal(true);
   };
 
   const handleCloseBrowserModal = () => {
@@ -237,56 +208,13 @@ const CasinoBetsModal: React.FC<ViewMoreBetsModalProps> = ({
                   12,
                   bets.map((bet, index) => (
                     <tr key={index} className={bet.back ? "back" : "lay"}>
-                      <td>{index + 1}</td>
                       <td className="d-flex align-items-center">
                         {bet.userId}
-                        <a
-                          title="User Detail"
-                          href="#"
-                          target="_self"
-                          className="">
-                          <i className="fa fa-eye m-l-5 curser-point float-right"></i>
-                        </a>
                       </td>
-                      <td>{bet.marketName}</td>
                       <td>{bet.selectionName}</td>
                       <td>{bet.back ? "BACK" : "LAY"}</td>
                       <td>{bet.odds}</td>
                       <td>{bet.amount}</td>
-                      <td>{bet.currency}</td>
-                      <td>{bet.placeTime}</td>
-                      <td>{bet.matchedTime}</td>
-                      <td className="d-flex align-items-center">
-                        {bet.userIp}
-                        <a
-                          title="IP Details"
-                          href="#"
-                          target="_self"
-                          className=""
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleShowIpModal(bet.userIp);
-                          }}>
-                          <i className="fa fa-eye m-l-5 curser-point float-right"></i>
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            const detailVal =
-                              bet?.browserDetails ??
-                              bet?.browser_details ??
-                              bet?.browser_detail ??
-                              bet?.browserdetail ??
-                              bet?.browser;
-                            handleShowBrowserModal(detailVal);
-                          }}
-                          className="text-success">
-                          Detail
-                        </a>
-                      </td>
                     </tr>
                   ))
                 )}

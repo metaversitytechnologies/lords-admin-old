@@ -15,15 +15,15 @@ const Sidebar = ({ isCollapsed, toggleCollapse }: SidebarProps) => {
       links: [
         { text: "Agent Listing", href: "/agentlisting" },
         { text: "Transfer", href: "/bank" },
-        { text: "Notification", href: "/notification" }
-      ]
+        { text: "Notification", href: "/notification" },
+      ],
     },
     {
       title: "Risk Management",
       links: [
         { text: "Net Exposure", href: "/netexpouser" },
-        { text: "Bet Ticker", href: "/bettiker" }
-      ]
+        { text: "Bet Ticker", href: "/bettiker" },
+      ],
     },
     {
       title: "Reports",
@@ -31,22 +31,22 @@ const Sidebar = ({ isCollapsed, toggleCollapse }: SidebarProps) => {
         { text: "My Bets Report", href: "/mybets" },
         { text: "Profit Loss Report", href: "/profitLoss" },
         { text: "Transfer Statement", href: "/transferstmt" },
-        { text: "Casino Result", href: "/casinoresult" },
+        // { text: "Casino Result", href: "/casinoresult" },
         { text: "Game Report", href: "/gamereports" },
-        { text: "Message Report", href: "/fraudreport" }
-      ]
+        { text: "Message Report", href: "/fraudreport" },
+      ],
     },
     {
       title: "Account Management",
       links: [
         { text: "Account Statement", href: "/account-statement" },
         { text: "Clients Account Statement", href: "/accountstmt" },
-        { text: "Balance", href: "/dashboardhome" }
-      ]
+        { text: "Balance", href: "/dashboardhome" },
+      ],
     },
     {
       title: "Admin Users",
-      links: [{ text: "Create Account", href: "/createaccount" }]
+      links: [{ text: "Create Account", href: "/createaccount" }],
     },
     {
       title: "Live Casino",
@@ -54,8 +54,8 @@ const Sidebar = ({ isCollapsed, toggleCollapse }: SidebarProps) => {
         { text: "Live Casino", href: "/live-casino" },
         { text: "Crash Game", href: "/crash-casino" },
       ],
-      extraClass: "blinking-new"
-    }
+      extraClass: "blinking-new",
+    },
   ];
 
   const toggleMenu = (title: string, hasLinks: boolean) => {
@@ -75,10 +75,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse }: SidebarProps) => {
                 }`;
 
                 return (
-                  <li
-                    key={menu.title}
-                    className={rootClass}
-                  >
+                  <li key={menu.title} className={rootClass}>
                     <Link
                       to="#"
                       className={menu.extraClass || "menu-title"}
@@ -87,8 +84,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse }: SidebarProps) => {
                         e.stopPropagation();
                         toggleMenu(menu.title, menu.links.length > 0);
                       }}
-                      aria-expanded={activeMenu === menu.title}
-                    >
+                      aria-expanded={activeMenu === menu.title}>
                       {menu.title}
                     </Link>
 
@@ -114,8 +110,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse }: SidebarProps) => {
         <div
           className="collapsible-panel"
           onClick={toggleCollapse}
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}>
           <div className="collapsible-panel-arrow">
             {isCollapsed ? "»" : "«"}
           </div>

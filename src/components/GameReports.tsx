@@ -115,7 +115,7 @@ const GameReports = () => {
             >
               <option value="9999.9999">Select Event Name</option>
               {sports.map((sport: any, index: number) => (
-                <option key={index} value={sport.name}>
+                <option key={index} value={sport.id}>
                   {sport.name}
                 </option>
               ))}

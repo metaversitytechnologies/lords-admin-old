@@ -83,7 +83,7 @@ const ProfitLoss: React.FC = () => {
     eventName: eventName || "All",
     marketName: marketName || "all",
     fromDate: fromDate?.toISOString().split("T")[0],
-    toDate: toDate?.toISOString().split("T")[0]
+    toDate: toDate?.toISOString().split("T")[0],
   });
 
   const handleSearch = async (e?: React.FormEvent) => {
@@ -151,17 +151,15 @@ const ProfitLoss: React.FC = () => {
           <form
             onSubmit={handleSearch}
             data-vv-scope="myBets"
-            className="m-b-10"
-          >
+            className="m-b-10">
             <div className="pnl dropdown long-width d-inline-block v-t">
               <label className="d-block">Event</label>
               <select
                 className="dropdown-toggle dropdown-button"
                 value={eventName}
-                onChange={handleSportChange}
-              >
+                onChange={handleSportChange}>
                 {sports.map((sport: any, index: number) => (
-                  <option key={index} value={sport.name}>
+                  <option key={index} value={sport.id}>
                     {sport.name}
                   </option>
                 ))}
@@ -172,8 +170,7 @@ const ProfitLoss: React.FC = () => {
               <select
                 className="dropdown-toggle dropdown-button title"
                 value={marketName}
-                onChange={(e) => setMarketName(e.target.value)}
-              >
+                onChange={(e) => setMarketName(e.target.value)}>
                 {markets.length > 0 ? (
                   markets.map((market: any, index: number) => (
                     <option key={index} value={market.name}>
@@ -198,8 +195,7 @@ const ProfitLoss: React.FC = () => {
               <button
                 type="submit"
                 className="btn btn-secondary m-l-5"
-                disabled={loading}
-              >
+                disabled={loading}>
                 {loading ? (
                   "Searching..."
                 ) : (
@@ -262,16 +258,14 @@ const ProfitLoss: React.FC = () => {
                                   onClick={(e) => {
                                     e.preventDefault();
                                     handleViewBets(market, match.matchName);
-                                  }}
-                                >
+                                  }}>
                                   View Bets
                                 </a>
                               </td>
                               <td
                                 className={`text-right b-r-0 ${
                                   market.pnl >= 0 ? "positive" : "negative"
-                                }`}
-                              >
+                                }`}>
                                 {market.pnl.toFixed(2)}
                               </td>
                             </tr>
@@ -281,8 +275,7 @@ const ProfitLoss: React.FC = () => {
                             <td
                               className={`text-right b-r-0 ${
                                 match.total >= 0 ? "positive" : "negative"
-                              }`}
-                            >
+                              }`}>
                               {match.total.toFixed(2)}
                             </td>
                           </tr>
@@ -297,8 +290,7 @@ const ProfitLoss: React.FC = () => {
                     <td
                       className={`text-right b-r-0 ${
                         grandTotal >= 0 ? "positive" : "negative"
-                      }`}
-                    >
+                      }`}>
                       {grandTotal.toFixed(2)}
                     </td>
                   </tr>

@@ -151,7 +151,7 @@ const CrashGame: React.FC = () => {
                   const accent =
                     palette[(index + sectionIndex * 3) % palette.length];
 
-                    console.log(game, "gamegamegame")
+                  console.log(game, "gamegamegame");
 
                   return (
                     <article
@@ -193,7 +193,7 @@ const CrashGame: React.FC = () => {
         title="Casino Bets"
         size="xl"
         position="top">
-        <CasinoBetsModal matchId={""} />
+        <CasinoBetsModal matchId={selectedGame?.match_id} />
       </ReusableModal>
     </>
   );

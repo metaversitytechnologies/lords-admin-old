@@ -54,7 +54,7 @@ const BetListFilters: React.FC<BetListFiltersProps> = ({
   onFromDateChange,
   onToDateChange,
   onApply,
-  onCancel
+  onCancel,
 }) => {
   return (
     <form data-vv-scope="myBets" className="m-b-10">
@@ -66,11 +66,9 @@ const BetListFilters: React.FC<BetListFiltersProps> = ({
               <select
                 className="dropdown-toggle dropdown-button"
                 value={sportId}
-                onChange={onSportChange}
-              >
-                <option value="0">All</option>
+                onChange={onSportChange}>
                 {sports.map((sport: any, index: number) => (
-                  <option key={index} value={sport.id ?? sport.name}>
+                  <option key={index} value={sport.id}>
                     {sport.name}
                   </option>
                 ))}
@@ -81,12 +79,10 @@ const BetListFilters: React.FC<BetListFiltersProps> = ({
               <select
                 className="dropdown-toggle dropdown-button title"
                 value={marketName}
-                onChange={(e) => onMarketChange(e.target.value)}
-              >
-                <option value="all">All</option>
+                onChange={(e) => onMarketChange(e.target.value)}>
                 {markets.length > 0 &&
                   markets.map((market: any, index: number) => (
-                    <option key={index} value={market.id ?? market.name}>
+                    <option key={index} value={market.id}>
                       {market.name}
                     </option>
                   ))}
@@ -96,8 +92,7 @@ const BetListFilters: React.FC<BetListFiltersProps> = ({
               <label className="p-l-5 d-block">Rate</label>{" "}
               <button
                 data-toggle="dropdown"
-                className="dropdown-toggle dropdown-button"
-              >
+                className="dropdown-toggle dropdown-button">
                 <span className="title">Odds: All</span>{" "}
                 <i className="fas fa-caret-down"></i>
               </button>{" "}
@@ -122,8 +117,7 @@ const BetListFilters: React.FC<BetListFiltersProps> = ({
               <label className="p-l-5 d-block">Amount</label>{" "}
               <button
                 data-toggle="dropdown"
-                className="dropdown-toggle dropdown-button"
-              >
+                className="dropdown-toggle dropdown-button">
                 <span className="title">Stake: All</span>{" "}
                 <i className="fas fa-caret-down"></i>
               </button>{" "}
@@ -178,15 +172,13 @@ const BetListFilters: React.FC<BetListFiltersProps> = ({
               <button
                 type="button"
                 className="btn btn-secondary m-l-5"
-                onClick={onApply}
-              >
+                onClick={onApply}>
                 Apply
               </button>{" "}
               <button
                 type="button"
                 className="btn btn-cancel m-l-5"
-                onClick={onCancel}
-              >
+                onClick={onCancel}>
                 Cancel
               </button>
             </div>

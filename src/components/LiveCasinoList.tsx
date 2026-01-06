@@ -188,7 +188,7 @@ const LiveCasinoList: React.FC = () => {
         title="Casino Bets"
         size="xl"
         position="top">
-        <CasinoBetsModal matchId={""} />
+        <CasinoBetsModal matchId={selectedGame?.match_id} />
       </ReusableModal>
     </>
   );

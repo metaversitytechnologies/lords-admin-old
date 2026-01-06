@@ -76,6 +76,7 @@ const BestList = () => {
 
   const handleSportChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newVal = e.target.value;
+
     setSportId(newVal);
     fetchMarkets(newVal === "0" ? "" : newVal);
     setMarketName("all");
@@ -101,7 +102,7 @@ const BestList = () => {
         stakeFrom,
         stakeTo,
         marketName,
-        ...customState
+        ...customState,
       };
 
       const currentBet = state.activeTab === "Current";
@@ -112,7 +113,7 @@ const BestList = () => {
           : getSportNameById(state.sportId) || state.sportId;
 
       const payload = {
-        sportName: sportLabel,
+        sportName: state.sportId,
         userId: state.userSearch,
         currentBet: currentBet,
         matchedDeletedBet: matchedDeletedBet,
@@ -126,7 +127,7 @@ const BestList = () => {
         oddsTo: state.oddsTo,
         stakeFrom: state.stakeFrom,
         stakeTo: state.stakeTo,
-        marketName: state.marketName
+        marketName: state.marketName,
       };
       const response = await getMyBetReport(payload);
       if (currentRequest === requestCounter.current) {
@@ -187,7 +188,7 @@ const BestList = () => {
       oddsTo: "",
       stakeFrom: "",
       stakeTo: "",
-      marketName: "all"
+      marketName: "all",
     });
   };
 
@@ -206,14 +207,14 @@ const BestList = () => {
         setIpDetails({
           status: "fail",
           message: "No details found",
-          query: ip
+          query: ip,
         });
       }
     } catch (error) {
       setIpDetails({
         status: "fail",
         message: "Failed to fetch details",
-        query: ip
+        query: ip,
       });
     } finally {
       setLoadingIpDetails(false);
@@ -240,8 +241,7 @@ const BestList = () => {
                   filename={`bet-list-${
                     new Date().toISOString().split("T")[0]
                   }.csv`}
-                  className="btn btn-secondary m-l-5"
-                >
+                  className="btn btn-secondary m-l-5">
                   Download CSV
                 </CSVLink>
               </div>
@@ -283,8 +283,7 @@ const BestList = () => {
                     onClick={() => {
                       setActiveTab(tab);
                       setActiveRadio("Matched");
-                    }}
-                  >
+                    }}>
                     <a
                       role="tab"
                       aria-selected={activeTab === tab}
@@ -296,8 +295,7 @@ const BestList = () => {
                         activeTab === tab ? "active" : ""
                       }`}
                       id={`__BVID__${52 + index * 2}___BV_tab_button__`}
-                      aria-controls={`__BVID__${52 + index * 2}`}
-                    >
+                      aria-controls={`__BVID__${52 + index * 2}`}>
                       {tab}
                     </a>
                   </li>
@@ -312,13 +310,11 @@ const BestList = () => {
                       role="radiogroup"
                       tabIndex={-1}
                       className="bv-no-focus-ring"
-                      id="__BVID__57"
-                    >
+                      id="__BVID__57">
                       {radioOptions.map((option, index) => (
                         <div
                           key={index}
-                          className="custom-control custom-control-inline custom-radio"
-                        >
+                          className="custom-control custom-control-inline custom-radio">
                           <input
                             type="radio"
                             name="radio-inline"
@@ -330,8 +326,7 @@ const BestList = () => {
                           />
                           <label
                             className="custom-control-label"
-                            htmlFor={`__BVID__57_BV_option_${index}`}
-                          >
+                            htmlFor={`__BVID__57_BV_option_${index}`}>
                             <span>{option}</span>
                           </label>
                         </div>
@@ -347,16 +342,14 @@ const BestList = () => {
                 aria-hidden="false"
                 className="tab-pane active"
                 id="__BVID__52"
-                aria-labelledby="__BVID__52___BV_tab_button__"
-              ></div>{" "}
+                aria-labelledby="__BVID__52___BV_tab_button__"></div>{" "}
               <div
                 role="tabpanel"
                 aria-hidden="true"
                 className="tab-pane"
                 id="__BVID__54"
                 aria-labelledby="__BVID__54___BV_tab_button__"
-                style={{ display: "none" }}
-              ></div>{" "}
+                style={{ display: "none" }}></div>{" "}
               <div className="table-responsive col-sm-12">
                 <div className="row col-page">
                   <div className="col-sm-12 col-md-6 p-l-0 p-r-5">
@@ -371,8 +364,7 @@ const BestList = () => {
                             onChange={(e) => {
                               setItemsPerPage(Number(e.target.value));
                               setCurrentPage(1);
-                            }}
-                          >
+                            }}>
                             {entriesOptions.map((value) => (
                               <option key={value} value={value}>
                                 {value}
@@ -413,8 +405,7 @@ const BestList = () => {
                       role="table"
                       aria-busy="false"
                       aria-colcount="9"
-                      className="table b-table table table-striped b-table-stacked-md"
-                    >
+                      className="table b-table table table-striped b-table-stacked-md">
                       <thead role="rowgroup" className="">
                         <tr role="row" className="">
                           <th
@@ -423,8 +414,7 @@ const BestList = () => {
                             tabIndex={0}
                             aria-colindex="1"
                             aria-sort="none"
-                            className="position-relative text-center"
-                          >
+                            className="position-relative text-center">
                             <div>Place Date</div>
                             <span className="sr-only">
                               {" "}
@@ -437,8 +427,7 @@ const BestList = () => {
                             tabIndex={0}
                             aria-colindex="2"
                             aria-sort="none"
-                            className="position-relative text-left"
-                          >
+                            className="position-relative text-left">
                             <div>Description</div>
                             <span className="sr-only">
                               {" "}
@@ -451,8 +440,7 @@ const BestList = () => {
                             tabIndex={0}
                             aria-colindex="3"
                             aria-sort="none"
-                            className="position-relative text-left"
-                          >
+                            className="position-relative text-left">
                             <div>User name</div>
                             <span className="sr-only">
                               {" "}
@@ -465,8 +453,7 @@ const BestList = () => {
                             tabIndex={0}
                             aria-colindex="4"
                             aria-sort="none"
-                            className="position-relative text-left"
-                          >
+                            className="position-relative text-left">
                             <div>Bet Type</div>
                             <span className="sr-only">
                               {" "}
@@ -479,8 +466,7 @@ const BestList = () => {
                             tabIndex={0}
                             aria-colindex="5"
                             aria-sort="none"
-                            className="position-relative text-right"
-                          >
+                            className="position-relative text-right">
                             <div>User Rate</div>
                             <span className="sr-only">
                               {" "}
@@ -493,8 +479,7 @@ const BestList = () => {
                             tabIndex={0}
                             aria-colindex="6"
                             aria-sort="none"
-                            className="position-relative text-center"
-                          >
+                            className="position-relative text-center">
                             <div>Win/Loss</div>
                             <span className="sr-only">
                               {" "}
@@ -505,16 +490,14 @@ const BestList = () => {
                             role="columnheader"
                             scope="col"
                             aria-colindex="7"
-                            className="text-left"
-                          >
+                            className="text-left">
                             <div>IP</div>
                           </th>
                           <th
                             role="columnheader"
                             scope="col"
                             aria-colindex="8"
-                            className="text-right"
-                          >
+                            className="text-right">
                             <div>Browser Details</div>
                           </th>
                           <th
@@ -523,8 +506,7 @@ const BestList = () => {
                             tabIndex={0}
                             aria-colindex="9"
                             aria-sort="none"
-                            className="position-relative text-right"
-                          >
+                            className="position-relative text-right">
                             <div>Amount</div>
                             <span className="sr-only">
                               {" "}
@@ -593,11 +575,10 @@ const BestList = () => {
                                   aria-colindex="1"
                                   data-label="Place Date"
                                   role="cell"
-                                  className="text-center"
-                                >
+                                  className="text-center">
                                   <div>
                                     {formatDateTime(bet.lastUpdated, {
-                                      order: "mdy"
+                                      order: "mdy",
                                     })}
                                   </div>
                                 </td>
@@ -605,41 +586,36 @@ const BestList = () => {
                                   aria-colindex="2"
                                   data-label="Description"
                                   role="cell"
-                                  className="text-left"
-                                >
+                                  className="text-left">
                                   <div>{bet.selectionName}</div>
                                 </td>
                                 <td
                                   aria-colindex="3"
                                   data-label="User name"
                                   role="cell"
-                                  className="text-left"
-                                >
+                                  className="text-left">
                                   <div>{bet.userId}</div>
                                 </td>
                                 <td
                                   aria-colindex="4"
                                   data-label="Bet Type"
                                   role="cell"
-                                  className="text-left"
-                                >
+                                  className="text-left">
                                   <div>{bet.back ? "BACK" : "LAY"}</div>
                                 </td>
                                 <td
                                   aria-colindex="5"
                                   data-label="User Rate"
                                   role="cell"
-                                  className="text-right"
-                                >
+                                  className="text-right">
                                   <div>{bet.odds.toFixed(2)}</div>
                                 </td>
                                 <td
                                   aria-colindex="6"
                                   data-label="Win/Loss"
                                   role="cell"
-                                  className="text-center"
-                                >
-                              <div>
+                                  className="text-center">
+                                  <div>
                                     {(() => {
                                       const winLossValue = bet.winLoss;
                                       const upperVal =
@@ -666,8 +642,7 @@ const BestList = () => {
                                   aria-colindex="7"
                                   data-label="IP"
                                   role="cell"
-                                  className="text-left"
-                                >
+                                  className="text-left">
                                   <div className="d-flex align-items-center">
                                     {bet.userIp}
                                     <a
@@ -678,8 +653,7 @@ const BestList = () => {
                                       onClick={(e) => {
                                         e.preventDefault();
                                         handleIpDetails(bet.userIp);
-                                      }}
-                                    >
+                                      }}>
                                       <i className="fa fa-eye m-l-5 curser-point float-right"></i>
                                     </a>
                                   </div>
@@ -688,8 +662,7 @@ const BestList = () => {
                                   aria-colindex="8"
                                   data-label="Browser Details"
                                   role="cell"
-                                  className="text-right"
-                                >
+                                  className="text-right">
                                   <div>
                                     <a
                                       href="#"
@@ -697,8 +670,7 @@ const BestList = () => {
                                       data-toggle="tooltip"
                                       data-placement="top"
                                       title="N/A"
-                                      className="text-success"
-                                    >
+                                      className="text-success">
                                       Detail
                                     </a>
                                   </div>
@@ -707,8 +679,7 @@ const BestList = () => {
                                   aria-colindex="9"
                                   data-label="Amount"
                                   role="cell"
-                                  className="text-right"
-                                >
+                                  className="text-right">
                                   <div>{bet.matched.toFixed(2)}</div>
                                 </td>
                               </tr>
