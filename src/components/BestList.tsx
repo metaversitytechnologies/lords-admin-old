@@ -18,7 +18,7 @@ const BestList = () => {
   const [marketName, setMarketName] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sportId, setSportId] = useState("0");
+  const [sportId, setSportId] = useState("All");
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [currentPage, setCurrentPage] = useState(1);
   const [index, setIndex] = useState(0);
@@ -165,7 +165,7 @@ const BestList = () => {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(today.getDate() - 7);
 
-    setSportId("0");
+    setSportId("All");
     setMarketName("all");
     setMarkets([]);
     setUserSearch("");
@@ -179,7 +179,7 @@ const BestList = () => {
     setStakeTo("");
 
     fetchMyBetReport({
-      sportId: "0",
+      sportId: "All",
       userSearch: "",
       fromDate: oneWeekAgo,
       toDate: today,

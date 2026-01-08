@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
   const footerClass =
     location.pathname === "/login"
       ? "login-footer text-center p-t-10 p-b-10"
-            : "footer text-center p-t-10 p-b-10";
+      : "footer text-center p-t-10 p-b-10";
   return (
     <footer className={footerClass}>
       <p className="m-b-0 upper-footer">
@@ -22,8 +22,7 @@ const Footer: React.FC = () => {
           href="https://www.gamcare.org.uk/"
           target="_blank"
           rel="noopener noreferrer"
-          className="underline m-r-5"
-        >
+          className="underline m-r-5">
           <img
             src="https://d3kb8xz339pq18.cloudfront.net/v12/static/backend/images/gamecare.svg"
             className="game-care"
@@ -35,8 +34,7 @@ const Footer: React.FC = () => {
           href="https://www.begambleaware.org/"
           target="_blank"
           rel="noopener noreferrer"
-          className="underline m-r-5 begambleaware"
-        >
+          className="underline m-r-5 begambleaware">
           <img
             src="https://d3kb8xz339pq18.cloudfront.net/v12/static/backend/images/gambleaware.png"
             className="game-aware"
@@ -48,8 +46,7 @@ const Footer: React.FC = () => {
           href="https://www.gamstop.co.uk/"
           target="_blank"
           rel="noopener noreferrer"
-          className="underline m-r-5"
-        >
+          className="underline m-r-5">
           <img
             src="https://d3kb8xz339pq18.cloudfront.net/v12/static/backend/images/gamestop.svg"
             className="game-stop"
@@ -70,7 +67,8 @@ const Footer: React.FC = () => {
         <a className="footer-link" href="javascript:void(0)">
           Rules &amp; Regulations
         </a>{" "}
-        <span>© 2016-2020</span> Powered By
+        <span>© 2016-2020</span> Powered By{" "}
+        <span>{window.location.hostname?.split(".")?.[1]}</span>
       </p>
     </footer>
   );

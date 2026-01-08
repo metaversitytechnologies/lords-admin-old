@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { auraData, fantsySlot } from "../data/casinoGames";
+import { auraData, crashGames, fantsySlot } from "../data/casinoGames";
 import type { CasinoGame } from "../data/casinoGames";
 import { useAuth } from "../context/AuthContext";
 import ReusableModal from "./ReusableModal";
@@ -38,7 +38,7 @@ const CrashGame: React.FC = () => {
 
   const iframeSrc = useMemo(() => {
     if (!token || !selectedGame) return "";
-    return `https://aura.fawk.app/${token}/9815/${selectedGame.game_id}`;
+    return `https://aura.fawk.app/${token}/9815/${selectedGame.launchId}`;
   }, [token, selectedGame]);
 
   const handleCardClick = (game: CasinoGame) => {
@@ -137,56 +137,31 @@ const CrashGame: React.FC = () => {
           </section>
         )
       ) : (
-        <section className="casino-page apl-section">
-          <div className="casino-hero">
-            <div>
-              <p className="casino-label">Crash Game</p>
-            </div>
-          </div>
-
-          {sections.map((section, sectionIndex) => (
-            <div className="casino-section" key={section.title}>
-              <div className="casino-grid">
-                {section.games.map((game, index) => {
-                  const accent =
-                    palette[(index + sectionIndex * 3) % palette.length];
-
-                  console.log(game, "gamegamegame");
-
-                  return (
-                    <article
-                      key={`${game.game_id}-${game.game_code}`}
-                      className="casino-card"
-                      style={{ ["--card-accent" as string]: accent }}
-                      onClick={() => handleCardClick(game)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          handleCardClick(game);
-                        }
-                      }}>
-                      <div className="casino-card__image only-image">
-                        {game.game_id ? (
-                          <img
-                            src={`/img/avitor/${game?.game_id}.avif`}
-                            alt={game.name}
-                          />
-                        ) : (
-                          <div className="casino-card__placeholder" />
-                        )}
-                      </div>
-                    </article>
-                  );
-                })}
+        <div className="container-fluid  mt-2">
+          <div className="row">
+            {crashGames?.map((item) => (
+              <div
+                key={item.launchId}
+                className="col-4 col-md-2 mb-2 px-1"
+                onClick={() => handleCardClick(item)}
+                style={{ cursor: "pointer" }}>
+                <div className="card bg-light border-0 shadow-sm game-card">
+                  <div className="game-img-wrapper">
+                    <img
+                      src={item?.thumb}
+                      className="img-fluid game-img"
+                      alt={item?.name}
+                      loading="lazy"
+                      title={item?.name}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
-        </section>
+            ))}
+          </div>
+        </div>
       )}
 
-      {/* ✅ MODAL IS ALWAYS MOUNTED */}
       <ReusableModal
         show={isModalOpen}
         handleClose={closeModal}

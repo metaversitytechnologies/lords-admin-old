@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { auraData } from "../data/casinoGames";
+import { auraData, casinoData, virtualGame } from "../data/casinoGames";
 import type { CasinoGame } from "../data/casinoGames";
 import { useAuth } from "../context/AuthContext";
 import ReusableModal from "./ReusableModal";
@@ -38,7 +38,7 @@ const LiveCasinoList: React.FC = () => {
 
   const iframeSrc = useMemo(() => {
     if (!token || !selectedGame) return "";
-    return `https://aura.fawk.app/${token}/9815/${selectedGame.game_id}`;
+    return `https://aura.fawk.app/${token}/9815/${selectedGame.launchId}`;
   }, [token, selectedGame]);
 
   const handleCardClick = (game: CasinoGame) => {
@@ -96,6 +96,25 @@ const LiveCasinoList: React.FC = () => {
     };
   }, [iframeSrc, selectedGame]);
 
+  const [activeTab, setActiveTab] = useState("All Games");
+  const tabData = [
+    "All Games",
+    "Teenpatti",
+    "Poker",
+    "Roulette",
+    "Baccarat",
+    "Virtual",
+  ];
+
+  const allGames = Object.values(casinoData).flat();
+
+  const filteredGames =
+    activeTab === "All Games"
+      ? allGames
+      : activeTab === "Virtual"
+      ? virtualGame
+      : allGames?.filter((game) => game?.tab === activeTab);
+
   return (
     <>
       {selectedGame ? (
@@ -137,48 +156,52 @@ const LiveCasinoList: React.FC = () => {
           </section>
         )
       ) : (
-        <section className="casino-page apl-section">
-          <div className="casino-hero">
-            <div>
-              <p className="casino-label">Live Casino</p>
+        <>
+          <div className="d-flex align-items-center justify-content-between w-100 overflow-auto mt-2 text-center">
+            <div className="d-flex">
+              {tabData?.map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => setActiveTab(item)}
+                  className={`btn rounded-pill text-uppercase font-weight-bold px-4 py-2 mr-2
+          ${activeTab === item ? "bg_text_brand_primary" : "bg-bg_Quaternary"}
+        `}
+                  style={{
+                    whiteSpace: "nowrap",
+                    fontSize: "12px",
+                    lineHeight: "12px",
+                  }}>
+                  {item}
+                </button>
+              ))}
             </div>
           </div>
 
-          {sections.map((section, sectionIndex) => (
-            <div className="casino-section" key={section.title}>
-              <div className="casino-grid">
-                {section.games.map((game, index) => {
-                  const accent =
-                    palette[(index + sectionIndex * 3) % palette.length];
-
-                  return (
-                    <article
-                      key={`${game.game_id}-${game.game_code}`}
-                      className="casino-card"
-                      style={{ ["--card-accent" as string]: accent }}
-                      onClick={() => handleCardClick(game)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          handleCardClick(game);
-                        }
-                      }}>
-                      <div className="casino-card__image only-image">
-                        {game.thumb ? (
-                          <img src={game.thumb} alt={game.name} />
-                        ) : (
-                          <div className="casino-card__placeholder" />
-                        )}
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
+          <div className="container-fluid  mt-2">
+            <div className="row">
+              {filteredGames?.map((item) => (
+                <div
+                  key={item.launchId}
+                  className="col-4 col-md-2 mb-2 px-1"
+                  onClick={() => handleCardClick(item)}
+                  style={{ cursor: "pointer" }}>
+                  <div className="card bg-light border-0 shadow-sm game-card">
+                    <div className="game-img-wrapper">
+                      <img
+                        src={item?.thumb}
+                        className="img-fluid game-img"
+                        alt={item?.name}
+                        loading="lazy"
+                        title={item?.name}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </section>
+          </div>
+        </>
       )}
 
       {/* ✅ MODAL IS ALWAYS MOUNTED */}
