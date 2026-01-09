@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCog,
   faSignOutAlt,
-  faAngleDown
+  faAngleDown,
 } from "@fortawesome/free-solid-svg-icons";
 import ChangePasswordSelfModal from "./ChangePasswordSelfModal";
 import SelfDepositModal from "./SelfDepositModal";
@@ -58,7 +58,9 @@ const Header: React.FC = () => {
         setBannerMessage("");
       }
     };
-    fetchBannerMessage();
+    if (user?.passwordtype === "new") {
+      fetchBannerMessage();
+    }
   }, [isAuthenticated]);
 
   if (!isAuthenticated) return null;
@@ -123,12 +125,12 @@ const Header: React.FC = () => {
     month: "short",
     day: "2-digit",
     year: "numeric",
-    timeZone: timeZone
+    timeZone: timeZone,
   });
 
   const formattedTime = now.toLocaleTimeString([], {
     hour12: false,
-    timeZone: timeZone
+    timeZone: timeZone,
   });
 
   const formattedLastLogin = lastLogin
@@ -144,7 +146,7 @@ const Header: React.FC = () => {
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
-            hour12: true
+            hour12: true,
           })
           .replace(",", "");
 
@@ -153,26 +155,22 @@ const Header: React.FC = () => {
       })()
     : "-";
 
-    const openSecureAuth = (e: React.MouseEvent) => {
-      e.preventDefault();
-      navigate("/secureauth");
-      setSettingsOpen(false);
-    };
+  const openSecureAuth = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate("/secureauth");
+    setSettingsOpen(false);
+  };
 
-    return (
-      <>
-        <header className="header">
+  return (
+    <>
+      <header className="header">
         <div className="logo-area float-left">
           <div className="logo">
             <Link
               to="/dashboardhome"
               aria-current="page"
-              className="logo router-link-exact-active router-link-active"
-            >
-              <img
-                src="/logo.png"
-                alt="Logo"
-              />
+              className="logo router-link-exact-active router-link-active">
+              <img src="/logo.png" alt="Logo" />
             </Link>
           </div>
         </div>
@@ -184,8 +182,7 @@ const Header: React.FC = () => {
 
           <div
             className="clock-timezone-settings dropdown"
-            onClick={(e) => e.stopPropagation()}
-          >
+            onClick={(e) => e.stopPropagation()}>
             <a
               href="#"
               className="dropdown-toggle"
@@ -194,8 +191,7 @@ const Header: React.FC = () => {
                 e.preventDefault();
                 setTzOpen(!tzOpen);
                 setSettingsOpen(false);
-              }}
-            >
+              }}>
               ({getTimezoneOffset(timeZone)}
               <FontAwesomeIcon icon={faAngleDown} className="m-l-5" />)
             </a>
@@ -209,8 +205,7 @@ const Header: React.FC = () => {
                     e.preventDefault();
                     setTimeZone("UTC");
                     setTzOpen(false);
-                  }}
-                >
+                  }}>
                   System time - (GMT +00:00)
                 </a>
 
@@ -221,8 +216,7 @@ const Header: React.FC = () => {
                     e.preventDefault();
                     setTimeZone(undefined);
                     setTzOpen(false);
-                  }}
-                >
+                  }}>
                   Your computer time - ({"GMT " + getTimezoneOffset(undefined)})
                 </a>
 
@@ -233,8 +227,7 @@ const Header: React.FC = () => {
                     e.preventDefault();
                     setTimeZone("Asia/Kolkata");
                     setTzOpen(false);
-                  }}
-                >
+                  }}>
                   India Standard time - (GMT +05:30)
                 </a>
               </div>
@@ -262,8 +255,7 @@ const Header: React.FC = () => {
                   e.preventDefault();
                   setSettingsOpen(!settingsOpen);
                   setTzOpen(false);
-                }}
-              >
+                }}>
                 <FontAwesomeIcon icon={faCog} className="m-r-5" />{" "}
                 <span>Settings</span>
               </a>
@@ -274,8 +266,7 @@ const Header: React.FC = () => {
                     <a
                       href="#"
                       className="dropdown-item"
-                      onClick={openSelfDepositModal}
-                    >
+                      onClick={openSelfDepositModal}>
                       Self Deposit
                     </a>
                   )}
@@ -283,16 +274,14 @@ const Header: React.FC = () => {
                     <a
                       href="#"
                       className="dropdown-item"
-                      onClick={openMessageModal}
-                    >
+                      onClick={openMessageModal}>
                       Set Message
                     </a>
                   )}
                   <a
                     href="#"
                     className="dropdown-item"
-                    onClick={openChangePasswordModal}
-                  >
+                    onClick={openChangePasswordModal}>
                     Change Password
                   </a>
                   <a onClick={openSecureAuth} className="dropdown-item">
@@ -307,8 +296,7 @@ const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="btn text-white p-0"
-              >
+                className="btn text-white p-0">
                 <FontAwesomeIcon icon={faSignOutAlt} className="m-r-5" />{" "}
                 <span>LogOut</span>
               </button>
@@ -340,18 +328,16 @@ const Header: React.FC = () => {
               overflow: "hidden",
               width: "100%",
               boxSizing: "border-box",
-              zIndex: 2
-            }}
-          >
+              zIndex: 2,
+            }}>
             <div
               style={{
                 display: "inline-block",
                 whiteSpace: "nowrap",
                 paddingLeft: "100%",
                 animation: "banner-marquee 25s linear infinite",
-                fontWeight: 600
-              }}
-            >
+                fontWeight: 600,
+              }}>
               {bannerMessage}
             </div>
             <style>
@@ -363,8 +349,8 @@ const Header: React.FC = () => {
           </div>
         ) : null}
       </header>
-      </>
-    );
+    </>
+  );
 };
 
 export default Header;
