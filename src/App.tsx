@@ -75,7 +75,7 @@ function App() {
   }, [devtoolsLockEnabled]);
   return (
     <div className="app-container">
-      {devtoolsLockEnabled && isDevtoolsOpen && <DevtoolsLock />}
+      {/* {devtoolsLockEnabled && isDevtoolsOpen && <DevtoolsLock />} */}
       {flash && (
         <FlashMessage
           message={flash.message}

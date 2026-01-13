@@ -7,7 +7,7 @@ import LiveTvDrag from "./LiveTvDrag";
 import { getMatchSettings, getOddsData } from "../api/oddsApi";
 import { useEffect, useState } from "react";
 import MatchedUnmatched from "./MatchedUnmatched";
-import { getBetList, getFancyPnl, getOddsPnl } from "../api/bet";
+import { getBetList, getFancyPnl, getOddsPnl, getWinnerPnl } from "../api/bet";
 
 type MarketLayoutProps = {
   data?: any;
@@ -15,8 +15,9 @@ type MarketLayoutProps = {
 
 const MarketLayout = () => {
   const { id } = useParams();
-  const [oddsData, setOddsData] = useState<oddsResponse>();
+  const [oddsData, setOddsData] = useState<any>();
   const [oddsPnl, setOdssPnl] = useState<any>();
+  const [winnerPnl, setWinnerPnl] = useState<any>();
   const [fancyPnl, setFancyPnl] = useState<any>();
   const [betListData, setBetListData] = useState<any>();
   const [matchSettings, setMatchSettings] = useState<any[]>([]);
@@ -30,11 +31,23 @@ const MarketLayout = () => {
     }
   };
 
+  const isWinner = oddsData?.Odds?.[0]?.ty?.includes("Winner");
   const fetchOddsPnl = async () => {
     try {
       const response = await getOddsPnl({ matchId: id });
       console.log("Odds Data Response:", response);
       setOdssPnl(response?.data);
+    } catch (err: any) {
+      console.error("Error fetching odds data:", err);
+    }
+  };
+  const fetchWinnerPnl = async () => {
+    try {
+      const response = await getWinnerPnl({
+        marketId: oddsData?.Odds?.[0]?.mid,
+      });
+      console.log("Odds Data Response:", response);
+      setWinnerPnl(response?.data);
     } catch (err: any) {
       console.error("Error fetching odds data:", err);
     }
@@ -67,14 +80,24 @@ const MarketLayout = () => {
 
   useEffect(() => {
     fetchOdds();
-    fetchOddsPnl();
-    fetchFancyPnl();
+
     fetchBetList();
     fetchMatchSettingsData();
+    if (isWinner) {
+      fetchWinnerPnl();
+    } else {
+      fetchOddsPnl();
+      fetchFancyPnl();
+    }
 
     const interval = setInterval(() => {
       fetchOdds();
-      fetchFancyPnl();
+      if (isWinner) {
+        fetchWinnerPnl();
+      } else {
+        fetchOddsPnl();
+        fetchFancyPnl();
+      }
     }, 1000); // 1 second
     const settingsInterval = setInterval(() => {
       fetchMatchSettingsData();
@@ -84,7 +107,7 @@ const MarketLayout = () => {
       clearInterval(interval);
       clearInterval(settingsInterval);
     }; // cleanup
-  }, []);
+  }, [isWinner]);
 
   const matchSettingsByMarketId = Array.isArray(matchSettings)
     ? matchSettings.reduce((acc: Record<string, any>, item: any) => {
@@ -93,6 +116,8 @@ const MarketLayout = () => {
         return acc;
       }, {})
     : {};
+
+  console.log(winnerPnl, "winnerPnlwinnerPnl")
 
   return (
     <div>
@@ -119,10 +144,7 @@ const MarketLayout = () => {
 
               {oddsData &&
                 Object.keys(oddsData)?.map((fancyMarket: string) => {
-                  if (
-                    ["Odds", "Bookmaker"].includes(fancyMarket)
-                  )
-                    return <></>;
+                  if (["Odds", "Bookmaker"].includes(fancyMarket)) return <></>;
                   if (oddsData[fancyMarket]?.length > 0)
                     return (
                       // <FancyNew
