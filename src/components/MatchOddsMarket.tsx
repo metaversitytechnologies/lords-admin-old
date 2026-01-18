@@ -3,10 +3,10 @@ import BetLockModal from "./BetLockModal";
 import UserBookModal from "./UserBookModal";
 import type { BetLockUser } from "./BetLockModal";
 import { getUserBookMarketwise } from "../api/bet";
-import type {Odd} from "./type";
+import type { Odd } from "./type";
 import {
   getChildListMarketBetLock,
-  updateChildListMarketBetLock
+  updateChildListMarketBetLock,
 } from "../api/user";
 
 interface MatchOddsMarketProps {
@@ -29,6 +29,36 @@ interface MatchOddsMarketProps {
 //   0: "bl-box lay changed",
 // };
 
+// const formatNumber = (num: any) => {
+//   if (num === null || num === undefined) return "0";
+
+//   const absNum = Math.abs(num);
+
+//   if (absNum >= 10000000) {
+//     return (num / 10000000).toFixed(2).replace(/\.00$/, "") + " Cr";
+//   }
+
+//   if (absNum >= 1000000) {
+//     return (num / 1000000).toFixed(2).replace(/\.00$/, "") + " M";
+//   }
+
+//   if (absNum >= 1000) {
+//     return (num / 1000).toFixed(2).replace(/\.00$/, "") + " K";
+//   }
+
+//   return num.toString();
+// };
+
+const formatNumber = (value: any) => {
+  const num = Number(value);
+  if (Number.isNaN(num)) return value ?? "—";
+  if (Math.abs(num) >= 1000) {
+    const rounded = Math.round((num / 1000) * 10) / 10;
+    return `${rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1)}k`;
+  }
+  return num;
+};
+
 const formatOdds = (value: any) => {
   if (value === undefined || value === null || value === "-") return "-";
   const num = parseFloat(value);
@@ -42,7 +72,7 @@ const MatchOddsMarket = ({
   filterName,
   showOnly,
   matchId,
-  matchSettings
+  matchSettings,
 }: MatchOddsMarketProps) => {
   const [isUserBookModalOpen, setIsUserBookModalOpen] = useState(false);
   const [isBetLockModalOpen, setIsBetLockModalOpen] = useState(false);
@@ -66,7 +96,7 @@ const MatchOddsMarket = ({
   const buildSelectionInfo = (runners: any[]) =>
     (runners || []).map((item, idx) => ({
       id: item?.rid ?? item?.selectionId ?? item?.sid ?? idx,
-      name: item?.na ?? `Selection ${idx + 1}`
+      name: item?.na ?? `Selection ${idx + 1}`,
     }));
 
   const openBetLockModal = async (marketId: string) => {
@@ -74,16 +104,12 @@ const MatchOddsMarket = ({
     setCurrentMarketId(marketId);
     try {
       const res = await getChildListMarketBetLock({ marketId });
-      const users =
-        res?.data?.userList ||
-        res?.userList ||
-        res?.data ||
-        [];
+      const users = res?.data?.userList || res?.userList || res?.data || [];
       setBetLockUsers(
         (Array.isArray(users) ? users : []).map((u: any) => ({
           name: u?.userId || u?.username || u?.name || "",
-          checked: Boolean(u?.lock)
-        }))
+          checked: Boolean(u?.lock),
+        })),
       );
     } catch (err) {
       console.error("Failed to fetch bet lock users", err);
@@ -97,7 +123,7 @@ const MatchOddsMarket = ({
     marketId: string,
     matchId: string,
     users: BetLockUser[],
-    close: (value: boolean) => void
+    close: (value: boolean) => void,
   ) => {
     if (!marketId) return;
     try {
@@ -106,7 +132,7 @@ const MatchOddsMarket = ({
         matchId,
         userList: users
           .filter((u) => u.name)
-          .map((u) => ({ userId: u.name, lock: u.checked }))
+          .map((u) => ({ userId: u.name, lock: u.checked })),
       });
       close(false);
     } catch (err) {
@@ -116,7 +142,7 @@ const MatchOddsMarket = ({
 
   const openUserBookModal = async (
     marketId: string,
-    selectionInfo: { id: any; name: string }[]
+    selectionInfo: { id: any; name: string }[],
   ) => {
     try {
       const response = await getUserBookMarketwise({ marketId });
@@ -140,7 +166,7 @@ const MatchOddsMarket = ({
             ? [
                 { pnl: myPnl.pnl1, selectionId: myPnl.selection1 },
                 { pnl: myPnl.pnl2, selectionId: myPnl.selection2 },
-                { pnl: myPnl.pnl3, selectionId: myPnl.selection3 }
+                { pnl: myPnl.pnl3, selectionId: myPnl.selection3 },
               ]
             : [];
 
@@ -153,7 +179,9 @@ const MatchOddsMarket = ({
           }
 
           const marketKey = row?.mid || row?.marketId || "";
-          const marketSetting = marketKey ? matchSettings?.[marketKey] : undefined;
+          const marketSetting = marketKey
+            ? matchSettings?.[marketKey]
+            : undefined;
           const displayMessage =
             typeof marketSetting?.displayMessage === "string"
               ? marketSetting.displayMessage
@@ -170,17 +198,17 @@ const MatchOddsMarket = ({
                     onClick={() =>
                       openUserBookModal(
                         row?.mid || row?.marketId || "",
-                        selectionInfo
+                        selectionInfo,
                       )
-                    }
-                  >
+                    }>
                     Book
                   </button>
                   <button
                     type="button"
                     className="btn btn bet-lock-btn btn-primary m-r-5"
-                    onClick={() => openBetLockModal(row?.mid || row?.marketId || "")}
-                  >
+                    onClick={() =>
+                      openBetLockModal(row?.mid || row?.marketId || "")
+                    }>
                     Bet Lock
                   </button>
                 </div>
@@ -199,72 +227,92 @@ const MatchOddsMarket = ({
 
                 {row?.r?.map((b, bIdx) => {
                   const pnlValue =
-                    plnOddsArray.find((pnl) => pnl.selectionId == b?.rid)?.pnl ||
-                    0;
+                    plnOddsArray.find((pnl) => pnl.selectionId == b?.rid)
+                      ?.pnl || 0;
                   const pnlColor =
                     pnlValue > 0 ? "green" : pnlValue < 0 ? "red" : undefined;
                   return (
                     <div
                       key={bIdx}
                       className="bet-table-row"
-                      data-title={row.sb || "ACTIVE"}
-                    >
+                      data-title={row.sb || "ACTIVE"}>
                       <div className="nation-name">
                         <p>
                           <span>{b?.na}</span>
                         </p>
                         <p
                           className="mb-0"
-                          style={pnlColor ? { color: pnlColor } : undefined}
-                        >
+                          style={pnlColor ? { color: pnlColor } : undefined}>
                           {pnlValue}
                         </p>
                       </div>
 
                       <div className="bl-box back2 changed">
-                        <span className="d-block odds">{formatOdds(b?.b3)}</span>
+                        <span className="d-block odds">
+                          {formatOdds(b?.b3)}
+                        </span>
                         {b?.br3 !== undefined ? (
-                          <span className="d-block">{b.br3}</span>
+                          <span className="d-block">
+                            {formatNumber(b?.br3)}
+                          </span>
                         ) : (
                           <span className="d-block">-</span>
                         )}
                       </div>
                       <div className="bl-box back1 changed">
-                        <span className="d-block odds">{formatOdds(b?.b2)}</span>
+                        <span className="d-block odds">
+                          {formatOdds(b?.b2)}
+                        </span>
                         {b?.br2 !== undefined ? (
-                          <span className="d-block">{b.br2}</span>
+                          <span className="d-block">
+                            {formatNumber(b?.br2)}
+                          </span>
                         ) : (
                           <span className="d-block">-</span>
                         )}
                       </div>
                       <div className="bl-box back changed">
-                        <span className="d-block odds">{formatOdds(b?.b1)}</span>
+                        <span className="d-block odds">
+                          {formatOdds(b?.b1)}
+                        </span>
                         {b?.br1 !== undefined ? (
-                          <span className="d-block">{b.br1}</span>
+                          <span className="d-block">{formatNumber(b.br1)}</span>
                         ) : (
                           <span className="d-block">-</span>
                         )}
                       </div>
                       <div className="bl-box lay changed">
-                        <span className="d-block odds">{formatOdds(b?.l1)}</span>
+                        <span className="d-block odds">
+                          {formatOdds(b?.l1)}
+                        </span>
                         {b?.lr1 !== undefined ? (
-                          <span className="d-block">{b.lr1}</span>
+                          <span className="d-block">
+                            {formatNumber(b?.lr1)}
+                          </span>
                         ) : (
                           <span className="d-block">-</span>
                         )}
                       </div>
                       <div className="bl-box lay1 changed">
-                        <span className="d-block odds">{formatOdds(b?.l2)}</span>
+                        <span className="d-block odds">
+                          {formatOdds(b?.l2)}
+                        </span>
                         {b?.lr2 !== undefined ? (
-                          <span className="d-block">{b.lr2}</span>
+                          <span className="d-block">
+                            {formatNumber(b?.lr2)}
+                          </span>
                         ) : (
                           <span className="d-block">-</span>
                         )}
                       </div>
                       <div className="bl-box lay2 changed">
-                        <span className="d-block odds">{formatOdds(b?.l3)}</span>
+                        <span className="d-block odds">
+                          {formatOdds(b?.l3)}
+                        </span>
                         {b?.lr3 !== undefined ? (
-                          <span className="d-block">{b.lr3}</span>
+                          <span className="d-block">
+                            {formatNumber(b?.lr3)}
+                          </span>
                         ) : (
                           <span className="d-block">-</span>
                         )}
@@ -292,7 +340,12 @@ const MatchOddsMarket = ({
         users={betLockUsers}
         onChange={setBetLockUsers}
         onSubmit={() =>
-          submitBetLock(currentMarketId, matchId, betLockUsers, setIsBetLockModalOpen)
+          submitBetLock(
+            currentMarketId,
+            matchId,
+            betLockUsers,
+            setIsBetLockModalOpen,
+          )
         }
       />
     </>
