@@ -548,8 +548,7 @@ header.header .infobar .last-login {
     display: flex;
     padding: 0;
     width: 100%;
-    min-height: calc(100vh - 185px);
-    background-color: rgba(0, 0, 0, 0.33);
+    min-height: calc(100vh - 150px);
 }
 
 .content>.left-pane-wrapper {
@@ -646,7 +645,7 @@ nav.menu>ul>li.rootMenu.active>a::after {
 }
 
 .content>.mid-pane {
-    width: calc(100% - 180px);
+    width: calc(100% - 140px);
     padding-left: 20px;
 }
 

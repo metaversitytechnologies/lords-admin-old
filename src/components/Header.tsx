@@ -317,7 +317,7 @@ const Header: React.FC = () => {
           show={showMessageModal}
           onClose={closeMessageModal}
         />
-        {bannerMessage ? (
+        {/* {bannerMessage ? (
           <div
             style={{
               background: "#9e1b32",
@@ -347,7 +347,7 @@ const Header: React.FC = () => {
               }`}
             </style>
           </div>
-        ) : null}
+        ) : null} */}
       </header>
     </>
   );
