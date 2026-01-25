@@ -52,10 +52,19 @@ interface MatchOddsMarketProps {
 const formatNumber = (value: any) => {
   const num = Number(value);
   if (Number.isNaN(num)) return value ?? "—";
-  if (Math.abs(num) >= 1000) {
-    const rounded = Math.round((num / 1000) * 10) / 10;
-    return `${rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1)}k`;
-  }
+
+  const abs = Math.abs(num);
+
+  const format = (divisor: number, suffix: string) => {
+    const rounded = Math.round((num / divisor) * 10) / 10;
+    return `${rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1)}${suffix}`;
+  };
+
+  if (abs >= 1e7) return format(1e7, "CR");
+  if (abs >= 1e6) return format(1e6, "M");
+  if (abs >= 1e5) return format(1e5, "L");
+  if (abs >= 1e3) return format(1e3, "K");
+
   return num;
 };
 

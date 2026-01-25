@@ -5,17 +5,26 @@ import type { BetLockUser } from "./BetLockModal";
 import { getUserFancyBook } from "../api/bet";
 import {
   getChildListMarketBetLock,
-  updateChildListMarketBetLock
+  updateChildListMarketBetLock,
 } from "../api/user";
-import type {Fancy2} from "./type";
+import type { Fancy2 } from "./type";
 
 const formatWithK = (value: any) => {
   const num = Number(value);
   if (Number.isNaN(num)) return value ?? "—";
-  if (Math.abs(num) >= 1000) {
-    const rounded = Math.round((num / 1000) * 10) / 10;
-    return `${rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1)}k`;
-  }
+
+  const abs = Math.abs(num);
+
+  const format = (divisor: number, suffix: string) => {
+    const rounded = Math.round((num / divisor) * 10) / 10;
+    return `${rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1)}${suffix}`;
+  };
+
+  if (abs >= 1e7) return format(1e7, "CR");
+  if (abs >= 1e6) return format(1e6, "M");
+  if (abs >= 1e5) return format(1e5, "L");
+  if (abs >= 1e3) return format(1e3, "K");
+
   return num;
 };
 
@@ -55,7 +64,7 @@ const groupLadderRows = (rows: any[]) => {
       grouped.push({
         start: isNum ? oddsNum : item?.odds,
         end: isNum ? oddsNum : item?.odds,
-        pnl: item?.pnl
+        pnl: item?.pnl,
       });
     }
   });
@@ -79,7 +88,7 @@ const sortLadderRows = (rows: any[]) => {
       return {
         start: isNum ? oddsNum : item?.odds,
         end: isNum ? oddsNum : item?.odds,
-        pnl: item?.pnl
+        pnl: item?.pnl,
       };
     });
 };
@@ -99,13 +108,13 @@ const FancyMarket = ({
   fancyPnldata,
   fancyMarket,
   matchId,
-  matchSettings
+  matchSettings,
 }: FancyMarketProps) => {
   const isCricketCasino = fancyMarket === "CricketCasino";
   const [isBetLockModalOpen, setIsBetLockModalOpen] = useState(false);
   const [betLockUsers, setBetLockUsers] = useState<BetLockUser[]>([
     { name: "capetown", checked: true },
-    { name: "capetown3", checked: false }
+    { name: "capetown3", checked: false },
   ]);
   const [currentMarketId, setCurrentMarketId] = useState<string>("");
   const [ladderData, setLadderData] = useState<any[]>([]);
@@ -113,7 +122,7 @@ const FancyMarket = ({
   const [activeLadderId, setActiveLadderId] = useState<string | null>(null);
 
   const filteredFancy = fancyData?.filter(
-    (row: any) => row.s === true && row.go === false
+    (row: any) => row.s === true && row.go === false,
   );
 
   const handleLadderClick = async (fancyId: string, canOpen: boolean) => {
@@ -130,7 +139,7 @@ const FancyMarket = ({
     try {
       const payload = {
         fancyId: fancyId,
-        matchId: matchId
+        matchId: matchId,
       };
       const response = await getUserFancyBook(payload);
       if (response.status) {
@@ -149,24 +158,19 @@ const FancyMarket = ({
       : groupLadderRows(ladderData);
 
   const openFancyLockModal = async () => {
-    const marketId =
-      filteredFancy?.[0]?.mid ||
-      filteredFancy?.[0]?.sid ||
-      "";
+    const marketId = filteredFancy?.[0]?.mid || filteredFancy?.[0]?.sid || "";
     if (!marketId) return;
     setCurrentMarketId(String(marketId));
     try {
-      const res = await getChildListMarketBetLock({ marketId: String(marketId) });
-      const users =
-        res?.data?.userList ||
-        res?.userList ||
-        res?.data ||
-        [];
+      const res = await getChildListMarketBetLock({
+        marketId: String(marketId),
+      });
+      const users = res?.data?.userList || res?.userList || res?.data || [];
       setBetLockUsers(
         (Array.isArray(users) ? users : []).map((u: any) => ({
           name: u?.userId || u?.username || u?.name || "",
-          checked: Boolean(u?.lock)
-        }))
+          checked: Boolean(u?.lock),
+        })),
       );
     } catch (err) {
       console.error("Failed to fetch fancy bet lock users", err);
@@ -184,7 +188,7 @@ const FancyMarket = ({
         matchId,
         userList: betLockUsers
           .filter((u) => u.name)
-          .map((u) => ({ userId: u.name, lock: u.checked }))
+          .map((u) => ({ userId: u.name, lock: u.checked })),
       });
       setIsBetLockModalOpen(false);
     } catch (err) {
@@ -202,8 +206,7 @@ const FancyMarket = ({
               <button
                 type="button"
                 className="btn btn bet-lock-btn btn-primary"
-                onClick={openFancyLockModal}
-              >
+                onClick={openFancyLockModal}>
                 Fancy Lock
               </button>
             </div>
@@ -231,8 +234,8 @@ const FancyMarket = ({
                 const currentId = r?.mid
                   ? String(r.mid).trim()
                   : r?.sid
-                  ? String(r.sid).trim()
-                  : "";
+                    ? String(r.sid).trim()
+                    : "";
 
                 let bet = 0;
                 if (fancyPnldata && currentId) {
@@ -241,8 +244,11 @@ const FancyMarket = ({
                   }
                 }
                 const canOpenLadder = bet !== 0 && Boolean(currentId);
-                const betColor = bet > 0 ? "green" : bet < 0 ? "red" : undefined;
-                const marketSetting = currentId ? matchSettings?.[currentId] : undefined;
+                const betColor =
+                  bet > 0 ? "green" : bet < 0 ? "red" : undefined;
+                const marketSetting = currentId
+                  ? matchSettings?.[currentId]
+                  : undefined;
                 const minBet = marketSetting?.minBet ?? r?.minBet ?? 100;
                 const maxBet = marketSetting?.maxBet ?? r?.maxBet ?? 1000;
                 const displayMessage =
@@ -255,14 +261,14 @@ const FancyMarket = ({
                       className={`bet-table-row ${
                         r?.sb === "S" || r?.sb === "B" ? "suspendedtext" : ""
                       }`}
-                      data-title={r?.sb === "S" ? "SUSPENDED" : "BALL RUNNING"}
-                    >
+                      data-title={r?.sb === "S" ? "SUSPENDED" : "BALL RUNNING"}>
                       <div className="nation-name">
                         <p>
                           <span>{r.na}</span>
                         </p>
                         <p className="mb-0">
-                          <span style={betColor ? { color: betColor } : undefined}>
+                          <span
+                            style={betColor ? { color: betColor } : undefined}>
                             {" "}
                             {bet}
                           </span>
@@ -272,10 +278,14 @@ const FancyMarket = ({
                               size={20}
                               style={{
                                 color: "var(--accent-color)",
-                                cursor: canOpenLadder ? "pointer" : "not-allowed",
-                                opacity: canOpenLadder ? 1 : 0.5
+                                cursor: canOpenLadder
+                                  ? "pointer"
+                                  : "not-allowed",
+                                opacity: canOpenLadder ? 1 : 0.5,
                               }}
-                              onClick={() => handleLadderClick(currentId, canOpenLadder)}
+                              onClick={() =>
+                                handleLadderClick(currentId, canOpenLadder)
+                              }
                             />
                           </span>
                         </p>
@@ -302,8 +312,10 @@ const FancyMarket = ({
                     {activeLadderId === currentId && (
                       <div
                         className="table-responsive mt-1"
-                        style={{ border: "1px solid #dee2e6", borderRadius: "4px" }}
-                      >
+                        style={{
+                          border: "1px solid #dee2e6",
+                          borderRadius: "4px",
+                        }}>
                         <table className="table table-bordered table-striped mb-0">
                           <thead>
                             <tr>
@@ -323,7 +335,7 @@ const FancyMarket = ({
                                 const oddsLabel = getOddsLabel(
                                   item,
                                   index,
-                                  fancyMarket
+                                  fancyMarket,
                                 );
                                 return (
                                   <tr key={index}>
@@ -331,12 +343,11 @@ const FancyMarket = ({
                                     <td
                                       className={`text-center ${
                                         item.pnl > 0
-                                      ? "text-success"
-                                      : item.pnl < 0
-                                      ? "text-danger"
-                                      : ""
-                                  }`}
-                                >
+                                          ? "text-success"
+                                          : item.pnl < 0
+                                            ? "text-danger"
+                                            : ""
+                                      }`}>
                                       {item.pnl}
                                     </td>
                                   </tr>
@@ -354,7 +365,9 @@ const FancyMarket = ({
                       </div>
                     )}
                     {displayMessage && (
-                      <div className="market-display-message">{displayMessage}</div>
+                      <div className="market-display-message">
+                        {displayMessage}
+                      </div>
                     )}
                   </div>
                 );

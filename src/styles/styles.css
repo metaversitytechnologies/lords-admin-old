@@ -341,7 +341,7 @@ h1 {
     margin-bottom: 30px;
 }
 
-.changePasswordForm  .form-group {
+.changePasswordForm .form-group {
     margin-bottom: 20px;
 }
 
@@ -406,6 +406,7 @@ h1 {
     background-color: #b71601;
     color: #ffffff;
 }
+
 .btn-cancel:hover {
     color: #ffffff;
 }
@@ -644,12 +645,12 @@ nav.menu>ul>li.rootMenu.active>a::after {
     font-weight: 900;
 }
 
-.content > .mid-pane {
+.content>.mid-pane {
     width: calc(100% - 180px);
     padding-left: 20px;
 }
 
-.content.collapsed-menu > .mid-pane {
+.content.collapsed-menu>.mid-pane {
     width: 100%;
     padding-left: 20px;
 }
@@ -703,7 +704,7 @@ footer {
     margin-right: 6px;
 }
 
-.link-btn{
+.link-btn {
     cursor: pointer;
 }
 
@@ -867,7 +868,7 @@ footer {
 }
 
 .fa-tachometer-alt {
-color: var(--accent-color)
+    color: var(--accent-color)
 }
 
 
@@ -1020,7 +1021,7 @@ color: var(--accent-color)
     padding: 20px;
     float: left;
     position: relative;
-    border: 1px solid #e0e0e0 
+    border: 1px solid #e0e0e0
 }
 
 .apl-section-inner legend {
@@ -1126,7 +1127,7 @@ color: var(--accent-color)
 }
 
 .activity-table tbody tr td span,
-.activity-table tbody tr td  {
+.activity-table tbody tr td {
     background-color: var(--primary-color) !important;
     color: white !important;
 }
@@ -1833,14 +1834,22 @@ color: var(--accent-color)
     flex-wrap: wrap;
 }
 
-.left-market,
+/* .left-market,
 .right-market {
     width: 49.5%;
+} */
+
+.left-market {
+    width: 51%;
 }
 
 .right-market {
-    margin-left: 1%;
+    width: 49%;
 }
+
+/* .right-market {
+    margin-left: 1%;
+} */
 
 .table-header,
 .table-row {
@@ -2057,7 +2066,7 @@ color: var(--accent-color)
 
 .market-container .fancy-min-max {
     width: 10%;
-    font-size: 10px;
+    font-size: 9px;
     text-align: right;
     padding-right: 5px;
 }
@@ -2294,6 +2303,7 @@ color: var(--accent-color)
 .market-container .market-6 .nation-name {
     width: 70%;
 }
+
 
 .market-container .market-6 .fancy-tripple .bet-table-row .nation-name,
 .market-container .market-6 .fancy-tripple .bet-table-row .fancy-min-max {
@@ -2863,7 +2873,7 @@ span.order-time {
 .apl-form-row {
     position: relative;
     color: #000;
-    padding: 0 20px ;
+    padding: 0 20px;
 }
 
 .error-account {
@@ -3361,7 +3371,7 @@ body.modal-contents {
     background-color: var(--primary-color);
 }
 
-.footer-link{
+.footer-link {
     color: #fff !important;
 }
 
@@ -5873,19 +5883,25 @@ img.lrotate {
 
     .game-title {
         margin-bottom: 15px;
-    }   
+    }
 
     .market-container .bet-table-header .nation-name {
-    padding-right: 5px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    min-height: 50px;
-    background-color: var(--primary-color);
-    font-weight: bold;
+        padding-right: 5px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        min-height: 50px;
+        background-color: var(--primary-color);
+        font-weight: bold;
+    }
+
+
 }
 
-   
+@media screen and (max-width: 768px) {
+    .market-container .market-6 .nation-name {
+        width: 60% !important;
+    }
 }
