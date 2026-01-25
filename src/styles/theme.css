@@ -243,14 +243,14 @@ footer {
 }
 
 .content {
-    background: url('/img/main-bg.jpg');
+    background: url('./img/main-bg.jpg');
 }
 
 
-
+/* 
 .content>.mid-pane {
-    /* background-color: var(--body-bg); */
-}
+    background-color: var(--body-bg);
+} */
 
 nav.menu>ul>li>a {
     color: var(--text-light);
