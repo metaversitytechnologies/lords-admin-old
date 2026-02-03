@@ -9,7 +9,7 @@ const getAuthHeaders = () => {
 
 export const getOddsData = async (matchId: string) => {
 
-  const response = await fetch(`https://oddsapi.khelo7.com/api/fancy/v1/${matchId}`, {
+  const response = await fetch(`https://oddsapi.globalexch.co.in/api/fancy/v1/${matchId}`, {
     method: "GET",
     headers: getAuthHeaders(),
   });
@@ -24,7 +24,7 @@ export const getOddsData = async (matchId: string) => {
 
 export const getScorecardData = async (matchId: string) => {
 
-  const response = await fetch(`https://oddsapi.khelo7.com/api/fancy/v1/scoreApi/${matchId}`, {
+  const response = await fetch(`https://oddsapi.globalexch.co.in/api/fancy/v1/scoreApi/${matchId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -41,7 +41,7 @@ export const getScorecardData = async (matchId: string) => {
 
 export const getMatchSettings = async (matchId: string) => {
   const response = await fetch(
-    `https://oddsapi.khelo7.com/api/fancy/v1/matchSettings/${matchId}`,
+    `https://oddsapi.globalexch.co.in/api/fancy/v1/matchSettings/${matchId}`,
     {
       method: "GET",
       headers: getAuthHeaders(),
